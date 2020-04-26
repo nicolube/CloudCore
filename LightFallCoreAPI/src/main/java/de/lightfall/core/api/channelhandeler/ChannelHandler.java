@@ -15,7 +15,7 @@ public abstract class ChannelHandler {
 
     @EventListener
     public void channelHandler(ChannelMessageReceiveEvent event) {
-        if (event.getChannel() != MessageChannels.DEFAULT.getChannelName()) return;
+        if (!event.getChannel().equals(MessageChannels.DEFAULT.getChannelName())) return;
         final String key = event.getMessage().toLowerCase();
         for (DocumentRegister value : DocumentRegister.values()) {
             if (value.getKey().equals(key)) {
