@@ -7,22 +7,22 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class TeleportDocument {
-
-    public TeleportDocument(UUID uuid, TeleportType teleportType, TeleportDocument targetPosition) {
-        this.uuid = uuid;
-        this.teleportType = teleportType;
-        this.targetPosition = targetPosition;
-    }
-
-    public TeleportDocument(UUID uuid, TeleportType teleportType, UUID targetUuid) {
-        this.uuid = uuid;
-        this.teleportType = teleportType;
-        this.targetUuid = targetUuid;
-    }
+public class TeleportDocument extends Document {
 
     private UUID uuid;
     private TeleportType teleportType;
     private UUID targetUuid;
-    private TeleportDocument targetPosition;
+    private LocationDocument targetPosition;
+
+    public TeleportDocument(UUID uuid, LocationDocument targetPosition) {
+        this.uuid = uuid;
+        this.teleportType = TeleportType.LOCATION;
+        this.targetPosition = targetPosition;
+    }
+
+    public TeleportDocument(UUID uuid, UUID targetUuid) {
+        this.uuid = uuid;
+        this.teleportType = TeleportType.PLAYER;
+        this.targetUuid = targetUuid;
+    }
 }

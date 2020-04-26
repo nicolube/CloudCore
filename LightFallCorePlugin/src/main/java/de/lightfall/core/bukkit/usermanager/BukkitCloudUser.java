@@ -8,6 +8,7 @@ import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.dytanic.cloudnet.ext.bridge.player.NetworkServiceInfo;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.LocationDocument;
+import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
 import de.lightfall.core.api.usermanager.CloudUser;
 import lombok.Getter;
 
@@ -22,7 +23,7 @@ public class BukkitCloudUser implements CloudUser {
     public void moveToPlayerTeleport(UUID uuid) {
         final NetworkServiceInfo networkServiceInfo = moveToPlayer(uuid);
         ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(networkServiceInfo.getUniqueId());
-        ChannelHandler.send(cloudService, new LocationDocument());
+        ChannelHandler.send(cloudService, new TeleportDocument(this.uuid, uuid));
     }
 
     @Override

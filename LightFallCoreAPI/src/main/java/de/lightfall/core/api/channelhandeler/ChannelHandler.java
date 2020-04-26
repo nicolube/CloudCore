@@ -27,7 +27,7 @@ public abstract class ChannelHandler {
 
     public abstract void receive(Document document);
 
-    public static void send(ServiceInfoSnapshot cloudService, Document document) {
+    public static <T> void send(ServiceInfoSnapshot cloudService, Document document) {
         for (DocumentRegister value : DocumentRegister.values()) {
             if (document.getClass().equals(value.getClazz())) {
                 CloudNetDriver.getInstance().getMessenger().sendChannelMessage(cloudService,
