@@ -1,0 +1,5 @@
+name: ${project.name}
+version: ${project.version}
+authors: [${authors}]
+
+main: de.lightfall.core.bukkit.MainBukkit

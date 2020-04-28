@@ -3,9 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.lightfall</groupId>
+    <groupId>de.lightfall.core</groupId>
     <artifactId>LightFallCore</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>LightFallCoreAPI</module>
+        <module>LightFallCorePlugin</module>
+    </modules>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -77,8 +82,8 @@
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
-            <artifactId>cloudnet-api-bridge</artifactId>
-            <version>2.1.17</version>
+            <artifactId>cloudnet-bridge</artifactId>
+            <version>3.0.0-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -100,12 +105,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.luckperms</groupId>
-            <artifactId>api</artifactId>
-            <version>5.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
@@ -115,9 +114,20 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.36.Final</version>
+            <version>4.1.32.Final</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-jdbc</artifactId>
+            <version>5.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.6.0</version>
+            <scope>compile</scope>
+        </dependency><!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
     </dependencies>
 </project>
