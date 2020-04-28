@@ -1,6 +1,5 @@
 package de.lightfall.core.bukkit;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.event.EventListener;
 import de.dytanic.cloudnet.driver.event.events.channel.ChannelMessageReceiveEvent;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
@@ -27,12 +26,11 @@ public class BukkitChannelHandler extends ChannelHandler {
 
     @Override
     public void receive(Document document) {
-        Bukkit.broadcastMessage("Received message. Type: " + document.getClass().getName());
         if (document instanceof TeleportDocument) {
             Player target = Bukkit.getPlayer(((TeleportDocument) document).getTargetUuid());
             if (target == null || !target.isOnline()) return;
             Player player = Bukkit.getPlayer(((TeleportDocument) document).getUuid());
-            if (player.isOnline()) {
+            if (player != null && player.isOnline()) {
                 if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
                     player.teleport(target);
                     return;
@@ -40,14 +38,17 @@ public class BukkitChannelHandler extends ChannelHandler {
                 player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                 return;
             }
-            this.plugin.getEventBasedExecutions().scheduleExecution((EventBasedExecutions.EventExecutorTask<PlayerJoinEvent>) event -> {
-                if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
-                if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
-                    player.teleport(target);
+            this.plugin.getEventBasedExecutions().scheduleExecution(new EventBasedExecutions.EventExecutorTask<PlayerJoinEvent>() {
+                @Override
+                public boolean execute(PlayerJoinEvent event) {
+                    if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
+                    if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
+                        event.getPlayer().teleport(target);
+                        return true;
+                    }
+                    event.getPlayer().teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                     return true;
                 }
-                player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
-                return true;
             });
             return;
 

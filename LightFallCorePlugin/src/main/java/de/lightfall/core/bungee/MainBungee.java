@@ -2,8 +2,8 @@ package de.lightfall.core.bungee;
 
 import co.aikar.commands.BungeeCommandManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import de.lightfall.core.api.Util;
 import de.lightfall.core.api.CoreAPI;
+import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.bungee.commands.TestCommand;
@@ -14,6 +14,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.Field;
 
 
 public class MainBungee extends Plugin implements CoreAPI {
@@ -31,8 +32,14 @@ public class MainBungee extends Plugin implements CoreAPI {
     public void onEnable() {
         getLogger().info(Util.getLogo());
 
+        // This is very sketchy
+        final Field coreInstance = Util.class.getDeclaredField("coreInstance");
+        coreInstance.setAccessible(true);
+        coreInstance.set(null, this);
+
         getLogger().info("Copy necessary config files in to place...");
         final File configFile = new File(getDataFolder(), "config.json");
+        configFile.getParentFile().mkdirs();
         if (!configFile.exists()) {
             getLogger().info("config.json copied");
             Util.copyOutOfJarFile("/resources/config.json", configFile);

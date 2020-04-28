@@ -18,4 +18,13 @@ public interface CoreAPI {
      * @return you the current databaseConnection.
      */
     public ConnectionSource getConnectionSource();
+
+    /**
+     * Gets the current {@link CoreAPI} singleton
+     *
+     * @return you the current instance of the CoreAPI.
+     */
+    public static CoreAPI getInstance() {
+        return Util.coreInstance;
+    }
 }

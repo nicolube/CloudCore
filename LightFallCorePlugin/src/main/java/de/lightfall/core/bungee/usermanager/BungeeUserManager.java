@@ -11,6 +11,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +23,8 @@ public class BungeeUserManager implements UserManager, Listener {
 
     public BungeeUserManager(MainBungee plugin) {
         this.plugin = plugin;
+        this.userMap = new HashMap<>();
+        onLoad();
     }
 
     public void onLoad() {

@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,6 +22,8 @@ public class BukkitUserManager implements UserManager, Listener {
 
     public BukkitUserManager(MainBukkit plugin) {
         this.plugin = plugin;
+        this.userMap = new HashMap<>();
+        onLoad();
     }
 
 

@@ -1,10 +1,9 @@
 package de.lightfall.core.api.usermanager;
 
+import de.dytanic.cloudnet.common.concurrent.ITask;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
-import de.dytanic.cloudnet.ext.bridge.player.NetworkServiceInfo;
-import org.bukkit.Server;
 
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ public interface CloudUser {
      * @param player uuid of targetPlayer
      * @return NetworkServiceInfo or null if the player is offline.
      */
-    public NetworkServiceInfo moveToPlayer(UUID player);
+    public ITask<? extends ICloudPlayer> moveToPlayer(UUID player);
 
 
     /**

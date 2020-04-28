@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 public class Util {
 
+    // This is very sketchy
+    protected static CoreAPI coreInstance = null;
+
     @Getter
     private static String logo ;
     @Getter
