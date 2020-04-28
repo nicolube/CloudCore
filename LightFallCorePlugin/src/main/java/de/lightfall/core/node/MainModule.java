@@ -4,7 +4,7 @@ import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.module.ModuleLifeCycle;
 import de.dytanic.cloudnet.driver.module.ModuleTask;
 import de.dytanic.cloudnet.driver.module.driver.DriverModule;
-import de.lightfall.core.Util;
+import de.lightfall.core.api.Util;
 
 public class MainModule extends DriverModule {
 

@@ -1,6 +1,6 @@
 package de.lightfall.core.bungee;
 
-import de.lightfall.core.Util;
+import de.lightfall.core.api.Util;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
 import net.md_5.bungee.api.plugin.Plugin;
 

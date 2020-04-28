@@ -1,6 +1,6 @@
 package de.lightfall.core.bukkit;
 
-import de.lightfall.core.Util;
+import de.lightfall.core.api.Util;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerJoinEvent;

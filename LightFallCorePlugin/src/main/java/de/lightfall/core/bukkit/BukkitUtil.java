@@ -1,6 +1,6 @@
 package de.lightfall.core.bukkit;
 
-import de.lightfall.core.Util;
+import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.documents.LocationDocument;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
