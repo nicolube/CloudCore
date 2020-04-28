@@ -9,6 +9,7 @@ import de.lightfall.core.api.MessageChannels;
 import de.lightfall.core.api.channelhandeler.documents.Document;
 
 public abstract class ChannelHandler {
+
     public ChannelHandler() {
         CloudNetDriver.getInstance().getEventManager().registerListener(this);
     }
@@ -18,7 +19,7 @@ public abstract class ChannelHandler {
         if (!event.getChannel().equals(MessageChannels.DEFAULT.getChannelName())) return;
         final String key = event.getMessage().toLowerCase();
         for (DocumentRegister value : DocumentRegister.values()) {
-            if (value.getKey().equals(key)) {
+            if (value.name().equals(key)) {
                 receive(event.getData().toInstanceOf((Class<? extends Document>) value.getClazz()));
                 return;
             }
@@ -30,8 +31,9 @@ public abstract class ChannelHandler {
     public static <T> void send(ServiceInfoSnapshot cloudService, Document document) {
         for (DocumentRegister value : DocumentRegister.values()) {
             if (document.getClass().equals(value.getClazz())) {
+                CloudNetDriver.getInstance().getNetworkClient().sendPacket();
                 CloudNetDriver.getInstance().getMessenger().sendChannelMessage(cloudService,
-                        MessageChannels.DEFAULT.getChannelName(), value.getKey(), new JsonDocument(document));
+                        MessageChannels.DEFAULT.getChannelName(), value.name(), new JsonDocument(document));
                 return;
             }
 
