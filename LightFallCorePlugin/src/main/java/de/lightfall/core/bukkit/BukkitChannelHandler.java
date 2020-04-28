@@ -1,6 +1,5 @@
 package de.lightfall.core.bukkit;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.event.EventListener;
 import de.dytanic.cloudnet.driver.event.events.channel.ChannelMessageReceiveEvent;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
@@ -19,19 +18,21 @@ public class BukkitChannelHandler extends ChannelHandler {
         this.plugin = plugin;
     }
 
-    @Override @EventListener
+    @Override
+    @EventListener
     public void channelHandler(ChannelMessageReceiveEvent event) {
         super.channelHandler(event);
     }
 
     @Override
     public void receive(Document document) {
-        Bukkit.broadcastMessage("Received message. Type: "+document.getClass().getName());
         if (document instanceof TeleportDocument) {
+            Player target = Bukkit.getPlayer(((TeleportDocument) document).getTargetUuid());
+            if (target == null || !target.isOnline()) return;
             Player player = Bukkit.getPlayer(((TeleportDocument) document).getUuid());
-            if (player.isOnline()) {
+            if (player != null && player.isOnline()) {
                 if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
-                    player.teleport(Bukkit.getPlayer(((TeleportDocument) document).getTargetUuid()));
+                    player.teleport(target);
                     return;
                 }
                 player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
@@ -42,10 +43,10 @@ public class BukkitChannelHandler extends ChannelHandler {
                 public boolean execute(PlayerJoinEvent event) {
                     if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
                     if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
-                        player.teleport(Bukkit.getPlayer(((TeleportDocument) document).getTargetUuid()));
+                        event.getPlayer().teleport(target);
                         return true;
                     }
-                    player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
+                    event.getPlayer().teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                     return true;
                 }
             });
