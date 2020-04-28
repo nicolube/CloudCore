@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LocationDocument {
+public class LocationDocument extends Document {
 
     private String world;
     private double x;

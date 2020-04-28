@@ -19,35 +19,35 @@ public class BukkitChannelHandler extends ChannelHandler {
         this.plugin = plugin;
     }
 
-    @Override @EventListener
+    @Override
+    @EventListener
     public void channelHandler(ChannelMessageReceiveEvent event) {
         super.channelHandler(event);
     }
 
     @Override
     public void receive(Document document) {
-        Bukkit.broadcastMessage("Received message. Type: "+document.getClass().getName());
+        Bukkit.broadcastMessage("Received message. Type: " + document.getClass().getName());
         if (document instanceof TeleportDocument) {
+            Player target = Bukkit.getPlayer(((TeleportDocument) document).getTargetUuid());
+            if (target == null || !target.isOnline()) return;
             Player player = Bukkit.getPlayer(((TeleportDocument) document).getUuid());
             if (player.isOnline()) {
                 if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
-                    player.teleport(Bukkit.getPlayer(((TeleportDocument) document).getTargetUuid()));
+                    player.teleport(target);
                     return;
                 }
                 player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                 return;
             }
-            this.plugin.getEventBasedExecutions().scheduleExecution(new EventBasedExecutions.EventExecutorTask<PlayerJoinEvent>() {
-                @Override
-                public boolean execute(PlayerJoinEvent event) {
-                    if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
-                    if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
-                        player.teleport(Bukkit.getPlayer(((TeleportDocument) document).getTargetUuid()));
-                        return true;
-                    }
-                    player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
+            this.plugin.getEventBasedExecutions().scheduleExecution((EventBasedExecutions.EventExecutorTask<PlayerJoinEvent>) event -> {
+                if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
+                if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
+                    player.teleport(target);
                     return true;
                 }
+                player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
+                return true;
             });
             return;
 

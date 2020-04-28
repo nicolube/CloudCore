@@ -1,30 +1,37 @@
 package de.lightfall.core.bungee.usermanager;
 
-import de.dytanic.cloudnet.common.document.gson.JsonDocument;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.dytanic.cloudnet.ext.bridge.player.NetworkServiceInfo;
-import de.lightfall.core.api.MessageChannels;
+import de.lightfall.core.api.channelhandeler.ChannelHandler;
+import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
 import de.lightfall.core.api.usermanager.CloudUser;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.UUID;
 
 public class BungeeCloudUser implements CloudUser {
 
     @Getter
-    private UUID uuid;
+    private final UUID uuid;
+    @Getter @Setter(value = AccessLevel.PROTECTED)
+    private ProxiedPlayer player;
 
+    public BungeeCloudUser(UUID uuid) {
+        this.uuid = uuid;
+    }
 
     @Override
     public void moveToPlayerTeleport(UUID uuid) {
         final NetworkServiceInfo networkServiceInfo = moveToPlayer(uuid);
         ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(networkServiceInfo.getUniqueId());
-        final JsonDocument document = new JsonDocument();
-        document.append("uuid", uuid.toString());
+        ChannelHandler.send(cloudService, new TeleportDocument(this.uuid, uuid));
     }
 
     @Override
