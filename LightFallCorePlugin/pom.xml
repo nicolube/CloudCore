@@ -10,6 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>LightFallCorePlugin</artifactId>
+    
+    <repositories>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>de.lightfall.core</groupId>
@@ -30,5 +38,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
 </project>
