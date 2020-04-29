@@ -51,6 +51,9 @@ public class MainBungee extends Plugin implements CoreAPI {
         this.connectionSource = new JdbcConnectionSource(this.config.getDatabase().getUrl(),
                 this.config.getDatabase().getUser(), this.config.getDatabase().getPassword());
 
+        getLogger().info("Create channel handler executor...");
+        new BungeeChannelHandler(this);
+
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);
         getProxy().getPluginManager().registerListener(this, this.userManager);
