@@ -20,10 +20,6 @@ public class KillTaskCommand extends BaseCommand {
     @CommandCompletion("@taskGroup")
     @Syntax("<taskGroup>")
     public void onDefault(CommandSender sender, GroupConfiguration groupConfiguration) {
-        if (!sender.hasPermission("cloudnet.killtask")) {
-            sender.sendMessage(new TextComponent(ChatColor.RED + "Dazu hast du keine Rechte!"));
-            return;
-        }
         CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServicesByGroupAsync(groupConfiguration.getName()).onComplete(serviceInfoSnapshots -> {
             if (serviceInfoSnapshots.isEmpty()) {
                 sender.sendMessage(new TextComponent("§cEs sind keine Server dieser Gruppe online!"));
