@@ -2,12 +2,14 @@ package de.lightfall.core.bungee;
 
 import co.aikar.commands.BungeeCommandManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
+import de.dytanic.cloudnet.driver.service.GroupConfiguration;
 import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
-import de.lightfall.core.bungee.commands.KilltaskCommand;
+import de.lightfall.core.bungee.commands.KillTaskCommand;
 import de.lightfall.core.bungee.commands.TestCommand;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
 import lombok.Getter;
@@ -16,6 +18,8 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainBungee extends Plugin implements CoreAPI {
@@ -34,7 +38,6 @@ public class MainBungee extends Plugin implements CoreAPI {
         getLogger().info("Create channel handler executor...");
         this.channelHandler = new BungeeChannelHandler(this);
 
-        ChannelHandler.send(new ConfigRequestDocument());
     }
 
     @Override
@@ -46,6 +49,10 @@ public class MainBungee extends Plugin implements CoreAPI {
         final Field coreInstance = Util.class.getDeclaredField("coreInstance");
         coreInstance.setAccessible(true);
         coreInstance.set(null, this);
+
+        ChannelHandler.send(new ConfigRequestDocument());
+
+        Thread.sleep(1000);
 
         this.enabled = true;
         if (this.config != null) configure(this.config);
@@ -63,9 +70,19 @@ public class MainBungee extends Plugin implements CoreAPI {
         getLogger().info("Starting command manager...");
         this.commandManager = new BungeeCommandManager(this);
         getLogger().info("Registering commands...");
+
+        this.commandManager.getCommandCompletions().registerAsyncCompletion("taskGroup", context -> {
+            Set<String> groups = new HashSet<>();
+            CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
+            return groups;
+        });
+        this.commandManager.getCommandContexts().registerContext(GroupConfiguration.class, context -> {
+            return CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfiguration(context.popFirstArg());
+        });
+
         // Todo remove Test command before release!
         this.commandManager.registerCommand(new TestCommand(this));
-        ProxyServer.getInstance().getPluginManager().registerCommand(this,new KilltaskCommand("killtask"));
+        this.commandManager.registerCommand(new KillTaskCommand());
     }
 
     public void onConfigure(Config config) {
