@@ -5,6 +5,7 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
+import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.bungee.commands.KilltaskCommand;
 import de.lightfall.core.bungee.commands.TestCommand;
@@ -14,8 +15,6 @@ import lombok.SneakyThrows;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
-import java.io.File;
-import java.io.FileReader;
 import java.lang.reflect.Field;
 
 
@@ -28,6 +27,15 @@ public class MainBungee extends Plugin implements CoreAPI {
     private Config config;
     @Getter
     private JdbcConnectionSource connectionSource;
+    private boolean enabled = false;
+
+    @Override
+    public void onLoad() {
+        getLogger().info("Create channel handler executor...");
+        this.channelHandler = new BungeeChannelHandler(this);
+
+        ChannelHandler.send(new ConfigRequestDocument());
+    }
 
     @Override
     @SneakyThrows
@@ -39,22 +47,15 @@ public class MainBungee extends Plugin implements CoreAPI {
         coreInstance.setAccessible(true);
         coreInstance.set(null, this);
 
-        getLogger().info("Copy necessary config files in to place...");
-        final File configFile = new File(getDataFolder(), "config.json");
-        configFile.getParentFile().mkdirs();
-        if (!configFile.exists()) {
-            getLogger().info("config.json copied");
-            Util.copyOutOfJarFile("/resources/config.json", configFile);
-        }
-        getLogger().info("Loading configuration...");
-        this.config = Util.getGSON().fromJson(new FileReader(configFile), Config.class);
+        this.enabled = true;
+        if (this.config != null) configure(this.config);
+    }
 
+    @SneakyThrows
+    public void configure(Config config) {
         getLogger().info("Connect to database...");
         this.connectionSource = new JdbcConnectionSource(this.config.getDatabase().getUrl(),
                 this.config.getDatabase().getUser(), this.config.getDatabase().getPassword());
-
-        getLogger().info("Create channel handler executor...");
-        new BungeeChannelHandler(this);
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);
@@ -65,5 +66,10 @@ public class MainBungee extends Plugin implements CoreAPI {
         // Todo remove Test command before release!
         this.commandManager.registerCommand(new TestCommand(this));
         ProxyServer.getInstance().getPluginManager().registerCommand(this,new KilltaskCommand("killtask"));
+    }
+
+    public void onConfigure(Config config) {
+        this.config = config;
+        if (enabled) configure(config);
     }
 }
