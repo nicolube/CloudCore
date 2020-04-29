@@ -35,7 +35,7 @@ public class KilltaskCommand extends Command {
                     return;
                 }
                 for (ServiceInfoSnapshot serviceInfoSnapshot : serviceInfoSnapshots) {
-                    CloudNetDriver.getInstance().stopCloudService(serviceInfoSnapshot);
+                    CloudNetDriver.getInstance().getCloudServiceProvider(serviceInfoSnapshot).stopAsync();
                 }
             }
         });
