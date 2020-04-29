@@ -6,10 +6,12 @@ import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.config.Config;
+import de.lightfall.core.bungee.commands.KilltaskCommand;
 import de.lightfall.core.bungee.commands.TestCommand;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
@@ -62,5 +64,6 @@ public class MainBungee extends Plugin implements CoreAPI {
         getLogger().info("Registering commands...");
         // Todo remove Test command before release!
         this.commandManager.registerCommand(new TestCommand(this));
+        ProxyServer.getInstance().getPluginManager().registerCommand(this,new KilltaskCommand("killtask"));
     }
 }
