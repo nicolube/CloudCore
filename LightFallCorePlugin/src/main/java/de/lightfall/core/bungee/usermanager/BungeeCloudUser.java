@@ -1,14 +1,18 @@
 package de.lightfall.core.bungee.usermanager;
 
+import co.aikar.commands.MessageType;
 import de.dytanic.cloudnet.common.concurrent.ITask;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
+import de.lightfall.core.api.IMessageKeyProvider;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
+import de.lightfall.core.api.channelhandeler.documents.MessageDocument;
 import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
-import de.lightfall.core.api.usermanager.CloudUser;
+import de.lightfall.core.api.usermanager.ICloudUser;
+import de.lightfall.core.bungee.MainBungee;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +20,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.UUID;
 
-public class BungeeCloudUser implements CloudUser {
+public class BungeeCloudUser implements ICloudUser {
 
     @Getter
     private final UUID uuid;
@@ -33,6 +37,15 @@ public class BungeeCloudUser implements CloudUser {
             ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(player.getConnectedService().getUniqueId());
             ChannelHandler.send(cloudService, new TeleportDocument(this.uuid, uuid));
         });
+    }
+
+    @Override
+    public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements) {
+        if (isOnline()) {
+            MainBungee.getInstance().getCommandManager().getCommandIssuer(player).sendMessage(type, key, replacements);
+            return;
+        }
+        ChannelHandler.send(new MessageDocument(this.uuid, type, key, replacements));
     }
 
     @Override
@@ -68,5 +81,10 @@ public class BungeeCloudUser implements CloudUser {
     @Override
     public ICloudPlayer getCloudPlayer() {
         return BridgePlayerManager.getInstance().getOnlinePlayer(uuid);
+    }
+
+    @Override
+    public boolean isOnline() {
+        return this.player != null && this.player.isConnected();
     }
 }

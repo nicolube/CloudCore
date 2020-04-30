@@ -1,5 +1,7 @@
 package de.lightfall.core.api.channelhandeler.documents;
 
-public class Document {
+import java.io.Serializable;
+
+public class Document implements Serializable {
 
 }

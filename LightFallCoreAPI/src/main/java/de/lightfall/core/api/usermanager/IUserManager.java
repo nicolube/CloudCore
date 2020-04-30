@@ -2,14 +2,14 @@ package de.lightfall.core.api.usermanager;
 
 import java.util.UUID;
 
-public interface UserManager {
+public interface IUserManager {
 
     /**
      *
-     * Gets the current {@link CloudUser} singleton
+     * Gets the current {@link ICloudUser} singleton
      *
      * @param uuid of player you want to get.
      * @return CloudUser or null if he is not registered.
      */
-    public CloudUser getUser(UUID uuid);
+    public ICloudUser getUser(UUID uuid);
 }

@@ -3,10 +3,9 @@ package de.lightfall.core.bukkit;
 import de.dytanic.cloudnet.driver.event.EventListener;
 import de.dytanic.cloudnet.driver.event.events.channel.ChannelMessageReceiveEvent;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
-import de.lightfall.core.api.channelhandeler.documents.Document;
-import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
-import de.lightfall.core.api.channelhandeler.documents.TeleportType;
+import de.lightfall.core.api.channelhandeler.documents.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -51,7 +50,18 @@ public class BukkitChannelHandler extends ChannelHandler {
                 }
             });
             return;
-
+        }
+        if (document instanceof MessageDocument) {
+            MessageDocument messageDocument = (MessageDocument) document;
+            final Player player = Bukkit.getPlayer(messageDocument.getUuid());
+            if (player == null || !player.isOnline()) return;
+            this.plugin.getCommandManager().getCommandIssuer(player).sendMessage(messageDocument.getType(), messageDocument.getMessageKey(), messageDocument.getReplacements());
+            return;
+        }
+        if (document instanceof ConfigDocument) {
+            ConfigDocument configDocument = (ConfigDocument) document;
+            this.plugin.onConfigure(configDocument.getConfig());
+            return;
         }
     }
 }

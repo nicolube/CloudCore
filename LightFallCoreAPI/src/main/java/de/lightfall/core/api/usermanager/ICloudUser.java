@@ -1,13 +1,17 @@
 package de.lightfall.core.api.usermanager;
 
+import co.aikar.commands.MessageType;
 import de.dytanic.cloudnet.common.concurrent.ITask;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
+import de.lightfall.core.api.IMessageKeyProvider;
 
 import java.util.UUID;
 
-public interface CloudUser {
+public interface ICloudUser {
+
+    public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements);
 
     /**
      *
@@ -70,4 +74,11 @@ public interface CloudUser {
      * @return UUID of the current player
      */
     public UUID getUuid();
+
+    /**
+     * Return if the player is online in the current service
+     *
+     * @return boolean
+     */
+    public boolean isOnline();
 }
