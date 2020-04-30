@@ -1,7 +1,7 @@
 package de.lightfall.core.bungee.usermanager;
 
-import de.lightfall.core.api.usermanager.CloudUser;
-import de.lightfall.core.api.usermanager.UserManager;
+import de.lightfall.core.api.usermanager.ICloudUser;
+import de.lightfall.core.api.usermanager.IUserManager;
 import de.lightfall.core.bungee.MainBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BungeeUserManager implements UserManager, Listener {
+public class BungeeUserManager implements IUserManager, Listener {
 
     private MainBungee plugin;
 
@@ -58,7 +58,7 @@ public class BungeeUserManager implements UserManager, Listener {
     }
 
     @Override
-    public CloudUser getUser(UUID uuid) {
+    public ICloudUser getUser(UUID uuid) {
         final BungeeCloudUser bungeeCloudUser = this.userMap.get(uuid);
         if (bungeeCloudUser != null)
             return bungeeCloudUser;

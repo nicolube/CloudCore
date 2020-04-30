@@ -5,9 +5,8 @@ import co.aikar.commands.annotation.*;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
-import net.md_5.bungee.api.ChatColor;
+import de.lightfall.core.api.CoreMessageKeys;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
 
 
 @CommandAlias("killtask")
@@ -22,12 +21,12 @@ public class KillTaskCommand extends BaseCommand {
     public void onDefault(CommandSender sender, GroupConfiguration groupConfiguration) {
         CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServicesByGroupAsync(groupConfiguration.getName()).onComplete(serviceInfoSnapshots -> {
             if (serviceInfoSnapshots.isEmpty()) {
-                sender.sendMessage(new TextComponent("§cEs sind keine Server dieser Gruppe online!"));
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.CMD_KILL_TASK_NO_GROUP);
                 return;
             }
             for (ServiceInfoSnapshot serviceInfoSnapshot : serviceInfoSnapshots) {
                 CloudNetDriver.getInstance().getCloudServiceProvider(serviceInfoSnapshot).stopAsync();
-                sender.sendMessage(new TextComponent("§7Gruppe wird gestoppt!"));
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.CMD_KILL_TASK_STOPPED);
             }
         });
     }

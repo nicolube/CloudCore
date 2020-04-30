@@ -1,16 +1,18 @@
 package de.lightfall.core.api;
 
 import com.j256.ormlite.support.ConnectionSource;
-import de.lightfall.core.api.usermanager.UserManager;
+import de.lightfall.core.api.usermanager.IUserManager;
+
+import java.util.logging.Logger;
 
 public interface CoreAPI {
 
     /**
-     * Gets the current {@link UserManager} singleton
+     * Gets the current {@link IUserManager} singleton
      *
      * @return you the current instance of the user manager.
      */
-    public UserManager getUserManager();
+    public IUserManager getUserManager();
 
     /**
      * Gets the current {@link ConnectionSource} singleton
@@ -18,6 +20,14 @@ public interface CoreAPI {
      * @return you the current databaseConnection.
      */
     public ConnectionSource getConnectionSource();
+
+
+    /**
+     * Gets the current {@link IMessageProvider} singleton
+     *
+     * @return you the current messagesProvider.
+     */
+    public IMessageProvider getMessageProvider();
 
     /**
      * Gets the current {@link CoreAPI} singleton

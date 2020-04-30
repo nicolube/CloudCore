@@ -1,7 +1,7 @@
 package de.lightfall.core.bukkit.usermanager;
 
-import de.lightfall.core.api.usermanager.CloudUser;
-import de.lightfall.core.api.usermanager.UserManager;
+import de.lightfall.core.api.usermanager.ICloudUser;
+import de.lightfall.core.api.usermanager.IUserManager;
 import de.lightfall.core.bukkit.MainBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BukkitUserManager implements UserManager, Listener {
+public class BukkitUserManager implements IUserManager, Listener {
 
     private final MainBukkit plugin;
     private Map<UUID, BukkitCloudUser> userMap;
@@ -51,7 +51,7 @@ public class BukkitUserManager implements UserManager, Listener {
     }
 
     @Override
-    public CloudUser getUser(UUID uuid) {
+    public ICloudUser getUser(UUID uuid) {
         final BukkitCloudUser bukkitCloudUser = this.userMap.get(uuid);
         if (bukkitCloudUser != null)
             return bukkitCloudUser;

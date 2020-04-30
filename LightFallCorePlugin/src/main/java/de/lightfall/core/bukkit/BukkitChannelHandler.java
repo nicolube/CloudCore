@@ -51,12 +51,11 @@ public class BukkitChannelHandler extends ChannelHandler {
             });
             return;
         }
-        if (document instanceof BukkitPlayerSendMessageDocument) {
-            BukkitPlayerSendMessageDocument messageDocument = (BukkitPlayerSendMessageDocument) document;
-            if (Bukkit.getPlayer(messageDocument.getUuid()) == null || Bukkit.getPlayer(messageDocument.getUuid()).isOnline()) {
-                return;
-            }
-            Bukkit.getPlayer(messageDocument.getUuid()).sendMessage(messageDocument.isTranslateAlternateColorCodes() ? ChatColor.translateAlternateColorCodes('?', messageDocument.getMessage()) : messageDocument.getMessage());
+        if (document instanceof MessageDocument) {
+            MessageDocument messageDocument = (MessageDocument) document;
+            final Player player = Bukkit.getPlayer(messageDocument.getUuid());
+            if (player == null || !player.isOnline()) return;
+            this.plugin.getCommandManager().getCommandIssuer(player).sendMessage(messageDocument.getType(), messageDocument.getMessageKey(), messageDocument.getReplacements());
             return;
         }
         if (document instanceof ConfigDocument) {
