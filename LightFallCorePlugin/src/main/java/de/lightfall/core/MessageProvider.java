@@ -66,7 +66,6 @@ public class MessageProvider implements IMessageProvider {
                 queried.forEach(messageModel -> {
                     for (IMessageKeyProvider key : keys) {
                         if (key.getMessageKey().getKey().equals(messageModel.getKey())) {
-                            logger.info("Found");
                             mappedMessages.put(key, messageModel.getMessage());
                             break;
                         }
