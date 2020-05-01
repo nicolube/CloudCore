@@ -4,7 +4,7 @@ import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.logger.LocalLog;
-import de.lightfall.core.api.CoreMessageKeys;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.MessageProvider;
 import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.api.Util;

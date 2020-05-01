@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
-import de.lightfall.core.api.CoreMessageKeys;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.bungee.MainBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

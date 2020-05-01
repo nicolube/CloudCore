@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.*;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
-import de.lightfall.core.api.CoreMessageKeys;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import net.md_5.bungee.api.CommandSender;
 
 

@@ -1,4 +1,4 @@
-package de.lightfall.core.api;
+package de.lightfall.core.api.message;
 
 import java.util.ResourceBundle;
 

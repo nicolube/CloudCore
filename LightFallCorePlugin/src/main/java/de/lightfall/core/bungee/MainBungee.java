@@ -6,14 +6,14 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.logger.LocalLog;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
-import de.lightfall.core.api.CoreMessageKeys;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.MessageProvider;
 import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
-import de.lightfall.core.bungee.commands.TestCommand;
+import de.lightfall.core.bungee.commands.KillTaskCommand;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -113,8 +113,8 @@ public class MainBungee extends Plugin implements CoreAPI {
 
         getLogger().info("Registering commands...");
         // Todo remove Test command before release!
-        this.commandManager.registerCommand(new TestCommand(this));
-        //this.commandManager.registerCommand(new KillTaskCommand());
+        //this.commandManager.registerCommand(new TestCommand(this));
+        this.commandManager.registerCommand(new KillTaskCommand());
     }
 
     public void onConfigure(Config config) {

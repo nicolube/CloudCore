@@ -7,7 +7,7 @@ import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
-import de.lightfall.core.api.IMessageKeyProvider;
+import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.MessageDocument;
 import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
@@ -31,13 +31,6 @@ public class BungeeCloudUser implements ICloudUser {
         this.uuid = uuid;
     }
 
-    @Override
-    public void moveToPlayerTeleport(UUID uuid) {
-        moveToPlayer(uuid).onComplete(player -> {
-            ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(player.getConnectedService().getUniqueId());
-            ChannelHandler.send(cloudService, new TeleportDocument(this.uuid, uuid));
-        });
-    }
 
     @Override
     public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements) {
@@ -46,6 +39,14 @@ public class BungeeCloudUser implements ICloudUser {
             return;
         }
         ChannelHandler.send(new MessageDocument(this.uuid, type, key, replacements));
+    }
+
+    @Override
+    public void moveToPlayerTeleport(UUID uuid) {
+        moveToPlayer(uuid).onComplete(player -> {
+            ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(player.getConnectedService().getUniqueId());
+            ChannelHandler.send(cloudService, new TeleportDocument(this.uuid, uuid));
+        });
     }
 
     @Override

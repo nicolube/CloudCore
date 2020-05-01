@@ -8,7 +8,6 @@ import de.dytanic.cloudnet.driver.network.protocol.Packet;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.wrapper.Wrapper;
-import de.lightfall.core.api.MessageChannels;
 import de.lightfall.core.api.channelhandeler.documents.Document;
 import lombok.SneakyThrows;
 

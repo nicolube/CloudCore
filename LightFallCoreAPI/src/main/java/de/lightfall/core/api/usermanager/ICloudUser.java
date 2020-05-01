@@ -5,16 +5,22 @@ import de.dytanic.cloudnet.common.concurrent.ITask;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
-import de.lightfall.core.api.IMessageKeyProvider;
+import de.lightfall.core.api.message.IMessageKeyProvider;
 
 import java.util.UUID;
 
 public interface ICloudUser {
 
+    /**
+     * Send a message to the player via a message kay you provided.
+     *
+     * @param type
+     * @param key
+     * @param replacements "key1", "value1", "key2", "value2"...
+     */
     public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements);
 
     /**
-     *
      * Moves the player to the server of a anther player and returns the
      * NetworkServiceInfo of the server where the player get moved to.
      *

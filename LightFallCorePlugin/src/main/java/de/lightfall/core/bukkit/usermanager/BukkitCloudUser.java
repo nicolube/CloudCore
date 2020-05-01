@@ -7,7 +7,7 @@ import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
-import de.lightfall.core.api.IMessageKeyProvider;
+import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.MessageDocument;
 import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;

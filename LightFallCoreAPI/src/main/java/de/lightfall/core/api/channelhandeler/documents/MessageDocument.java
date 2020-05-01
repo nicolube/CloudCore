@@ -2,8 +2,7 @@ package de.lightfall.core.api.channelhandeler.documents;
 
 
 import co.aikar.commands.MessageType;
-import de.lightfall.core.api.IMessageKeyProvider;
-import lombok.AllArgsConstructor;
+import de.lightfall.core.api.message.IMessageKeyProvider;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

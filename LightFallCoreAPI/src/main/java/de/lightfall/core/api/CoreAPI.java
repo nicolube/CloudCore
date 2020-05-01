@@ -1,9 +1,8 @@
 package de.lightfall.core.api;
 
 import com.j256.ormlite.support.ConnectionSource;
+import de.lightfall.core.api.message.IMessageProvider;
 import de.lightfall.core.api.usermanager.IUserManager;
-
-import java.util.logging.Logger;
 
 public interface CoreAPI {
 
