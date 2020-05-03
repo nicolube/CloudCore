@@ -12,9 +12,13 @@
     <artifactId>LightFallCoreAPI</artifactId>
     <distributionManagement>
         <snapshotRepository>
-            <id>lightfall-snapshots</id>
+            <id>lightfall</id>
             <url>https://nexus.lightfall.de/repository/maven-snapshots/</url>
         </snapshotRepository>
+        <repository>
+            <id>lightfall</id>
+            <url>https://nexus.lightfall.de/repository/maven-releases/</url>
+        </repository>
     </distributionManagement>
     <build>
         <plugins>
