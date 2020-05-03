@@ -14,8 +14,8 @@ public interface ICloudUser {
     /**
      * Send a message to the player via a message kay you provided.
      *
-     * @param type
-     * @param key
+     * @param type {@link MessageType}
+     * @param key {@link IMessageKeyProvider}
      * @param replacements "key1", "value1", "key2", "value2"...
      */
     public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements);
