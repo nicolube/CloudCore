@@ -12,7 +12,6 @@ import de.lightfall.core.api.channelhandeler.documents.MessageDocument;
 import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
 import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.api.usermanager.ICloudUser;
-import de.lightfall.core.bungee.MainBungee;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -23,8 +22,12 @@ public abstract class CloudUser implements ICloudUser {
     @Getter
     private final UUID uuid;
 
-    public CloudUser(UUID uuid) {
+    @Getter
+    private final  long databaseId;
+
+    public CloudUser(UUID uuid, long databaseId) {
         this.uuid = uuid;
+        this.databaseId = databaseId;
     }
 
     @Override

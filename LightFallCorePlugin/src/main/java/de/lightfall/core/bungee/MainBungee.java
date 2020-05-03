@@ -2,19 +2,24 @@ package de.lightfall.core.bungee;
 
 import co.aikar.commands.BungeeCommandManager;
 import co.aikar.commands.MessageType;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.logger.LocalLog;
+import com.j256.ormlite.table.TableUtils;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
-import de.lightfall.core.api.message.CoreMessageKeys;
+import de.lightfall.core.InternalCoreAPI;
 import de.lightfall.core.MessageProvider;
-import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.commands.KillTaskCommand;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
+import de.lightfall.core.models.UserInfoModel;
+import de.lightfall.core.models.UserModeInfoModel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
@@ -27,7 +32,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 
-public class MainBungee extends Plugin implements CoreAPI {
+public class MainBungee extends Plugin implements InternalCoreAPI {
 
     @Getter
     private BungeeUserManager userManager;
@@ -43,11 +48,23 @@ public class MainBungee extends Plugin implements CoreAPI {
     private boolean enabled = false;
     @Getter
     private static MainBungee instance;
+    @Getter
+    private Dao<UserInfoModel, Long> playerDao;
+    @Getter
+    private Dao<UserModeInfoModel, Long> playerModeDao;
 
     @Override
+    @SneakyThrows
     public void onLoad() {
+        getLogger().info(Util.getLogo());
         getLogger().info("Create channel handler executor...");
         this.channelHandler = new BungeeChannelHandler(this);
+
+        // This is very sketchy
+        final Field coreInstance = Util.class.getDeclaredField("coreInstance");
+        coreInstance.setAccessible(true);
+        coreInstance.set(null, this);
+        this.instance = this;
 
     }
 
@@ -55,12 +72,6 @@ public class MainBungee extends Plugin implements CoreAPI {
     @SneakyThrows
     public void onEnable() {
         getLogger().info(Util.getLogo());
-
-        // This is very sketchy
-        final Field coreInstance = Util.class.getDeclaredField("coreInstance");
-        coreInstance.setAccessible(true);
-        coreInstance.set(null, this);
-        this.instance = this;
 
         ChannelHandler.send(new ConfigRequestDocument());
 
@@ -73,9 +84,15 @@ public class MainBungee extends Plugin implements CoreAPI {
     @SneakyThrows
     public void configure(Config config) {
         getLogger().info("Connect to database...");
+        System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "INFO");
+
         this.connectionSource = new JdbcConnectionSource(this.config.getDatabase().getUrl(),
                 this.config.getDatabase().getUser(), this.config.getDatabase().getPassword());
-        System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "INFO");
+
+        this.playerDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
+        this.playerModeDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
+        TableUtils.createTableIfNotExists(this.connectionSource, UserInfoModel.class);
+        TableUtils.createTableIfNotExists(this.connectionSource, UserModeInfoModel.class);
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);
@@ -121,4 +138,7 @@ public class MainBungee extends Plugin implements CoreAPI {
         this.config = config;
         if (enabled) configure(config);
     }
+
+    @Override
+    public native void setMode(boolean mode);
 }

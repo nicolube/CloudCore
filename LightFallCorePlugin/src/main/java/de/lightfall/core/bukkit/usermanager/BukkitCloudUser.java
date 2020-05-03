@@ -14,8 +14,8 @@ public class BukkitCloudUser extends CloudUser {
     private final Player player;
     private final BukkitUserManager manager;
 
-    public BukkitCloudUser(Player player, BukkitUserManager manager) {
-        super(player.getUniqueId());
+    public BukkitCloudUser(Player player, long databaseId, BukkitUserManager manager) {
+        super(player.getUniqueId(), databaseId);
         this.player = player;
         this.manager = manager;
     }

@@ -7,6 +7,13 @@ import de.lightfall.core.api.usermanager.IUserManager;
 public interface CoreAPI {
 
     /**
+     * Setts the Mode if you want to be able to access IPayerModeInfo
+     *
+     * @param mode
+     */
+    public void setMode(boolean mode);
+
+    /**
      * Gets the current {@link IUserManager} singleton
      *
      * @return you the current instance of the user manager.
