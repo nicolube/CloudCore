@@ -61,7 +61,9 @@ public class BungeeUserManager extends UserManager implements Listener {
     public void onPostLogin(PostLoginEvent event) {
         final ProxiedPlayer player = event.getPlayer();
         event.getPlayer().getLocale();
-        this.userMap.get(player.getUniqueId()).setPlayer(player);
+        final BungeeCloudUser bungeeCloudUser = this.userMap.get(player.getUniqueId());
+        bungeeCloudUser.setPlayer(player);
+        bungeeCloudUser.setRealName(player.getName());
     }
 
     @EventHandler

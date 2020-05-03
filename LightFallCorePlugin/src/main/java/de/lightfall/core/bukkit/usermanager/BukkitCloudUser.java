@@ -15,7 +15,7 @@ public class BukkitCloudUser extends CloudUser {
     private final BukkitUserManager manager;
 
     public BukkitCloudUser(Player player, long databaseId, BukkitUserManager manager) {
-        super(player.getUniqueId(), databaseId);
+        super(player.getUniqueId(), player.getName(), databaseId);
         this.player = player;
         this.manager = manager;
     }
@@ -32,5 +32,10 @@ public class BukkitCloudUser extends CloudUser {
     @Override
     public boolean isOnline() {
         return this.player != null && this.player.isOnline();
+    }
+
+    @Override
+    public String getName() {
+        return player.getName();
     }
 }

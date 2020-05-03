@@ -87,4 +87,18 @@ public interface ICloudUser {
      * @return boolean
      */
     public boolean isOnline();
+
+    /**
+     * Returns name of CloudUser
+     *
+     * @return name of CloudUser
+     */
+    public String getName();
+
+    /**
+     * Returns real name of CloudUser
+     *
+     * @return real name of CloudUser
+     */
+    public String getRealName();
 }

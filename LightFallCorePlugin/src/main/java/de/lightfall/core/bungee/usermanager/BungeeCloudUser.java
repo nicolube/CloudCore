@@ -17,7 +17,7 @@ public class BungeeCloudUser extends CloudUser {
     private ProxiedPlayer player;
 
     public BungeeCloudUser(UUID uuid, long databaseId) {
-        super(uuid, databaseId);
+        super(uuid, null, databaseId);
     }
 
     @Override
@@ -33,4 +33,15 @@ public class BungeeCloudUser extends CloudUser {
     public boolean isOnline() {
         return this.player != null && this.player.isConnected();
     }
+
+    protected void setRealName(String name) {
+        super.realName = name;
+    }
+
+    @Override
+    public String getName() {
+        return this.player.getName();
+    }
+
+
 }

@@ -21,12 +21,14 @@ public abstract class CloudUser implements ICloudUser {
 
     @Getter
     private final UUID uuid;
-
+    @Getter
+    protected String realName;
     @Getter
     private final  long databaseId;
 
-    public CloudUser(UUID uuid, long databaseId) {
+    public CloudUser(UUID uuid, String realName, long databaseId) {
         this.uuid = uuid;
+        this.realName = realName;
         this.databaseId = databaseId;
     }
 
