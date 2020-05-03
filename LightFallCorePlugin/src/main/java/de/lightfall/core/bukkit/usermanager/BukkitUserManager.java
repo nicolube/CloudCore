@@ -1,5 +1,6 @@
 package de.lightfall.core.bukkit.usermanager;
 
+import de.lightfall.core.api.bukkit.events.PlayerLoginSuccessEvent;
 import de.lightfall.core.api.usermanager.ICloudUser;
 import de.lightfall.core.api.usermanager.IUserManager;
 import de.lightfall.core.bukkit.MainBukkit;
@@ -62,6 +63,7 @@ public class BukkitUserManager implements IUserManager, Listener {
                 this.userMap.put(player.getUniqueId(), bukkitCloudUser);
                 if (this.plugin.getMode() != null)
                     this.plugin.getPlayerModeDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
+                Bukkit.getPluginManager().callEvent(new PlayerLoginSuccessEvent(event, bukkitCloudUser));
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

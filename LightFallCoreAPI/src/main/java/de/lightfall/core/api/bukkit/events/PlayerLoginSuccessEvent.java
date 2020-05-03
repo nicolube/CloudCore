@@ -4,17 +4,17 @@ import de.lightfall.core.api.usermanager.ICloudUser;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
-public class PlayerJoinSuccessEvent extends Event {
+public class PlayerLoginSuccessEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
     @Getter
-    private PlayerJoinEvent event;
+    private PlayerLoginEvent event;
     @Getter
     private ICloudUser cloudUser;
 
-    public PlayerJoinSuccessEvent(PlayerJoinEvent event, ICloudUser cloudUser) {
+    public PlayerLoginSuccessEvent(PlayerLoginEvent event, ICloudUser cloudUser) {
         this.event = event;
         this.cloudUser = cloudUser;
     }
