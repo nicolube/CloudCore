@@ -14,10 +14,10 @@ public class BukkitCloudUser extends CloudUser {
     private final Player player;
     private final BukkitUserManager manager;
 
-    public BukkitCloudUser(Player player, long databaseId, BukkitUserManager manager) {
-        super(player.getUniqueId(), player.getName(), databaseId);
+    public BukkitCloudUser(Player player, long databaseId, BukkitUserManager userManager) {
+        super(player.getUniqueId(), player.getName(), databaseId, userManager);
         this.player = player;
-        this.manager = manager;
+        this.manager = userManager;
     }
 
     @Override

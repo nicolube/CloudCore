@@ -15,6 +15,7 @@ import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bukkit.usermanager.BukkitUserManager;
+import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.models.UserModeInfoModel;
 import lombok.Getter;
@@ -45,6 +46,8 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     private Dao<UserInfoModel, Long> playerDao;
     @Getter
     private Dao<UserModeInfoModel, Long> playerModeDao;
+    @Getter
+    private Dao<PunishmentModel,Long> punishmentDao;
     @Getter
     private String mode;
 
@@ -80,8 +83,10 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
 
         this.playerDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
         this.playerModeDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
+        this.punishmentDao = DaoManager.createDao(this.connectionSource, PunishmentModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserInfoModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserModeInfoModel.class);
+        TableUtils.createTableIfNotExists(this.connectionSource, PunishmentModel.class);
 
         getLogger().info("Create Event based executor...");
         this.eventBasedExecutions = new EventBasedExecutions(this);

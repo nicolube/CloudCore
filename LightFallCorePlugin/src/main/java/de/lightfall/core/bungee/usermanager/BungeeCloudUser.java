@@ -16,8 +16,8 @@ public class BungeeCloudUser extends CloudUser {
     @Getter @Setter(value = AccessLevel.PROTECTED)
     private ProxiedPlayer player;
 
-    public BungeeCloudUser(UUID uuid, long databaseId) {
-        super(uuid, null, databaseId);
+    public BungeeCloudUser(UUID uuid, long databaseId, BungeeUserManager userManager) {
+        super(uuid, null, databaseId, userManager);
     }
 
     @Override

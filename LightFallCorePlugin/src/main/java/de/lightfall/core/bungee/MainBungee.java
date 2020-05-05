@@ -17,7 +17,10 @@ import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.commands.KillTaskCommand;
+import de.lightfall.core.bungee.commands.TestCommand;
+import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
+import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.models.UserModeInfoModel;
 import lombok.Getter;
@@ -52,6 +55,8 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     private Dao<UserInfoModel, Long> playerDao;
     @Getter
     private Dao<UserModeInfoModel, Long> playerModeDao;
+    @Getter
+    private Dao<PunishmentModel,Long> punishmentDao;
 
     @Override
     @SneakyThrows
@@ -84,15 +89,17 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     @SneakyThrows
     public void configure(Config config) {
         getLogger().info("Connect to database...");
-        System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "INFO");
+        // System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "INFO");
 
         this.connectionSource = new JdbcConnectionSource(this.config.getDatabase().getUrl(),
                 this.config.getDatabase().getUser(), this.config.getDatabase().getPassword());
 
         this.playerDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
         this.playerModeDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
+        this.punishmentDao = DaoManager.createDao(this.connectionSource, PunishmentModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserInfoModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserModeInfoModel.class);
+        TableUtils.createTableIfNotExists(this.connectionSource, PunishmentModel.class);
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);
@@ -105,10 +112,11 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
             CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
             return groups;
         });
-        this.commandManager.getCommandContexts().registerContext(GroupConfiguration.class, context -> {
-            return CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfiguration(context.popFirstArg());
-        });
+        this.commandManager.getCommandContexts().registerContext(GroupConfiguration.class, context ->
+                CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfiguration(context.popFirstArg()));
+        this.commandManager.getCommandContexts().registerIssuerOnlyContext(BungeeCloudUser.class, ioc -> this.userManager.getUser(ioc.getPlayer().getUniqueId()));
 
+        getLogger().info("Configure ChatColor...");
         config.getChatColorConfig().forEach((t, c) -> {
             final ChatColor[] chatColors = new ChatColor[c.length];
             for (int i = 0; i < c.length; i++) chatColors[i] = ChatColor.valueOf(c[i].toUpperCase());
@@ -130,8 +138,9 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
 
         getLogger().info("Registering commands...");
         // Todo remove Test command before release!
-        //this.commandManager.registerCommand(new TestCommand(this));
+        this.commandManager.registerCommand(new TestCommand(this));
         this.commandManager.registerCommand(new KillTaskCommand());
+
     }
 
     public void onConfigure(Config config) {

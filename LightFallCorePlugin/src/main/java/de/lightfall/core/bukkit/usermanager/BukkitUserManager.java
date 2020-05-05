@@ -2,24 +2,29 @@ package de.lightfall.core.bukkit.usermanager;
 
 import de.lightfall.core.api.bukkit.events.PlayerLoginSuccessEvent;
 import de.lightfall.core.api.usermanager.ICloudUser;
-import de.lightfall.core.api.usermanager.IUserManager;
 import de.lightfall.core.bukkit.MainBukkit;
+import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.models.UserModeInfoModel;
+import de.lightfall.core.usermanager.UserManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class BukkitUserManager implements IUserManager, Listener {
+public class BukkitUserManager extends UserManager implements Listener {
 
     @Getter
     private final MainBukkit plugin;
@@ -38,8 +43,8 @@ public class BukkitUserManager implements IUserManager, Listener {
             final UUID uuid = p.getUniqueId();
             try {
                 final UserInfoModel playerInfo = this.plugin.getPlayerDao().queryBuilder().where().eq("uuid", uuid).queryForFirst();
-                System.out.println(playerInfo);
                 final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(p, playerInfo.getId(), this);
+                bukkitCloudUser.setLocale(playerInfo.getLocale());
                 this.userMap.put(uuid, bukkitCloudUser);
                 if (this.plugin.getMode() != null)
                     this.plugin.getPlayerModeDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
@@ -56,8 +61,7 @@ public class BukkitUserManager implements IUserManager, Listener {
             try {
                 final UserInfoModel playerInfo = this.plugin.getPlayerDao().queryBuilder().where().eq("uuid", player.getUniqueId()).queryForFirst();
                 final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(player, playerInfo.getId(), this);
-                final Locale locale = Locale.forLanguageTag(playerInfo.getLocale());
-                this.plugin.getCommandManager().setPlayerLocale(player, locale);
+                bukkitCloudUser.setLocale(playerInfo.getLocale());
 
                 if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
                 this.userMap.put(player.getUniqueId(), bukkitCloudUser);
@@ -75,8 +79,21 @@ public class BukkitUserManager implements IUserManager, Listener {
         this.userMap.remove(event.getPlayer().getUniqueId());
     }
 
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent event) {
+        final UUID uuid = event.getPlayer().getUniqueId();
+        final BukkitCloudUser user = this.getUser(uuid);
+        PunishmentModel activeMute = user.quarryUserInfo().getActiveMute();
+        if (activeMute == null && this.plugin.getMode() != null) {
+            activeMute = this.getUser(uuid).quarryUserModeInfo(this.plugin.getMode()).getActiveMute();
+        }
+        if (activeMute == null) return;
+        event.setCancelled(true);
+        // Todo add muted message
+    }
+
     @Override
-    public ICloudUser getUser(UUID uuid) {
+    public BukkitCloudUser getUser(UUID uuid) {
         final BukkitCloudUser bukkitCloudUser = this.userMap.get(uuid);
         if (bukkitCloudUser != null)
             return bukkitCloudUser;

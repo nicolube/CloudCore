@@ -2,21 +2,22 @@ package de.lightfall.core.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import de.lightfall.core.api.punishments.IUserModeInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@DatabaseTable(tableName = "player_mode_info")
+@DatabaseTable(tableName = "user_mode_info")
 @NoArgsConstructor
-public class UserModeInfoModel {
+public class UserModeInfoModel implements IUserModeInfo {
 
     @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true)
-    private UserInfoModel playerInfo;
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, index = true)
+    private UserInfoModel userInfo;
 
-    @DatabaseField(width = 16, uniqueCombo = true)
+    @DatabaseField(width = 16, uniqueCombo = true, index = true)
     private String mode;
 
     @DatabaseField(foreign = true)
@@ -25,8 +26,8 @@ public class UserModeInfoModel {
     @DatabaseField(foreign = true)
     private PunishmentModel activeMute;
 
-    public UserModeInfoModel(UserInfoModel playerInfo, String mode) {
-        this.playerInfo = playerInfo;
+    public UserModeInfoModel(UserInfoModel userInfo, String mode) {
+        this.userInfo = userInfo;
         this.mode = mode;
     }
 

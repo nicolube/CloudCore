@@ -6,10 +6,20 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
+import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.api.CoreAPI;
+import de.lightfall.core.api.punishments.PunishmentType;
 import de.lightfall.core.bungee.MainBungee;
+import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
+import de.lightfall.core.models.PunishmentModel;
+import de.lightfall.core.models.UserInfoModel;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("test")
 @CommandPermission("core.test")
@@ -30,5 +40,23 @@ public class TestCommand extends BaseCommand {
     public void onMessages() {
         getCurrentCommandIssuer().sendInfo(CoreMessageKeys.CMD_KILL_TASK_NO_GROUP);
         getCurrentCommandIssuer().sendInfo(CoreMessageKeys.CMD_KILL_TASK_STOPPED);
+    }
+
+    @Subcommand("ban")
+    public void onBan(BungeeCloudUser sender, OnlinePlayer player) {
+        final BungeeCloudUser user = this.plugin.getUserManager().getUser(player.getPlayer().getUniqueId());
+        CompletableFuture.runAsync(() -> {
+            final UserInfoModel userInfoModel = user.quarryUserInfo();
+            final PunishmentModel punishmentModel = new PunishmentModel(userInfoModel, null, sender.quarryUserInfo(),
+                    PunishmentType.TEMP_BAN, Date.from(new Date().toInstant().plusSeconds(60)), "&cTest");
+
+            try {
+                userInfoModel.setActiveBan(this.plugin.getPunishmentDao().createIfNotExists(punishmentModel));
+                this.plugin.getPlayerDao().update(userInfoModel);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            BridgePlayerManager.getInstance().proxyKickPlayer(user.getCloudPlayer(), "Test");
+        });
     }
 }

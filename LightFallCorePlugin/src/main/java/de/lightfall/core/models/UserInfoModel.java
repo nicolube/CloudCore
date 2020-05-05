@@ -2,6 +2,7 @@ package de.lightfall.core.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import de.lightfall.core.api.punishments.IUserInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,20 +10,29 @@ import java.util.Locale;
 import java.util.UUID;
 
 @Data
-@DatabaseTable(tableName = "player_info")
+@DatabaseTable(tableName = "user_info")
 @NoArgsConstructor
-public class UserInfoModel {
+public class UserInfoModel implements IUserInfo {
 
     @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(canBeNull = false, unique = true)
+    @DatabaseField
+    private long teamspeak_id;
+
+    @DatabaseField
+    private long discord_id;
+
+    @DatabaseField
+    private long ontime;
+
+    @DatabaseField(canBeNull = false, unique = true, index = true)
     private UUID uuid;
 
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private PunishmentModel activeBan;
 
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private PunishmentModel activeMute;
 
     @DatabaseField(canBeNull = false, width = 7)

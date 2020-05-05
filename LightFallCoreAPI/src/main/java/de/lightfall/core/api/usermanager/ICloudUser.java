@@ -6,16 +6,22 @@ import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.lightfall.core.api.message.IMessageKeyProvider;
+import de.lightfall.core.api.punishments.IPunishment;
+import de.lightfall.core.api.punishments.IUserInfo;
+import de.lightfall.core.api.punishments.IUserModeInfo;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public interface ICloudUser {
 
     /**
      * Send a message to the player via a message kay you provided.
      *
-     * @param type {@link MessageType}
-     * @param key {@link IMessageKeyProvider}
+     * @param type         {@link MessageType}
+     * @param key          {@link IMessageKeyProvider}
      * @param replacements "key1", "value1", "key2", "value2"...
      */
     public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements);
@@ -101,4 +107,141 @@ public interface ICloudUser {
      * @return real name of CloudUser
      */
     public String getRealName();
+
+    /**
+     * Banns a user permanent.
+     *
+     * @param sender user who executed the punishment or null for console
+     * @param mode   mode name or null for global context
+     * @param reason why the user was punished
+     */
+    public void ban(ICloudUser sender, String mode, String reason);
+
+    /**
+     * Banns a user temporary.
+     *
+     * @param sender user who executed the punishment or null for console
+     * @param mode   mode name or null for global context
+     * @param length length of punishment in seconds
+     * @param reason why the user was punished
+     */
+    public void tempBan(ICloudUser sender, String mode, long length, String reason);
+
+    /**
+     * Unbanns a user.
+     *
+     * @param sender user who removed the punishment or null for console
+     * @param mode   mode name or null for global context
+     * @param reason why the punishment get removed
+     * @return CompletableFuture<Boolean> (async) if the user was punished
+     */
+    public CompletableFuture<Boolean> unBan(ICloudUser sender, String mode, String reason);
+
+    /**
+     * Mutes a user permanent.
+     *
+     * @param sender user who executed the punishment or null for console
+     * @param mode   mode name or null for global context
+     * @param reason why the user was punished
+     */
+    public void mute(ICloudUser sender, String mode, String reason);
+
+    /**
+     * Mutes a user temporary.
+     *
+     * @param sender user who executed the punishment or null for console
+     * @param mode   mode name or null for global context
+     * @param length length of punishment in seconds
+     * @param reason why the user was punished
+     */
+    public void tempMute(ICloudUser sender, String mode, long length, String reason);
+
+    /**
+     * Unbanns a user.
+     *
+     * @param sender user who removed the punishment or null for console
+     * @param mode   mode name or null for global context
+     * @param reason why the punishment get removed
+     * @return CompletableFuture<Boolean> (async) if the user was punished
+     */
+    public CompletableFuture unMute(ICloudUser sender, String mode, String reason);
+
+    /**
+     * Kicks a player.
+     *
+     * @param sender user who removed the punishment or null for console
+     * @param mode   mode name or null for global context
+     * @param reason why the user was punished
+     */
+    public void kick(ICloudUser sender, String mode, String reason);
+
+    /**
+     * Setts the locale of the user.
+     *
+     * @param locale {@link Locale#GERMAN} or {@link Locale#ENGLISH} are Supported
+     */
+    public void setLocale(Locale locale);
+
+    /**
+     * Returns the current locale of the user
+     *
+     * @return Locale
+     */
+    public Locale getLocale();
+
+
+    /**
+     * Returns current player, it can be either
+     * {@link org.bukkit.entity.Player} or {@link net.md_5.bungee.api.connection.ProxiedPlayer}
+     * Note: You cannot use this with offline load
+     *
+     * @param <T> valid Player type
+     * @return valid Player
+     */
+    public <T> T getPlayer();
+
+    /**
+     * Quarry {@link IUserInfo} for current {@link ICloudUser}
+     *
+     * @return IUserInfo
+     */
+    public IUserInfo quarryUserInfo();
+
+    /**
+     * Quarry {@link IUserInfo} async for current {@link ICloudUser}
+     *
+     * @return CompletableFuture<IUserInfo>
+     */
+    public CompletableFuture<IUserInfo> quarryUserInfoAsync();
+
+    /**
+     * Quarry {@link IUserModeInfo} for current {@link ICloudUser}
+     *
+     * @return IUserModeInfo
+     */
+    public IUserModeInfo quarryUserModeInfo(String mode);
+
+    /**
+     * Quarry {@link IUserModeInfo} async for current {@link ICloudUser}
+     *
+     * @return CompletableFuture<IUserModeInfo>
+     */
+    public CompletableFuture<IUserModeInfo> quarryUserModeInfoAsync(String mode);
+
+    /**
+     * Quarry list of {@link IPunishment} for current {@link ICloudUser}
+     * ordered by creation day
+     *
+     * @return CompletableFuture<IUserModeInfo>
+     */
+    public List<? extends IPunishment> quarryPunishments(String mode);
+
+    /**
+     * Quarry list of {@link IPunishment} async for current {@link ICloudUser}
+     * ordered by creation day
+     *
+     * @return CompletableFuture<List < ? extends IPunishment>>
+     */
+    public CompletableFuture<List<? extends IPunishment>> quarryPunishmentsAsync(String mode);
+
 }
