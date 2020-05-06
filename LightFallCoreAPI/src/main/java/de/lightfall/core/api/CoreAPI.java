@@ -1,11 +1,17 @@
 package de.lightfall.core.api;
 
 import com.j256.ormlite.support.ConnectionSource;
+import de.lightfall.core.api.message.IMessageProvider;
 import de.lightfall.core.api.usermanager.IUserManager;
 
-import java.util.logging.Logger;
-
 public interface CoreAPI {
+
+    /**
+     * Setts the Mode if you want to be able to access IPayerModeInfo
+     *
+     * @param mode
+     */
+    public void setMode(boolean mode);
 
     /**
      * Gets the current {@link IUserManager} singleton

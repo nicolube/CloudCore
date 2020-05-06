@@ -1,10 +1,10 @@
-package de.lightfall.core.api;
+package de.lightfall.core.api.message;
 
 import co.aikar.locales.MessageKey;
-import de.lightfall.core.api.IMessageKeyProvider;
+import de.lightfall.core.api.message.IMessageKeyProvider;
 import lombok.Getter;
 
-public enum  CoreMessageKeys implements IMessageKeyProvider {
+public enum CoreMessageKeys implements IMessageKeyProvider {
     PREFIX(false),
     CMD_KILL_TASK_NO_GROUP,
     CMD_KILL_TASK_STOPPED;

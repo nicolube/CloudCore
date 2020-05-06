@@ -13,7 +13,7 @@ import java.util.Locale;
 public class MessageModel {
 
     @DatabaseField(generatedId = true)
-    private int Integer;
+    private long id;
     @DatabaseField(uniqueCombo = true)
     private String key;
     @DatabaseField

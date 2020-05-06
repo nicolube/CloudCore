@@ -1,4 +1,4 @@
-package de.lightfall.core.api;
+package de.lightfall.core.api.channelhandeler;
 
 import lombok.Getter;
 

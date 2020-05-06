@@ -1,14 +1,13 @@
 package de.lightfall.core;
 
 import co.aikar.commands.CommandManager;
-import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import de.lightfall.core.api.IMessageKeyProvider;
-import de.lightfall.core.api.IMessageProvider;
+import de.lightfall.core.api.message.IMessageKeyProvider;
+import de.lightfall.core.api.message.IMessageProvider;
 import de.lightfall.core.models.MessageModel;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
 
 public class MessageProvider implements IMessageProvider {
 
-    private final Dao<MessageModel, Integer> messageDao;
+    private final Dao<MessageModel, Long> messageDao;
     private final CommandManager commandManager;
     private Logger logger;
 
@@ -67,7 +66,6 @@ public class MessageProvider implements IMessageProvider {
                 queried.forEach(messageModel -> {
                     for (IMessageKeyProvider key : keys) {
                         if (key.getMessageKey().getKey().equals(messageModel.getKey())) {
-                            logger.info("Found");
                             mappedMessages.put(key, messageModel.getMessage());
                             break;
                         }
@@ -76,6 +74,7 @@ public class MessageProvider implements IMessageProvider {
                 final String prefixKey = mappedMessages.remove(keyProvider);
                 final String prefix = ChatColor.translateAlternateColorCodes('&', prefixKey);
                 mappedMessages.forEach((k, v) -> {
+                    v = ChatColor.translateAlternateColorCodes('&', v);
                     if (k.hasPrefix()) {
                         this.commandManager.getLocales().addMessage(locale, k, prefix + v);
                         return;
