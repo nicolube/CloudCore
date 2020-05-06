@@ -14,10 +14,10 @@ public class UserModeInfoModel implements IUserModeInfo {
     @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, index = true)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true)
     private UserInfoModel userInfo;
 
-    @DatabaseField(width = 16, uniqueCombo = true, index = true)
+    @DatabaseField(width = 16, uniqueCombo = true)
     private String mode;
 
     @DatabaseField(foreign = true)

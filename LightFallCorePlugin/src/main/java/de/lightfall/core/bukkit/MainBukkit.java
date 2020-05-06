@@ -19,7 +19,6 @@ import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.models.UserModeInfoModel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,9 +42,9 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     @Getter
     private MessageProvider messageProvider;
     @Getter
-    private Dao<UserInfoModel, Long> playerDao;
+    private Dao<UserInfoModel, Long> userInfoDao;
     @Getter
-    private Dao<UserModeInfoModel, Long> playerModeDao;
+    private Dao<UserModeInfoModel, Long> userModeInfoDao;
     @Getter
     private Dao<PunishmentModel,Long> punishmentDao;
     @Getter
@@ -81,8 +80,8 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
         this.connectionSource = new JdbcConnectionSource(this.config.getDatabase().getUrl(),
                 this.config.getDatabase().getUser(), this.config.getDatabase().getPassword());
 
-        this.playerDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
-        this.playerModeDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
+        this.userInfoDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
+        this.userModeInfoDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
         this.punishmentDao = DaoManager.createDao(this.connectionSource, PunishmentModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserInfoModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserModeInfoModel.class);

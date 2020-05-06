@@ -26,7 +26,7 @@ public class UserInfoModel implements IUserInfo {
     @DatabaseField
     private long ontime;
 
-    @DatabaseField(canBeNull = false, unique = true, index = true)
+    @DatabaseField(canBeNull = false, unique = true)
     private UUID uuid;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)

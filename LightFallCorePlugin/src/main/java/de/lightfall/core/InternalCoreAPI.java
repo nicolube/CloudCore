@@ -9,9 +9,9 @@ import de.lightfall.core.models.UserModeInfoModel;
 
 public interface InternalCoreAPI extends CoreAPI {
 
-    public Dao<UserInfoModel, Long> getPlayerDao();
+    public Dao<UserInfoModel, Long> getUserInfoDao();
 
-    public Dao<UserModeInfoModel, Long> getPlayerModeDao();
+    public Dao<UserModeInfoModel, Long> getUserModeInfoDao();
 
     public Dao<PunishmentModel, Long> getPunishmentDao();
 

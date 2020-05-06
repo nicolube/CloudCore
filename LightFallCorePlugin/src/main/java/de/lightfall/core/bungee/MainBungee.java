@@ -5,7 +5,6 @@ import co.aikar.commands.MessageType;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.logger.LocalLog;
 import com.j256.ormlite.table.TableUtils;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
@@ -52,9 +51,9 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     @Getter
     private static MainBungee instance;
     @Getter
-    private Dao<UserInfoModel, Long> playerDao;
+    private Dao<UserInfoModel, Long> userInfoDao;
     @Getter
-    private Dao<UserModeInfoModel, Long> playerModeDao;
+    private Dao<UserModeInfoModel, Long> userModeInfoDao;
     @Getter
     private Dao<PunishmentModel,Long> punishmentDao;
 
@@ -94,19 +93,16 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         this.connectionSource = new JdbcConnectionSource(this.config.getDatabase().getUrl(),
                 this.config.getDatabase().getUser(), this.config.getDatabase().getPassword());
 
-        this.playerDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
-        this.playerModeDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
+        this.userInfoDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
+        this.userModeInfoDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
         this.punishmentDao = DaoManager.createDao(this.connectionSource, PunishmentModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserInfoModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, UserModeInfoModel.class);
         TableUtils.createTableIfNotExists(this.connectionSource, PunishmentModel.class);
 
-        getLogger().info("Starting user manager...");
-        this.userManager = new BungeeUserManager(this);
-        getProxy().getPluginManager().registerListener(this, this.userManager);
         getLogger().info("Starting command manager...");
         this.commandManager = new BungeeCommandManager(this);
-
+        this.commandManager.usePerIssuerLocale(true);
         this.commandManager.getCommandCompletions().registerAsyncCompletion("taskGroup", context -> {
             Set<String> groups = new HashSet<>();
             CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
@@ -141,6 +137,12 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         this.commandManager.registerCommand(new TestCommand(this));
         this.commandManager.registerCommand(new KillTaskCommand());
 
+        getLogger().info("Starting user manager...");
+        this.userManager = new BungeeUserManager(this);
+        getProxy().getPluginManager().registerListener(this, this.userManager);
+
+        // Todo Move this to config
+        Util.setBanFormat("&eReason:\n&7{0}\n&eBanned until\n&a{1}");
     }
 
     public void onConfigure(Config config) {

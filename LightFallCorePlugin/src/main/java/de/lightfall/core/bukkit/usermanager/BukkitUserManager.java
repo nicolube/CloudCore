@@ -1,7 +1,6 @@
 package de.lightfall.core.bukkit.usermanager;
 
 import de.lightfall.core.api.bukkit.events.PlayerLoginSuccessEvent;
-import de.lightfall.core.api.usermanager.ICloudUser;
 import de.lightfall.core.bukkit.MainBukkit;
 import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
@@ -19,7 +18,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -42,12 +40,12 @@ public class BukkitUserManager extends UserManager implements Listener {
         Bukkit.getOnlinePlayers().forEach(p -> {
             final UUID uuid = p.getUniqueId();
             try {
-                final UserInfoModel playerInfo = this.plugin.getPlayerDao().queryBuilder().where().eq("uuid", uuid).queryForFirst();
+                final UserInfoModel playerInfo = this.plugin.getUserInfoDao().queryBuilder().where().eq("uuid", uuid).queryForFirst();
                 final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(p, playerInfo.getId(), this);
-                bukkitCloudUser.setLocale(playerInfo.getLocale());
+                bukkitCloudUser.setLocale(playerInfo.getLocale(), false);
                 this.userMap.put(uuid, bukkitCloudUser);
                 if (this.plugin.getMode() != null)
-                    this.plugin.getPlayerModeDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
+                    this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -59,14 +57,14 @@ public class BukkitUserManager extends UserManager implements Listener {
         final Player player = event.getPlayer();
         CompletableFuture.runAsync(() -> {
             try {
-                final UserInfoModel playerInfo = this.plugin.getPlayerDao().queryBuilder().where().eq("uuid", player.getUniqueId()).queryForFirst();
+                final UserInfoModel playerInfo = this.plugin.getUserInfoDao().queryBuilder().where().eq("uuid", player.getUniqueId()).queryForFirst();
                 final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(player, playerInfo.getId(), this);
-                bukkitCloudUser.setLocale(playerInfo.getLocale());
+                bukkitCloudUser.setLocale(playerInfo.getLocale(), false);
 
                 if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
                 this.userMap.put(player.getUniqueId(), bukkitCloudUser);
                 if (this.plugin.getMode() != null)
-                    this.plugin.getPlayerModeDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
+                    this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
                 Bukkit.getPluginManager().callEvent(new PlayerLoginSuccessEvent(event, bukkitCloudUser));
             } catch (SQLException ex) {
                 ex.printStackTrace();

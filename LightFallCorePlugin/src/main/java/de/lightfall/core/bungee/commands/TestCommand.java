@@ -14,11 +14,11 @@ import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
-import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("test")
@@ -43,20 +43,17 @@ public class TestCommand extends BaseCommand {
     }
 
     @Subcommand("ban")
-    public void onBan(BungeeCloudUser sender, OnlinePlayer player) {
-        final BungeeCloudUser user = this.plugin.getUserManager().getUser(player.getPlayer().getUniqueId());
-        CompletableFuture.runAsync(() -> {
-            final UserInfoModel userInfoModel = user.quarryUserInfo();
-            final PunishmentModel punishmentModel = new PunishmentModel(userInfoModel, null, sender.quarryUserInfo(),
-                    PunishmentType.TEMP_BAN, Date.from(new Date().toInstant().plusSeconds(60)), "&cTest");
+    @CommandCompletion("@players")
+    public void onBan(BungeeCloudUser sender, OnlinePlayer player, String reason) {
+        CoreAPI.getInstance().getUserManager().getUser(player.getPlayer().getUniqueId()).ban(sender, null, reason);
+    }
 
-            try {
-                userInfoModel.setActiveBan(this.plugin.getPunishmentDao().createIfNotExists(punishmentModel));
-                this.plugin.getPlayerDao().update(userInfoModel);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            BridgePlayerManager.getInstance().proxyKickPlayer(user.getCloudPlayer(), "Test");
+    @Subcommand("unban")
+    @CommandCompletion("@players")
+    public void onUnBan(BungeeCloudUser sender, String username, String reason) {
+        BridgePlayerManager.getInstance().getOfflinePlayerAsync(username).onComplete((listITask, iCloudOfflinePlayers) -> {
+            final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
+            this.plugin.getUserManager().loadUser(uniqueId).unBan(sender, null, reason);
         });
     }
 }

@@ -19,10 +19,10 @@ public class PunishmentModel implements IPunishment {
     @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, index = true)
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private UserInfoModel userInfo;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, index = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private UserModeInfoModel userModeInfo;
 
     @DatabaseField(foreign = true)

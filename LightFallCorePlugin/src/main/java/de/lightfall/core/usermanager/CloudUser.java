@@ -23,7 +23,9 @@ import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.models.UserModeInfoModel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.Synchronized;
 import net.md_5.bungee.api.ChatColor;
 
 import java.sql.SQLException;
@@ -48,12 +50,11 @@ public abstract class CloudUser implements ICloudUser {
         this.realName = realName;
         this.databaseId = databaseId;
         this.userManager = userManager;
-        this.locale = Locale.getDefault();
     }
 
     @SneakyThrows
     public UserInfoModel quarryUserInfo() {
-        return this.userManager.getPlugin().getPlayerDao().queryForId(databaseId);
+        return this.userManager.getPlugin().getUserInfoDao().queryForId(databaseId);
     }
 
     public CompletableFuture<IUserInfo> quarryUserInfoAsync() {
@@ -62,7 +63,7 @@ public abstract class CloudUser implements ICloudUser {
 
     @SneakyThrows
     public UserModeInfoModel quarryUserModeInfo(String mode) {
-        return this.userManager.getPlugin().getPlayerModeDao().queryBuilder().where().eq("playerInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
+        return this.userManager.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("playerInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
     }
 
     public CompletableFuture<IUserModeInfo> quarryUserModeInfoAsync(String mode) {
@@ -141,28 +142,8 @@ public abstract class CloudUser implements ICloudUser {
         punish(sender, mode, PunishmentType.TEMP_BAN, length, reason);
     }
 
-    @SneakyThrows
     public CompletableFuture<Boolean> unBan(ICloudUser sender, String mode, String reason) {
-        return CompletableFuture.supplyAsync(() -> {
-            if (mode == null) {
-                final PunishmentModel punishmentModel = quarryUserInfo().getActiveBan();
-                if (punishmentModel == null)
-                    return false;
-                final UpdateBuilder<UserInfoModel, Long> updateBuilder = this.userManager.getPlugin().getPlayerDao().updateBuilder()
-                        .updateColumnValue("activeBan", null);
-                updateBuilder.where().idEq(this.databaseId);
-                updateBuilder.update();
-                return true;
-            }
-            final PunishmentModel punishmentModel = quarryUserModeInfo(mode).getActiveBan();
-            if (punishmentModel == null)
-                return false;
-            final UpdateBuilder<UserInfoModel, Long> updateBuilder = this.userManager.getPlugin().getPlayerDao().updateBuilder()
-                    .updateColumnValue("activeBan", null);
-            updateBuilder.where().idEq(this.databaseId).and().eq("mode", mode);
-            updateBuilder.update();
-            return true;
-        });
+        return unPunish(sender, PunishmentType.BAN, mode, reason);
     }
 
     public void mute(ICloudUser sender, String mode, String reason) {
@@ -173,36 +154,57 @@ public abstract class CloudUser implements ICloudUser {
         punish(sender, mode, PunishmentType.TEMP_BAN, length, reason);
     }
 
-    @SneakyThrows
-    public CompletableFuture<Boolean> unMute(ICloudUser iSender, String mode, String reason) {
-        CloudUser sender = (CloudUser) iSender;
-        return CompletableFuture.supplyAsync(() -> {
-            if (mode == null) {
-                final PunishmentModel punishmentModel = quarryUserInfo().getActiveMute();
-                if (punishmentModel == null)
-                    return false;
-                punishmentModel.unPunish(sender.quarryUserInfo(), new Date(), reason);
-                this.userManager.getPlugin().getPunishmentDao().update(punishmentModel);
-                final UpdateBuilder<UserInfoModel, Long> updateBuilder = this.userManager.getPlugin().getPlayerDao().updateBuilder()
-                        .updateColumnValue("activeMute", null);
-                updateBuilder.where().idEq(this.databaseId);
-                updateBuilder.update();
-                return true;
-            }
-            final PunishmentModel punishmentModel = quarryUserModeInfo(mode).getActiveMute();
-            if (punishmentModel == null)
-                return false;
-            punishmentModel.unPunish(sender.quarryUserInfo(), new Date(), reason);
-            final UpdateBuilder<UserInfoModel, Long> updateBuilder = this.userManager.getPlugin().getPlayerDao().updateBuilder()
-                    .updateColumnValue("activeMute", null);
-            updateBuilder.where().idEq(this.databaseId).and().eq("mode", mode);
-            updateBuilder.update();
-            return true;
-        });
+    public CompletableFuture<Boolean> unMute(ICloudUser sender, String mode, String reason) {
+        return unPunish(sender, PunishmentType.MUTE, mode, reason);
     }
 
     public void kick(ICloudUser sender, String mode, String reason) {
         punish(sender, mode, PunishmentType.KICK, 0, reason);
+    }
+
+
+    public CompletableFuture<Boolean> unPunish(ICloudUser iSender, PunishmentType type, String mode, String reason) {
+        CloudUser sender = (CloudUser) iSender;
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                PunishmentModel punishmentModel = null;
+                final UpdateBuilder<?, Long> updateBuilder;
+                final boolean isBan = type.equals(PunishmentType.BAN) || type.equals(PunishmentType.TEMP_BAN);
+                final boolean isMute = type.equals(PunishmentType.MUTE) || type.equals(PunishmentType.TEMP_MUTE);
+                if (mode == null) {
+                    if (isBan) {
+                        punishmentModel = quarryUserInfo().getActiveBan();
+                    } else if (isMute) {
+                        punishmentModel = quarryUserInfo().getActiveMute();
+                    }
+                    updateBuilder = this.userManager.getPlugin().getUserInfoDao().updateBuilder();
+                } else {
+                    if (isBan) {
+                        punishmentModel = quarryUserModeInfo(mode).getActiveBan();
+                    } else if (isMute) {
+                        punishmentModel = quarryUserModeInfo(mode).getActiveMute();
+                    }
+                    updateBuilder = this.userManager.getPlugin().getUserModeInfoDao().updateBuilder();
+                }
+                if (punishmentModel == null)
+                    return false;
+                String field = null;
+                if (isBan) {
+                    field = "activeBan_id";
+                } else if (isMute) {
+                    field = "activeMute_id";
+                }
+                punishmentModel.unPunish(sender.quarryUserInfo(), new Date(), reason);
+                this.userManager.getPlugin().getPunishmentDao().update(punishmentModel);
+                updateBuilder.updateColumnValue(field, null);
+                updateBuilder.where().idEq(this.databaseId);
+                updateBuilder.update();
+                return true;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                return false;
+            }
+        });
     }
 
     public void punish(ICloudUser iSender, String mode, PunishmentType type, long length, String reason) {
@@ -225,12 +227,12 @@ public abstract class CloudUser implements ICloudUser {
                 punishmentModel = plugin.getPunishmentDao().createIfNotExists(punishmentModel);
                 if (type.equals(PunishmentType.BAN) || type.equals(PunishmentType.TEMP_BAN)) {
                     if (mode == null) {
-                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getPlayerDao().updateBuilder().updateColumnValue("activeBan", punishmentModel);
-                        updateBuilder.where().idEq(userInfoModel.getId());
+                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getUserInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
+                        updateBuilder.where().idEq(this.databaseId);
                         updateBuilder.update();
                         BridgePlayerManager.getInstance().proxyKickPlayer(getCloudPlayer(), Util.formatBan(endDate, reason, this.locale));
                     } else {
-                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getPlayerModeDao().updateBuilder().updateColumnValue("activeMute", punishmentModel);
+                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getUserModeInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
                         updateBuilder.where().idEq(userModeInfoModel.getId()).and().eq("mode", mode);
                         updateBuilder.update();
                         // Todo send mode ban info to player (temporary solution)
@@ -240,11 +242,11 @@ public abstract class CloudUser implements ICloudUser {
                 }
                 if (type.equals(PunishmentType.MUTE) || type.equals(PunishmentType.TEMP_MUTE)) {
                     if (mode == null) {
-                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getPlayerDao().updateBuilder().updateColumnValue("activeBan", punishmentModel);
-                        updateBuilder.where().idEq(userInfoModel.getId());
+                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getUserInfoDao().updateBuilder().updateColumnValue("activeMute_id", punishmentModel.getId());
+                        updateBuilder.where().idEq(this.databaseId);
                         updateBuilder.update();
                     } else {
-                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getPlayerModeDao().updateBuilder().updateColumnValue("activeBan", punishmentModel);
+                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getUserModeInfoDao().updateBuilder().updateColumnValue("activeMute_id", punishmentModel.getId());
                         updateBuilder.where().idEq(userModeInfoModel.getId()).and().eq("mode", mode);
                         updateBuilder.update();
                     }
@@ -263,15 +265,25 @@ public abstract class CloudUser implements ICloudUser {
         });
     }
 
-    public void setLocale(String tag) {
-        setLocale(Locale.forLanguageTag(tag));
+    public void setLocale(@NonNull String tag, boolean update) {
+        setLocale(Locale.forLanguageTag(tag), update);
     }
 
-    public void setLocale(Locale locale) {
+    public void setLocale(@NonNull Locale locale, boolean update) {
         this.userManager.getPlugin().getCommandManager().setIssuerLocale(getPlayer(), locale);
         this.locale = locale;
+        if (!update) return;
+        CompletableFuture.runAsync(() -> {
+            try {
+                final UpdateBuilder<UserInfoModel, Long> updateBuilder = this.userManager.getPlugin().getUserInfoDao()
+                        .updateBuilder().updateColumnValue("locale", locale.getLanguage());
+                updateBuilder.where().idEq(this.databaseId);
+                updateBuilder.update();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
     }
 
     public abstract <T> T getPlayer();
-
 }

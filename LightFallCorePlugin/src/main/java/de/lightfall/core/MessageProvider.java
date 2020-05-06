@@ -74,6 +74,7 @@ public class MessageProvider implements IMessageProvider {
                 final String prefixKey = mappedMessages.remove(keyProvider);
                 final String prefix = ChatColor.translateAlternateColorCodes('&', prefixKey);
                 mappedMessages.forEach((k, v) -> {
+                    v = ChatColor.translateAlternateColorCodes('&', v);
                     if (k.hasPrefix()) {
                         this.commandManager.getLocales().addMessage(locale, k, prefix + v);
                         return;
