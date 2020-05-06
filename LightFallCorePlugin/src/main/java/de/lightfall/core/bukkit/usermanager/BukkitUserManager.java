@@ -81,9 +81,9 @@ public class BukkitUserManager extends UserManager implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         final UUID uuid = event.getPlayer().getUniqueId();
         final BukkitCloudUser user = this.getUser(uuid);
-        PunishmentModel activeMute = user.quarryUserInfo().getActiveMute();
+        PunishmentModel activeMute = user.queryUserInfo().getActiveMute();
         if (activeMute == null && this.plugin.getMode() != null) {
-            activeMute = this.getUser(uuid).quarryUserModeInfo(this.plugin.getMode()).getActiveMute();
+            activeMute = this.getUser(uuid).queryUserModeInfo(this.plugin.getMode()).getActiveMute();
         }
         if (activeMute == null) return;
         event.setCancelled(true);

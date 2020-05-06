@@ -49,7 +49,7 @@ public interface IOfflineCloudUser {
      *
      * @return IUserInfo
      */
-    public IUserInfo quarryUserInfo();
+    public IUserInfo queryUserInfo();
 
     /**
      * Quarry {@link IUserInfo} async for current {@link ICloudUser}
@@ -63,14 +63,14 @@ public interface IOfflineCloudUser {
      *
      * @return IUserModeInfo
      */
-    public IUserModeInfo quarryUserModeInfo(String mode);
+    public IUserModeInfo queryUserModeInfo(String mode);
 
     /**
      * Quarry {@link IUserModeInfo} async for current {@link ICloudUser}
      *
      * @return CompletableFuture<IUserModeInfo>
      */
-    public CompletableFuture<IUserModeInfo> quarryUserModeInfoAsync(String mode);
+    public CompletableFuture<IUserModeInfo> queryUserModeInfoAsync(String mode);
 
     /**
      * Quarry list of {@link IPunishment} for current {@link ICloudUser}
@@ -78,7 +78,7 @@ public interface IOfflineCloudUser {
      *
      * @return CompletableFuture<IUserModeInfo>
      */
-    public List<? extends IPunishment> quarryPunishments(String mode);
+    public List<? extends IPunishment> queryPunishments(String mode);
 
     /**
      * Quarry list of {@link IPunishment} async for current {@link ICloudUser}

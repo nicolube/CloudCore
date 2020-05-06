@@ -25,7 +25,6 @@ import de.lightfall.core.models.UserModeInfoModel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import lombok.Synchronized;
 import net.md_5.bungee.api.ChatColor;
 
 import java.sql.SQLException;
@@ -53,34 +52,34 @@ public abstract class CloudUser implements ICloudUser {
     }
 
     @SneakyThrows
-    public UserInfoModel quarryUserInfo() {
+    public UserInfoModel queryUserInfo() {
         return this.userManager.getPlugin().getUserInfoDao().queryForId(databaseId);
     }
 
     public CompletableFuture<IUserInfo> quarryUserInfoAsync() {
-        return CompletableFuture.supplyAsync(() -> quarryUserInfo());
+        return CompletableFuture.supplyAsync(() -> queryUserInfo());
     }
 
     @SneakyThrows
-    public UserModeInfoModel quarryUserModeInfo(String mode) {
+    public UserModeInfoModel queryUserModeInfo(String mode) {
         return this.userManager.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("playerInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
     }
 
-    public CompletableFuture<IUserModeInfo> quarryUserModeInfoAsync(String mode) {
-        return CompletableFuture.supplyAsync(() -> quarryUserModeInfo(mode));
+    public CompletableFuture<IUserModeInfo> queryUserModeInfoAsync(String mode) {
+        return CompletableFuture.supplyAsync(() -> queryUserModeInfo(mode));
     }
 
     @SneakyThrows
-    public List<? extends IPunishment> quarryPunishments(String mode) {
+    public List<? extends IPunishment> queryPunishments(String mode) {
         if (mode == null)
             return this.userManager.getPlugin().getPunishmentDao().queryBuilder().orderBy("created_at", false)
                     .where().eq("userInfo_id", this.databaseId).and().eq("userModeInfo", null).query();
         return this.userManager.getPlugin().getPunishmentDao().queryBuilder().orderBy("created_at", false)
-                .where().eq("userInfo_id", this.databaseId).and().eq("userModeInfo", quarryUserModeInfo(mode)).query();
+                .where().eq("userInfo_id", this.databaseId).and().eq("userModeInfo", queryUserModeInfo(mode)).query();
     }
 
     public CompletableFuture<List<? extends IPunishment>> quarryPunishmentsAsync(String mode) {
-        return CompletableFuture.supplyAsync(() -> quarryPunishments(mode));
+        return CompletableFuture.supplyAsync(() -> queryPunishments(mode));
     }
 
     @Override
@@ -173,16 +172,16 @@ public abstract class CloudUser implements ICloudUser {
                 final boolean isMute = type.equals(PunishmentType.MUTE) || type.equals(PunishmentType.TEMP_MUTE);
                 if (mode == null) {
                     if (isBan) {
-                        punishmentModel = quarryUserInfo().getActiveBan();
+                        punishmentModel = queryUserInfo().getActiveBan();
                     } else if (isMute) {
-                        punishmentModel = quarryUserInfo().getActiveMute();
+                        punishmentModel = queryUserInfo().getActiveMute();
                     }
                     updateBuilder = this.userManager.getPlugin().getUserInfoDao().updateBuilder();
                 } else {
                     if (isBan) {
-                        punishmentModel = quarryUserModeInfo(mode).getActiveBan();
+                        punishmentModel = queryUserModeInfo(mode).getActiveBan();
                     } else if (isMute) {
-                        punishmentModel = quarryUserModeInfo(mode).getActiveMute();
+                        punishmentModel = queryUserModeInfo(mode).getActiveMute();
                     }
                     updateBuilder = this.userManager.getPlugin().getUserModeInfoDao().updateBuilder();
                 }
@@ -194,7 +193,7 @@ public abstract class CloudUser implements ICloudUser {
                 } else if (isMute) {
                     field = "activeMute_id";
                 }
-                punishmentModel.unPunish(sender.quarryUserInfo(), new Date(), reason);
+                punishmentModel.unPunish(sender.queryUserInfo(), new Date(), reason);
                 this.userManager.getPlugin().getPunishmentDao().update(punishmentModel);
                 updateBuilder.updateColumnValue(field, null);
                 updateBuilder.where().idEq(this.databaseId);
@@ -218,10 +217,10 @@ public abstract class CloudUser implements ICloudUser {
             UserInfoModel userInfoModel = null;
             UserModeInfoModel userModeInfoModel = null;
             if (mode == null)
-                userInfoModel = quarryUserInfo();
+                userInfoModel = queryUserInfo();
             else
-                userModeInfoModel = quarryUserModeInfo(mode);
-            PunishmentModel punishmentModel = new PunishmentModel(userInfoModel, null, sender.quarryUserInfo(),
+                userModeInfoModel = queryUserModeInfo(mode);
+            PunishmentModel punishmentModel = new PunishmentModel(userInfoModel, null, sender.queryUserInfo(),
                     type, endDate, reason);
             try {
                 punishmentModel = plugin.getPunishmentDao().createIfNotExists(punishmentModel);

@@ -91,7 +91,7 @@ public class BungeeUserManager extends UserManager implements Listener {
         final ProxiedPlayer player = event.getPlayer();
         final BungeeCloudUser bungeeCloudUser = this.userMap.get(player.getUniqueId());
         bungeeCloudUser.setPlayer(player);
-        String locale = bungeeCloudUser.quarryUserInfo().getLocale();
+        String locale = bungeeCloudUser.queryUserInfo().getLocale();
         if (locale != null)
             bungeeCloudUser.setLocale(locale, false);
         else
