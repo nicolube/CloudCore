@@ -1,7 +1,6 @@
 package de.lightfall.core.api.message;
 
 import co.aikar.locales.MessageKey;
-import de.lightfall.core.api.message.IMessageKeyProvider;
 import lombok.Getter;
 
 public enum CoreMessageKeys implements IMessageKeyProvider {

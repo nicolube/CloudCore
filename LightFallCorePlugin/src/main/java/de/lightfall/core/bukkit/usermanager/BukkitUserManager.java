@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -92,10 +91,6 @@ public class BukkitUserManager extends UserManager implements Listener {
 
     @Override
     public BukkitCloudUser getUser(UUID uuid) {
-        final BukkitCloudUser bukkitCloudUser = this.userMap.get(uuid);
-        if (bukkitCloudUser != null)
-            return bukkitCloudUser;
-        // Todo offline load
-        throw new NotImplementedException();
+        return this.userMap.get(uuid);
     }
 }

@@ -7,19 +7,13 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
-import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.api.CoreAPI;
-import de.lightfall.core.api.punishments.PunishmentType;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
-import de.lightfall.core.models.PunishmentModel;
-import de.lightfall.core.models.UserInfoModel;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.sql.SQLException;
-import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("test")
 @CommandPermission("core.test")
