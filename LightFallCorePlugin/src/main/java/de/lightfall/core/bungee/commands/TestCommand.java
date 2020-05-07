@@ -38,8 +38,13 @@ public class TestCommand extends BaseCommand {
 
     @Subcommand("ban")
     @CommandCompletion("@players")
-    public void onBan(BungeeCloudUser sender, OnlinePlayer player, String reason) {
-        CoreAPI.getInstance().getUserManager().getUser(player.getPlayer().getUniqueId()).ban(sender, null, reason);
+    public void onBan(BungeeCloudUser sender, String username, String reason) {
+        BridgePlayerManager.getInstance().getOfflinePlayerAsync(username).onComplete((listITask, iCloudOfflinePlayers) -> {
+            final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
+            this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
+                offlineCloudUser.ban(sender, null, reason);
+            });
+        });
     }
 
     @Subcommand("unban")
@@ -47,7 +52,9 @@ public class TestCommand extends BaseCommand {
     public void onUnBan(BungeeCloudUser sender, String username, String reason) {
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(username).onComplete((listITask, iCloudOfflinePlayers) -> {
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
-            this.plugin.getUserManager().loadUser(uniqueId).unBan(sender, null, reason);
+            this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
+                offlineCloudUser.unBan(sender, null, reason);
+            });
         });
     }
 }
