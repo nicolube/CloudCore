@@ -6,6 +6,7 @@ variables:
 
 before_script:
   - mkdir .m2
+  - cat $MVN_SETTINGS
   - cat $MVN_SETTINGS > .m2/settings.xml
 
 build:
