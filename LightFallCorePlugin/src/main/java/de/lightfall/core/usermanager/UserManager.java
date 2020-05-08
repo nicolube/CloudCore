@@ -30,8 +30,15 @@ public abstract class UserManager implements IUserManager {
 
     public abstract InternalCoreAPI getPlugin();
 
-    public OfflineCloudUser loadUser(UUID uuid) {
-        final UserInfoModel userInfoModel = quarryUserInfo(uuid);
-        return new OfflineCloudUser(uuid, null, userInfoModel.getId(), this);
+    public abstract CloudUser getUser(UUID uuid);
+
+    public CompletableFuture<? extends OfflineCloudUser> loadUser(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            final CloudUser user = getUser(uuid);
+            if (user != null) return user;
+            final UserInfoModel userInfoModel = quarryUserInfo(uuid);
+            if (userInfoModel == null) return null;
+            return new OfflineCloudUser(uuid, null, userInfoModel.getId(), this);
+        });
     }
 }

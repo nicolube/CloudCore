@@ -1,6 +1,5 @@
 package de.lightfall.core.api.config;
 
-import co.aikar.commands.MessageType;
 import lombok.Data;
 
 import java.util.Map;

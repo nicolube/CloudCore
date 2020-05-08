@@ -3,7 +3,6 @@ package de.lightfall.core.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import de.lightfall.core.api.punishments.IPunishment;
-import de.lightfall.core.api.punishments.IUserInfo;
 import de.lightfall.core.api.punishments.PunishmentType;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -15,7 +15,6 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -91,7 +90,7 @@ public class BungeeUserManager extends UserManager implements Listener {
         final ProxiedPlayer player = event.getPlayer();
         final BungeeCloudUser bungeeCloudUser = this.userMap.get(player.getUniqueId());
         bungeeCloudUser.setPlayer(player);
-        String locale = bungeeCloudUser.quarryUserInfo().getLocale();
+        String locale = bungeeCloudUser.queryUserInfo().getLocale();
         if (locale != null)
             bungeeCloudUser.setLocale(locale, false);
         else
@@ -106,10 +105,6 @@ public class BungeeUserManager extends UserManager implements Listener {
 
     @Override
     public BungeeCloudUser getUser(UUID uuid) {
-        final BungeeCloudUser bungeeCloudUser = this.userMap.get(uuid);
-        if (bungeeCloudUser != null)
-            return bungeeCloudUser;
-        // Todo offline load
-        throw new NotImplementedException();
+        return this.userMap.get(uuid);
     }
 }

@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -81,9 +80,9 @@ public class BukkitUserManager extends UserManager implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         final UUID uuid = event.getPlayer().getUniqueId();
         final BukkitCloudUser user = this.getUser(uuid);
-        PunishmentModel activeMute = user.quarryUserInfo().getActiveMute();
+        PunishmentModel activeMute = user.queryUserInfo().getActiveMute();
         if (activeMute == null && this.plugin.getMode() != null) {
-            activeMute = this.getUser(uuid).quarryUserModeInfo(this.plugin.getMode()).getActiveMute();
+            activeMute = this.getUser(uuid).queryUserModeInfo(this.plugin.getMode()).getActiveMute();
         }
         if (activeMute == null) return;
         event.setCancelled(true);
@@ -92,10 +91,6 @@ public class BukkitUserManager extends UserManager implements Listener {
 
     @Override
     public BukkitCloudUser getUser(UUID uuid) {
-        final BukkitCloudUser bukkitCloudUser = this.userMap.get(uuid);
-        if (bukkitCloudUser != null)
-            return bukkitCloudUser;
-        // Todo offline load
-        throw new NotImplementedException();
+        return this.userMap.get(uuid);
     }
 }

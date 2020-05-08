@@ -7,7 +7,6 @@ import de.dytanic.cloudnet.driver.service.ServiceTask;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.lightfall.core.api.message.IMessageKeyProvider;
 
-import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -92,68 +91,6 @@ public interface ICloudUser extends IOfflineCloudUser {
      * @return real name of CloudUser
      */
     public String getRealName();
-
-    /**
-     * Banns a user permanent.
-     *
-     * @param sender user who executed the punishment or null for console
-     * @param mode   mode name or null for global context
-     * @param reason why the user was punished
-     */
-    public void ban(ICloudUser sender, String mode, String reason);
-
-    /**
-     * Banns a user temporary.
-     *
-     * @param sender user who executed the punishment or null for console
-     * @param mode   mode name or null for global context
-     * @param length length of punishment in seconds
-     * @param reason why the user was punished
-     */
-    public void tempBan(ICloudUser sender, String mode, long length, String reason);
-
-    /**
-     * Mutes a user permanent.
-     *
-     * @param sender user who executed the punishment or null for console
-     * @param mode   mode name or null for global context
-     * @param reason why the user was punished
-     */
-    public void mute(ICloudUser sender, String mode, String reason);
-
-    /**
-     * Mutes a user temporary.
-     *
-     * @param sender user who executed the punishment or null for console
-     * @param mode   mode name or null for global context
-     * @param length length of punishment in seconds
-     * @param reason why the user was punished
-     */
-    public void tempMute(ICloudUser sender, String mode, long length, String reason);
-
-    /**
-     * Kicks a player.
-     *
-     * @param sender user who removed the punishment or null for console
-     * @param mode   mode name or null for global context
-     * @param reason why the user was punished
-     */
-    public void kick(ICloudUser sender, String mode, String reason);
-
-    /**
-     * Setts the locale of the user.
-     *
-     * @param locale {@link Locale#GERMAN} or {@link Locale#ENGLISH} are Supported
-     * @param update boolean if the locale should be updated to database
-     */
-    public void setLocale(Locale locale, boolean update);
-
-    /**
-     * Returns the current locale of the user
-     *
-     * @return Locale
-     */
-    public Locale getLocale();
 
 
     /**
