@@ -22,7 +22,6 @@ public class PermbanCommand extends BaseCommand {
     }
 
     @Default
-    @CatchUnknown
     public void onDefault() {
         getCurrentCommandIssuer().sendInfo(CoreMessageKeys.CMD_PERMBAN_SYNTAX);
     }
