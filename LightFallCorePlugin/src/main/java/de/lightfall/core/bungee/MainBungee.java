@@ -137,7 +137,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         // Todo remove Test command before release!
         this.commandManager.registerCommand(new TestCommand(this));
         this.commandManager.registerCommand(new KillTaskCommand());
-        this.commandManager.registerCommand(new PermbanCommand());
+        this.commandManager.registerCommand(new PermbanCommand(this));
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);
