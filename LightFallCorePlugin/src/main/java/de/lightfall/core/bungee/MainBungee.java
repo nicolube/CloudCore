@@ -16,6 +16,7 @@ import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.commands.KillTaskCommand;
+import de.lightfall.core.bungee.commands.PermbanCommand;
 import de.lightfall.core.bungee.commands.TestCommand;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
@@ -136,6 +137,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         // Todo remove Test command before release!
         this.commandManager.registerCommand(new TestCommand(this));
         this.commandManager.registerCommand(new KillTaskCommand());
+        this.commandManager.registerCommand(new PermbanCommand());
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);
