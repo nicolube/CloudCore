@@ -9,10 +9,15 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
     BANNED_PLAYER,
     BANNED_PLAYER_PERMANENTLY,
     CMD_BAN_SYNTAX,
+    TIMEFORMAT_FAIL,
     CMD_BAN_DESCRIPTION,
     MUTED_PLAYER,
     MUTED_PLAYER_PERMANENTLY,
     CMD_MUTE_SYNTAX,
+    PLAYER_UNMUTED,
+    PLAYER_NOT_MUTED,
+    PLAYER_UNBANNED,
+    PLAYER_NOT_BANNED,
     CMD_MUTE_DESCRIPTION,
 
     CMD_KILL_TASK_STOPPED;
@@ -27,7 +32,7 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
     }
 
     @Getter
-    private String masterKey = "core";;
+    private String masterKey = "core";
 
     @Override
     public MessageKey getMessageKey() {

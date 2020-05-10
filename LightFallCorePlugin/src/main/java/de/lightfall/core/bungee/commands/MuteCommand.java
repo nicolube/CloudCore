@@ -24,6 +24,7 @@ public class MuteCommand extends BaseCommand {
     @Default
     @Description("@@core.cmd_mute_description")
     @Syntax("@@core.cmd_mute_syntax")
+    @CommandPermission("system.punishments.noreason")
     @CommandCompletion("@cloudPlayers")
     public void onMute(ICloudUser sender, OnlinePlayer onlinePlayer) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
@@ -54,6 +55,7 @@ public class MuteCommand extends BaseCommand {
     @Default
     @Description("@@core.cmd_mute_description")
     @Syntax("@@core.cmd_mute_syntax")
+    @CommandPermission("system.punishments.noreason")
     @CommandCompletion("@cloudPlayers")
     public void onMute(ICloudUser sender, OnlinePlayer onlinePlayer, String reason) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();

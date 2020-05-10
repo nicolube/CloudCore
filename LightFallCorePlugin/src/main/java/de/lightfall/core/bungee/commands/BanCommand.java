@@ -25,6 +25,7 @@ public class BanCommand extends BaseCommand {
     @Description("@@core.cmd_ban_description")
     @Syntax("@@core.cmd_ban_syntax")
     @CommandCompletion("@cloudPlayers")
+    @CommandPermission("system.punishments.noreason")
     public void onBan(ICloudUser sender, OnlinePlayer onlinePlayer) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
         this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
@@ -48,6 +49,7 @@ public class BanCommand extends BaseCommand {
     @Default
     @Description("@@core.cmd_ban_description")
     @Syntax("@@core.cmd_ban_syntax")
+    @CommandPermission("system.punishments.noreason")
     @CommandCompletion("@cloudPlayers")
     public void onBan(ICloudUser sender, String player) {
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {

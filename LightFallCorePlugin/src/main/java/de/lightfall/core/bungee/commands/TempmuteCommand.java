@@ -14,32 +14,32 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@CommandAlias("tempban")
-@CommandPermission("system.punishments.command.tempban")
-public class TempbanCommand extends BaseCommand {
+@CommandAlias("tempmute")
+@CommandPermission("system.punishments.command.tempmute")
+public class TempmuteCommand extends BaseCommand {
 
     private final MainBungee plugin;
 
-    public TempbanCommand(MainBungee plugin) {
+    public TempmuteCommand(MainBungee plugin) {
         this.plugin = plugin;
     }
 
     @Default
     @CommandCompletion("@cloudPlayers")
-    @Description("@@core.cmd_tempban_description")
-    @Syntax("@@core.cmd_tempban_syntax")
+    @Description("@@core.cmd_tempmute_description")
     @CommandPermission("system.punishments.noreason")
-    public void onTempBan(ICloudUser sender, OnlinePlayer onlinePlayer, String time) {
+    @Syntax("@@core.cmd_tempmute_syntax")
+    public void onTempMute(ICloudUser sender, OnlinePlayer onlinePlayer, String time) {
         String reason = "Kein Grund angegeben / No reason given";
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
-            //TODO Add message
+            getCurrentCommandIssuer().sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
             return;
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER,"{0}",onlinePlayer.getPlayer().getName(),
+        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",onlinePlayer.getPlayer().getName(),
                 "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
                 "{2}",reason);
         CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
@@ -50,18 +50,18 @@ public class TempbanCommand extends BaseCommand {
 
     @Default
     @CommandCompletion("@cloudPlayers")
-    @Description("@@core.cmd_tempban_description")
-    @Syntax("@@core.cmd_tempban_syntax")
-    public void onTempBan(ICloudUser sender, OnlinePlayer onlinePlayer, String time, String reason) {
+    @Description("@@core.cmd_tempmute_description")
+    @Syntax("@@core.cmd_tempmute_syntax")
+    public void onTempMute(ICloudUser sender, OnlinePlayer onlinePlayer, String time, String reason) {
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
-            //TODO Add message
+            getCurrentCommandIssuer().sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
             return;
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER,"{0}",onlinePlayer.getPlayer().getName(),
+        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",onlinePlayer.getPlayer().getName(),
                 "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
                 "{2}",reason);
         CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
@@ -72,41 +72,11 @@ public class TempbanCommand extends BaseCommand {
 
     @Default
     @CommandCompletion("@cloudPlayers")
-    @Description("@@core.cmd_tempban_description")
-    @Syntax("@@core.cmd_tempban_syntax")
+    @Description("@@core.cmd_tempmute_description")
+    @Syntax("@@core.cmd_tempmute_syntax")
     @CommandPermission("system.punishments.noreason")
-    public void onBan(ICloudUser sender, String player, String time) {
+    public void onMute(ICloudUser sender, String player, String time) {
         String reason = "Kein Grund angegeben / No reason given";
-        Long timeInSeconds = parseString(time);
-
-        if (timeInSeconds == null) {
-            //TODO Add message
-            return;
-        }
-
-        BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
-            if (iCloudOfflinePlayers.isEmpty()) {
-                getCurrentCommandIssuer().sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
-                return;
-            }
-            final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
-            this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER,"{0}",iCloudOfflinePlayers.get(0).getName(),
-                        "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
-                        "{2}",reason);
-                offlineCloudUser.tempMute(
-                        sender, null, timeInSeconds, reason
-                );
-            });
-        });
-    }
-
-    @Default
-    @CommandCompletion("@cloudPlayers")
-    @Description("@@core.cmd_tempban_description")
-    @Syntax("@@core.cmd_tempban_syntax")
-    public void onBan(ICloudUser sender, String player, String time, String reason) {
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
@@ -122,7 +92,37 @@ public class TempbanCommand extends BaseCommand {
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER,"{0}",iCloudOfflinePlayers.get(0).getName(),
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",iCloudOfflinePlayers.get(0).getName(),
+                        "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
+                        "{2}",reason);
+                offlineCloudUser.tempMute(
+                        sender, null, timeInSeconds, reason
+                );
+            });
+        });
+    }
+
+    @Default
+    @CommandCompletion("@cloudPlayers")
+    @Description("@@core.cmd_tempmute_description")
+    @Syntax("@@core.cmd_tempmute_syntax")
+    public void onMute(ICloudUser sender, String player, String time, String reason) {
+        Long timeInSeconds = parseString(time);
+
+        if (timeInSeconds == null) {
+            getCurrentCommandIssuer().sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
+            return;
+        }
+
+        BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
+            if (iCloudOfflinePlayers.isEmpty()) {
+                getCurrentCommandIssuer().sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
+                return;
+            }
+            final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
+            this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",iCloudOfflinePlayers.get(0).getName(),
                         "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
                         "{2}",reason);
                 offlineCloudUser.tempMute(
