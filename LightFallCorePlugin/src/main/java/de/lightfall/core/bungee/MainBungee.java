@@ -8,6 +8,8 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
+import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
+import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.lightfall.core.InternalCoreAPI;
 import de.lightfall.core.MessageProvider;
 import de.lightfall.core.api.Util;
@@ -33,6 +35,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class MainBungee extends Plugin implements InternalCoreAPI {
@@ -109,6 +112,12 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
             CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
             return groups;
         });
+
+        this.commandManager.getCommandCompletions().registerAsyncCompletion("cloudPlayer", context -> {
+            return BridgePlayerManager.getInstance().getOnlinePlayers().stream().map(ICloudPlayer::getName).collect(Collectors.toList());
+        });
+
+
         this.commandManager.getCommandContexts().registerContext(GroupConfiguration.class, context ->
                 CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfiguration(context.popFirstArg()));
         this.commandManager.getCommandContexts().registerIssuerOnlyContext(BungeeCloudUser.class, ioc -> this.userManager.getUser(ioc.getPlayer().getUniqueId()));
@@ -145,6 +154,9 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
 
         // Todo Move this to config
         Util.setBanFormat("&eReason:\n&7{0}\n&eBanned until\n&a{1}");
+        Util.setBanFormat("&7● &bLightfall &7●\n§cDu bist vom Netzwerk gebannt!\n\n§7Grund §8» §e{0}\n§7Ende des Banns §8» §e{1}" +
+                "\n\n§7Einen Entbannungsantrag kannst du im Forum schreiben.\n§7Forum §8» §aforum.lightfall.de\n" +
+                "§7Teamspeak §8» §blightfall.de");
     }
 
     public void onConfigure(Config config) {

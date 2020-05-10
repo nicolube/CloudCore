@@ -22,10 +22,8 @@ public class PermbanCommand extends BaseCommand {
     }
 
     @Default
-    public void onDefault() {
-        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.CMD_PERMBAN_SYNTAX);
-    }
-
+    @Description("@@core.cmd_permban_description")
+    @Syntax("@@core.cmd_permban_syntax")
     @CommandCompletion("@players")
     public void onBan(ICloudUser sender, OnlinePlayer onlinePlayer) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
@@ -35,6 +33,9 @@ public class PermbanCommand extends BaseCommand {
         });
     }
 
+    @Default
+    @Description("@@core.cmd_permban_description")
+    @Syntax("@@core.cmd_permban_syntax")
     @CommandCompletion("@players")
     public void onBan(ICloudUser sender, OnlinePlayer onlinePlayer,String reason) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
@@ -44,6 +45,9 @@ public class PermbanCommand extends BaseCommand {
         });
     }
 
+    @Default
+    @Description("@@core.cmd_permban_description")
+    @Syntax("@@core.cmd_permban_syntax")
     public void onBan(ICloudUser sender, String player) {
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
@@ -58,6 +62,9 @@ public class PermbanCommand extends BaseCommand {
         });
     }
 
+    @Default
+    @Description("@@core.cmd_permban_description")
+    @Syntax("@@core.cmd_permban_syntax")
     public void onBan(ICloudUser sender, String player, String reason) {
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
