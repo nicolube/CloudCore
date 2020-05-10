@@ -11,20 +11,20 @@ import de.lightfall.core.bungee.MainBungee;
 
 import java.util.UUID;
 
-@CommandAlias("permban")
-@CommandPermission("system.punishments.command.permban")
-public class PermbanCommand extends BaseCommand {
+@CommandAlias("ban")
+@CommandPermission("system.punishments.command.ban")
+public class BanCommand extends BaseCommand {
 
     private MainBungee plugin;
 
-    public PermbanCommand(MainBungee mainBungee) {
+    public BanCommand(MainBungee mainBungee) {
         this.plugin = mainBungee;
     }
 
     @Default
     @Description("@@core.cmd_permban_description")
     @Syntax("@@core.cmd_permban_syntax")
-    @CommandCompletion("@players")
+    @CommandCompletion("@cloudPlayers")
     public void onBan(ICloudUser sender, OnlinePlayer onlinePlayer) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
         this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
@@ -36,7 +36,7 @@ public class PermbanCommand extends BaseCommand {
     @Default
     @Description("@@core.cmd_permban_description")
     @Syntax("@@core.cmd_permban_syntax")
-    @CommandCompletion("@players")
+    @CommandCompletion("@cloudPlayers")
     public void onBan(ICloudUser sender, OnlinePlayer onlinePlayer,String reason) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
         this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
@@ -48,6 +48,7 @@ public class PermbanCommand extends BaseCommand {
     @Default
     @Description("@@core.cmd_permban_description")
     @Syntax("@@core.cmd_permban_syntax")
+    @CommandCompletion("@cloudPlayers")
     public void onBan(ICloudUser sender, String player) {
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
@@ -65,6 +66,7 @@ public class PermbanCommand extends BaseCommand {
     @Default
     @Description("@@core.cmd_permban_description")
     @Syntax("@@core.cmd_permban_syntax")
+    @CommandCompletion("@cloudPlayers")
     public void onBan(ICloudUser sender, String player, String reason) {
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
