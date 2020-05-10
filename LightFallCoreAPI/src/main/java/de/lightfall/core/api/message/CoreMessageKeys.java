@@ -5,10 +5,16 @@ import lombok.Getter;
 
 public enum CoreMessageKeys implements IMessageKeyProvider {
     PREFIX(false),
-    BANNED_PLAYER_PERMANENTLY,
-    BANNED_PLAYER,
     CMD_KILL_TASK_NO_GROUP,
-    CMD_PERMBAN_SYNTAX,
+    BANNED_PLAYER,
+    BANNED_PLAYER_PERMANENTLY,
+    CMD_BAN_SYNTAX,
+    CMD_BAN_DESCRIPTION,
+    MUTED_PLAYER,
+    MUTED_PLAYER_PERMANENTLY,
+    CMD_MUTE_SYNTAX,
+    CMD_MUTE_DESCRIPTION,
+
     CMD_KILL_TASK_STOPPED;
 
     private boolean prefix;
