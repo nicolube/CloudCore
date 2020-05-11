@@ -7,8 +7,8 @@ import co.aikar.commands.bungee.contexts.OnlinePlayer;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.api.message.CoreMessageKeys;
-import de.lightfall.core.api.usermanager.ICloudUser;
 import de.lightfall.core.bungee.MainBungee;
+import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 
 import java.text.SimpleDateFormat;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class TempmuteCommand extends BaseCommand {
     @Description("@@core.cmd_tempmute_description")
     @CommandPermission("system.punishments.noreason")
     @Syntax("@@core.cmd_tempmute_syntax")
-    public void onTempMute(ICloudUser sender, OnlinePlayer onlinePlayer, String time) {
+    public void onTempMute(BungeeCloudUser sender, OnlinePlayer onlinePlayer, String time) {
         String reason = "Kein Grund angegeben / No reason given";
         Long timeInSeconds = parseString(time);
 
@@ -39,9 +39,9 @@ public class TempmuteCommand extends BaseCommand {
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",onlinePlayer.getPlayer().getName(),
-                "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
-                "{2}",reason);
+        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", onlinePlayer.getPlayer().getName(),
+                "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                "{2}", reason);
         CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
                 sender, null, timeInSeconds, reason
         );
@@ -52,7 +52,7 @@ public class TempmuteCommand extends BaseCommand {
     @CommandCompletion("@cloudPlayers")
     @Description("@@core.cmd_tempmute_description")
     @Syntax("@@core.cmd_tempmute_syntax")
-    public void onTempMute(ICloudUser sender, OnlinePlayer onlinePlayer, String time, String reason) {
+    public void onTempMute(BungeeCloudUser sender, OnlinePlayer onlinePlayer, String time, String reason) {
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
@@ -61,9 +61,9 @@ public class TempmuteCommand extends BaseCommand {
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",onlinePlayer.getPlayer().getName(),
-                "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
-                "{2}",reason);
+        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", onlinePlayer.getPlayer().getName(),
+                "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                "{2}", reason);
         CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
                 sender, null, timeInSeconds, reason
         );
@@ -75,7 +75,7 @@ public class TempmuteCommand extends BaseCommand {
     @Description("@@core.cmd_tempmute_description")
     @Syntax("@@core.cmd_tempmute_syntax")
     @CommandPermission("system.punishments.noreason")
-    public void onMute(ICloudUser sender, String player, String time) {
+    public void onMute(BungeeCloudUser sender, String player, String time) {
         String reason = "Kein Grund angegeben / No reason given";
         Long timeInSeconds = parseString(time);
 
@@ -92,9 +92,9 @@ public class TempmuteCommand extends BaseCommand {
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",iCloudOfflinePlayers.get(0).getName(),
-                        "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
-                        "{2}",reason);
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", iCloudOfflinePlayers.get(0).getName(),
+                        "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                        "{2}", reason);
                 offlineCloudUser.tempMute(
                         sender, null, timeInSeconds, reason
                 );
@@ -106,7 +106,7 @@ public class TempmuteCommand extends BaseCommand {
     @CommandCompletion("@cloudPlayers")
     @Description("@@core.cmd_tempmute_description")
     @Syntax("@@core.cmd_tempmute_syntax")
-    public void onMute(ICloudUser sender, String player, String time, String reason) {
+    public void onMute(BungeeCloudUser sender, String player, String time, String reason) {
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
@@ -122,9 +122,9 @@ public class TempmuteCommand extends BaseCommand {
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER,"{0}",iCloudOfflinePlayers.get(0).getName(),
-                        "{1}",simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds)+System.currentTimeMillis()),
-                        "{2}",reason);
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", iCloudOfflinePlayers.get(0).getName(),
+                        "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                        "{2}", reason);
                 offlineCloudUser.tempMute(
                         sender, null, timeInSeconds, reason
                 );

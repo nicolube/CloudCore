@@ -17,9 +17,7 @@ import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.api.message.CoreMessageKeys;
-import de.lightfall.core.bungee.commands.BanCommand;
-import de.lightfall.core.bungee.commands.CoreCommand;
-import de.lightfall.core.bungee.commands.TestCommand;
+import de.lightfall.core.bungee.commands.*;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
 import de.lightfall.core.models.PunishmentModel;
@@ -74,7 +72,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         final Field coreInstance = Util.class.getDeclaredField("coreInstance");
         coreInstance.setAccessible(true);
         coreInstance.set(null, this);
-        this.instance = this;
+        instance = this;
 
     }
 
@@ -114,10 +112,8 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
             CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
             return groups;
         });
-
-        this.commandManager.getCommandCompletions().registerAsyncCompletion("cloudPlayer", context -> {
-            return BridgePlayerManager.getInstance().getOnlinePlayers().stream().map(ICloudPlayer::getName).collect(Collectors.toList());
-        });
+        this.commandManager.getCommandCompletions().registerAsyncCompletion("cloudPlayers", context ->
+                BridgePlayerManager.getInstance().getOnlinePlayers().stream().map(ICloudPlayer::getName).collect(Collectors.toList()));
 
 
         this.commandManager.getCommandContexts().registerContext(GroupConfiguration.class, context ->
@@ -147,6 +143,11 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         // Todo remove Test command before release!
         this.commandManager.registerCommand(new TestCommand(this));
         this.commandManager.registerCommand(new CoreCommand(this));
+        this.commandManager.registerCommand(new MuteCommand(this));
+        this.commandManager.registerCommand(new TempbanCommand(this));
+        this.commandManager.registerCommand(new TempmuteCommand(this));
+        this.commandManager.registerCommand(new UnbanCommand());
+        this.commandManager.registerCommand(new UnmuteCommand());
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);

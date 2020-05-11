@@ -30,7 +30,7 @@ public class BanCommand extends BaseCommand {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
         this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
             offlineCloudUser.ban(sender, null, "Kein Grund angegeben /  No reason given");
-            getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY,"{0}",onlinePlayer.getPlayer().getName(),"{1}","Kein Grund angegeben / No reason given");
+            getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY, "{0}", onlinePlayer.getPlayer().getName(), "{1}", "Kein Grund angegeben / No reason given");
         });
     }
 
@@ -38,11 +38,11 @@ public class BanCommand extends BaseCommand {
     @Description("@@core.cmd_ban_description")
     @Syntax("@@core.cmd_ban_syntax")
     @CommandCompletion("@cloudPlayers")
-    public void onBan(ICloudUser sender, OnlinePlayer onlinePlayer,String reason) {
+    public void onBan(ICloudUser sender, OnlinePlayer onlinePlayer, String reason) {
         final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
         this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
             offlineCloudUser.ban(sender, null, reason);
-            getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY,"{0}",onlinePlayer.getPlayer().getName(),"{1}",reason);
+            getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY, "{0}", onlinePlayer.getPlayer().getName(), "{1}", reason);
         });
     }
 
@@ -60,7 +60,7 @@ public class BanCommand extends BaseCommand {
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
                 offlineCloudUser.ban(sender, null, "Kein Grund angegeben / No reason given");
-                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY,"{0}",iCloudOfflinePlayers.get(0).getName(),"{1}","Kein Grund angegeben / No reason given");
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY, "{0}", iCloudOfflinePlayers.get(0).getName(), "{1}", "Kein Grund angegeben / No reason given");
             });
         });
     }
@@ -78,7 +78,7 @@ public class BanCommand extends BaseCommand {
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
                 offlineCloudUser.ban(sender, null, reason);
-                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY,"{0}",iCloudOfflinePlayers.get(0).getName(),"{1}",reason);
+                getCurrentCommandIssuer().sendInfo(CoreMessageKeys.BANNED_PLAYER_PERMANENTLY, "{0}", iCloudOfflinePlayers.get(0).getName(), "{1}", reason);
             });
         });
     }
