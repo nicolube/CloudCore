@@ -20,7 +20,7 @@ public class MainModule extends DriverModule {
     private NodeChannelHandler channelHandler;
 
     @SneakyThrows
-    @ModuleTask(event = ModuleLifeCycle.STARTED)
+    @ModuleTask(event = ModuleLifeCycle.LOADED)
     public void onEnable() {
         getLogger().info(Util.getLogo());
 

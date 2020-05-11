@@ -6,11 +6,17 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.lightfall.core.api.CoreAPI;
+import de.lightfall.core.api.channelhandeler.ChannelHandler;
+import de.lightfall.core.api.channelhandeler.documents.ReloadDocument;
+import de.lightfall.core.api.channelhandeler.documents.ReloadType;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.UUID;
@@ -56,5 +62,11 @@ public class TestCommand extends BaseCommand {
                 offlineCloudUser.unBan(sender, null, reason);
             });
         });
+    }
+
+    @Subcommand("reload messages")
+    public void onReloadMessage(CommandSender sender) {
+        ChannelHandler.send(new ReloadDocument(ReloadType.MESSAGES));
+        sender.sendMessage(TextComponent.fromLegacyText("Reloaded"));
     }
 }

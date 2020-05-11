@@ -19,8 +19,8 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
     PLAYER_UNBANNED,
     PLAYER_NOT_BANNED,
     CMD_MUTE_DESCRIPTION,
-
-    CMD_KILL_TASK_STOPPED;
+    CMD_KILL_TASK_STOPPED,
+    CMD_CORE_RELOAD_MESSAGES;
 
     private boolean prefix;
 

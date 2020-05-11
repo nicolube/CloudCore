@@ -27,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     @Getter
@@ -53,10 +54,11 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     @Override
     @SneakyThrows
     public void onLoad() {
+        getLogger().setLevel(Level.FINER);
         getLogger().info(Util.getLogo());
         getLogger().info("Create channel handler executor...");
         this.channelHandler = new BukkitChannelHandler(this);
-        ChannelHandler.send(new ConfigRequestDocument());
+        ChannelHandler.sendToCloud(new ConfigRequestDocument());
 
 
         // This is very sketchy
@@ -90,10 +92,6 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
         getLogger().info("Create Event based executor...");
         this.eventBasedExecutions = new EventBasedExecutions(this);
 
-        getLogger().info("Create user manager...");
-        this.userManager = new BukkitUserManager(this);
-        Bukkit.getPluginManager().registerEvents(this.userManager, this);
-
         getLogger().info("Starting command manager...");
         this.commandManager = new PaperCommandManager(this);
         this.commandManager.getLocales().setDefaultLocale(Locale.ENGLISH);
@@ -113,14 +111,22 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
         this.commandManager.getSupportedLanguages().clear();
         this.commandManager.addSupportedLanguage(Locale.GERMAN);
         this.commandManager.addSupportedLanguage(Locale.ENGLISH);
-        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.GERMAN));
-        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.ENGLISH));
+        loadMessages();
+
+        getLogger().info("Create user manager...");
+        this.userManager = new BukkitUserManager(this);
+        Bukkit.getPluginManager().registerEvents(this.userManager, this);
     }
 
     @SneakyThrows
     public void onConfigure(Config config) {
         this.config = config;
         if (isEnabled()) configure(config);
+    }
+
+    public void loadMessages() {
+        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.GERMAN));
+        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.ENGLISH));
     }
 
     @Override
