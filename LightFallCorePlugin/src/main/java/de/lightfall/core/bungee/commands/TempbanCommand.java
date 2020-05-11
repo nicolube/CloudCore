@@ -34,7 +34,7 @@ public class TempbanCommand extends BaseCommand {
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
-            //TODO Add message
+            getCurrentCommandIssuer().sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
             return;
         }
 
@@ -56,7 +56,7 @@ public class TempbanCommand extends BaseCommand {
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
-            //TODO Add message
+            getCurrentCommandIssuer().sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
             return;
         }
 
@@ -80,7 +80,7 @@ public class TempbanCommand extends BaseCommand {
         Long timeInSeconds = parseString(time);
 
         if (timeInSeconds == null) {
-            //TODO Add message
+            getCurrentCommandIssuer().sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
             return;
         }
 
