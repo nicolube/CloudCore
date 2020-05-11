@@ -14,7 +14,7 @@ public class MessageModel {
 
     @DatabaseField(generatedId = true)
     private long id;
-    @DatabaseField(uniqueCombo = true)
+    @DatabaseField(uniqueCombo = true, width = 150)
     private String key;
     @DatabaseField
     private String message;

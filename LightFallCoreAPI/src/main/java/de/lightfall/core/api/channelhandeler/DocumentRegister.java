@@ -1,9 +1,6 @@
 package de.lightfall.core.api.channelhandeler;
 
-import de.lightfall.core.api.channelhandeler.documents.ConfigDocument;
-import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
-import de.lightfall.core.api.channelhandeler.documents.LocationDocument;
-import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
+import de.lightfall.core.api.channelhandeler.documents.*;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +8,9 @@ public enum  DocumentRegister {
     TELEPORT(TeleportDocument.class),
     LOCATION(LocationDocument.class),
     REQUEST_CONFIG(ConfigRequestDocument.class),
-    CONFIG(ConfigDocument.class);
+    CONFIG(ConfigDocument.class),
+    MESSAGE(MessageDocument.class),
+    RELOAD(ReloadDocument.class);
 
     private Class clazz;
 

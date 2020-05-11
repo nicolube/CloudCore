@@ -34,7 +34,7 @@ public abstract class ChannelHandler {
 
     public abstract void receive(Document document);
 
-    public static <T> void send(ServiceInfoSnapshot cloudService, Document document) {
+    public static void send(ServiceInfoSnapshot cloudService, Document document) {
         for (DocumentRegister value : DocumentRegister.values()) {
             if (document.getClass().equals(value.getClazz())) {
                 CloudNetDriver.getInstance().getNetworkClient().sendPacket();
@@ -46,12 +46,25 @@ public abstract class ChannelHandler {
         }
     }
 
-    public static <T> void send(ServiceTask cloudService, Document document) {
+    public static void send(ServiceTask cloudService, Document document) {
         for (DocumentRegister value : DocumentRegister.values()) {
             if (document.getClass().equals(value.getClazz())) {
                 CloudNetDriver.getInstance().getNetworkClient().sendPacket();
                 CloudNetDriver.getInstance().getMessenger().sendChannelMessage(cloudService,
                         MessageChannels.DEFAULT.getChannelName(), value.name(), new JsonDocument(document));
+                return;
+            }
+
+        }
+    }
+
+
+    public static void send(Document document) {
+        for (DocumentRegister value : DocumentRegister.values()) {
+            if (document.getClass().equals(value.getClazz())) {
+                CloudNetDriver.getInstance().getNetworkClient().sendPacket();
+                CloudNetDriver.getInstance().getMessenger()
+                        .sendChannelMessage(MessageChannels.DEFAULT.getChannelName(), value.name(), new JsonDocument(document));
                 return;
             }
 
@@ -59,7 +72,7 @@ public abstract class ChannelHandler {
     }
 
     @SneakyThrows
-    public static <T> void send(Document document) {
+    public static void sendToCloud(Document document) {
         for (DocumentRegister value : DocumentRegister.values()) {
             if (document.getClass().equals(value.getClazz())) {
                 final ByteArrayOutputStream bos = new ByteArrayOutputStream();

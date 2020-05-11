@@ -65,8 +65,7 @@ public class BukkitUserManager extends UserManager implements Listener {
                 if (this.plugin.getMode() != null)
                     this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
                 Bukkit.getPluginManager().callEvent(new PlayerLoginSuccessEvent(event, bukkitCloudUser));
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            } catch (SQLException ignored) {
             }
         });
     }

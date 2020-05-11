@@ -15,7 +15,7 @@ import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.api.message.CoreMessageKeys;
-import de.lightfall.core.bungee.commands.KillTaskCommand;
+import de.lightfall.core.bungee.commands.CoreCommand;
 import de.lightfall.core.bungee.commands.TestCommand;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
 
 
 public class MainBungee extends Plugin implements InternalCoreAPI {
@@ -60,6 +61,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     @Override
     @SneakyThrows
     public void onLoad() {
+        getLogger().setLevel(Level.FINER);
         getLogger().info(Util.getLogo());
         getLogger().info("Create channel handler executor...");
         this.channelHandler = new BungeeChannelHandler(this);
@@ -77,7 +79,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     public void onEnable() {
         getLogger().info(Util.getLogo());
 
-        ChannelHandler.send(new ConfigRequestDocument());
+        ChannelHandler.sendToCloud(new ConfigRequestDocument());
 
         Thread.sleep(1000);
 
@@ -129,13 +131,12 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         this.commandManager.getSupportedLanguages().clear();
         this.commandManager.addSupportedLanguage(Locale.GERMAN);
         this.commandManager.addSupportedLanguage(Locale.ENGLISH);
-        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.GERMAN));
-        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.ENGLISH));
+        loadMessages();
 
         getLogger().info("Registering commands...");
         // Todo remove Test command before release!
         this.commandManager.registerCommand(new TestCommand(this));
-        this.commandManager.registerCommand(new KillTaskCommand());
+        this.commandManager.registerCommand(new CoreCommand(this));
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);
@@ -148,6 +149,11 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     public void onConfigure(Config config) {
         this.config = config;
         if (enabled) configure(config);
+    }
+
+    public void loadMessages() {
+        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.GERMAN));
+        this.messageProvider.registerMessageBundle(CoreMessageKeys.PREFIX, ResourceBundle.getBundle("core", Locale.ENGLISH));
     }
 
     @Override
