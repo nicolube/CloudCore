@@ -1,6 +1,7 @@
 package de.lightfall.core.bungee.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.annotation.*;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
@@ -14,22 +15,24 @@ import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 public class UnmuteCommand extends BaseCommand {
 
     @Default
-    @Syntax("@@core.cmd_unmute_syntax")
-    @Description("@@core.cmd_unmute_description")
+    @Syntax("{@@core.cmd_unmute_syntax}")
+    @Description("{@@core.cmd_unmute_description}")
+    @CommandCompletion("@cloudPlayers @nothing")
     public void onUnmute(BungeeCloudUser sender, String offlineCloudUser) {
+        CommandIssuer issuer = getCurrentCommandIssuer();
 
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(offlineCloudUser).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
-                getCurrentCommandIssuer().sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
+                issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
                 return;
             }
             CoreAPI.getInstance().getUserManager().loadUser(iCloudOfflinePlayers.get(0).getUniqueId()).thenAccept(offlineCloudPlayer -> {
                 offlineCloudPlayer.unMute(sender, null, "Entfällt").thenAccept(unbaned -> {
-                    if ((Boolean) unbaned) {
-                        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.PLAYER_UNMUTED, "{0}", iCloudOfflinePlayers.get(0).getName());
+                    if (unbaned) {
+                        issuer.sendInfo(CoreMessageKeys.PLAYER_UNMUTED, "{0}", iCloudOfflinePlayers.get(0).getName());
                         return;
                     }
-                    getCurrentCommandIssuer().sendInfo(CoreMessageKeys.PLAYER_NOT_MUTED);
+                    issuer.sendInfo(CoreMessageKeys.PLAYER_NOT_MUTED);
                 });
             });
         });

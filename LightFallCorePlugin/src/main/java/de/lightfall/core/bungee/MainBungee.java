@@ -80,9 +80,8 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     @SneakyThrows
     public void onEnable() {
         getLogger().info(Util.getLogo());
-
+        Thread.sleep(1000);
         ChannelHandler.sendToCloud(new ConfigRequestDocument());
-
         Thread.sleep(1000);
 
         this.enabled = true;
@@ -144,6 +143,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         this.commandManager.registerCommand(new TestCommand(this));
         this.commandManager.registerCommand(new CoreCommand(this));
         this.commandManager.registerCommand(new MuteCommand(this));
+        this.commandManager.registerCommand(new BanCommand(this));
         this.commandManager.registerCommand(new TempbanCommand(this));
         this.commandManager.registerCommand(new TempmuteCommand(this));
         this.commandManager.registerCommand(new UnbanCommand());
@@ -154,8 +154,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         getProxy().getPluginManager().registerListener(this, this.userManager);
 
         // Todo Move this to config
-        Util.setBanFormat("&eReason:\n&7{0}\n&eBanned until\n&a{1}");
-        Util.setBanFormat("&7● &bLightfall &7●\n§cDu bist vom Netzwerk gebannt!\n\n§7Grund §8» §e{0}\n§7Ende des Banns §8» §e{1}" +
+        Util.setBanFormat("&7● &bLightfall &7●\n§cDu bist vom Netzwerk gebannt!\n\n§7Grund §8» §e%1$s\n§7Ende des Banns §8» §e%2$s" +
                 "\n\n§7Einen Entbannungsantrag kannst du im Forum schreiben.\n§7Forum §8» §aforum.lightfall.de\n" +
                 "§7Teamspeak §8» §blightfall.de");
     }

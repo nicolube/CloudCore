@@ -47,7 +47,7 @@ public interface IOfflineCloudUser {
      * @param reason why the punishment get removed
      * @return CompletableFuture<Boolean> (async) if the user was punished
      */
-    public CompletableFuture unMute(ICloudUser sender, String mode, String reason);
+    public CompletableFuture<Boolean> unMute(ICloudUser sender, String mode, String reason);
 
     /**
      * Quarry {@link IUserInfo} for current {@link ICloudUser}

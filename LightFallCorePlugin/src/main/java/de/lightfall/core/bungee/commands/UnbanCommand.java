@@ -1,6 +1,7 @@
 package de.lightfall.core.bungee.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.annotation.*;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
@@ -14,22 +15,22 @@ import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 public class UnbanCommand extends BaseCommand {
 
     @Default
-    @Syntax("@@core.cmd_unban_syntax")
-    @Description("@@core.cmd_unban_description")
+    @Syntax("{@@core.cmd_unban_syntax}")
+    @Description("{@@core.cmd_unban_description}")
     public void onUnban(BungeeCloudUser sender, String offlineCloudUser) {
-
+        CommandIssuer issuer = getCurrentCommandIssuer();
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(offlineCloudUser).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
-                getCurrentCommandIssuer().sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
+                issuer.sendInfo(MessageKeys.COULD_NOT_FIND_PLAYER);
                 return;
             }
             CoreAPI.getInstance().getUserManager().loadUser(iCloudOfflinePlayers.get(0).getUniqueId()).thenAccept(offlineCloudPlayer -> {
                 offlineCloudPlayer.unBan(sender, null, "Entfällt").thenAccept(unbaned -> {
                     if (unbaned) {
-                        getCurrentCommandIssuer().sendInfo(CoreMessageKeys.PLAYER_UNBANNED, "{0}", iCloudOfflinePlayers.get(0).getName());
+                        issuer.sendInfo(CoreMessageKeys.PLAYER_UNBANNED, "{0}", iCloudOfflinePlayers.get(0).getName());
                         return;
                     }
-                    getCurrentCommandIssuer().sendInfo(CoreMessageKeys.PLAYER_NOT_BANNED);
+                    issuer.sendInfo(CoreMessageKeys.PLAYER_NOT_BANNED);
                 });
             });
         });
