@@ -7,11 +7,13 @@ import co.aikar.commands.annotation.*;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.lightfall.core.api.CoreAPI;
+import de.lightfall.core.api.Util;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -40,9 +42,8 @@ public class TempmuteCommand extends BaseCommand {
             return;
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
         issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", onlinePlayer.getPlayer().getName(),
-                "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
                 "{2}", reason);
         CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
                 sender, null, timeInSeconds, reason
@@ -63,9 +64,8 @@ public class TempmuteCommand extends BaseCommand {
             return;
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
         issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", onlinePlayer.getPlayer().getName(),
-                "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
                 "{2}", reason);
         CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
                 sender, null, timeInSeconds, reason
@@ -95,9 +95,8 @@ public class TempmuteCommand extends BaseCommand {
             }
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
                 issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", iCloudOfflinePlayers.get(0).getName(),
-                        "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                        "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
                         "{2}", reason);
                 offlineCloudUser.tempMute(
                         sender, null, timeInSeconds, reason
@@ -128,7 +127,7 @@ public class TempmuteCommand extends BaseCommand {
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
                 issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER, "{0}", iCloudOfflinePlayers.get(0).getName(),
-                        "{1}", simpleDateFormat.format(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()),
+                        "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
                         "{2}", reason);
                 offlineCloudUser.tempMute(
                         sender, null, timeInSeconds, reason
