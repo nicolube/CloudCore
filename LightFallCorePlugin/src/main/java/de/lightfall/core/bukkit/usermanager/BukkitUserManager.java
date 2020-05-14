@@ -1,21 +1,28 @@
 package de.lightfall.core.bukkit.usermanager;
 
+import co.aikar.commands.MessageType;
+import com.j256.ormlite.stmt.UpdateBuilder;
+import de.lightfall.core.api.Util;
 import de.lightfall.core.api.bukkit.events.PlayerLoginSuccessEvent;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bukkit.MainBukkit;
 import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.models.UserModeInfoModel;
 import de.lightfall.core.usermanager.UserManager;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -62,8 +69,12 @@ public class BukkitUserManager extends UserManager implements Listener {
 
                 if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
                 this.userMap.put(player.getUniqueId(), bukkitCloudUser);
-                if (this.plugin.getMode() != null)
-                    this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
+                final String mode = this.plugin.getMode();
+                if (mode != null) {
+                    final UserModeInfoModel userModeInfoModel = quarryUserModeInfo(player.getPlayer().getUniqueId(), mode);
+                    if (userModeInfoModel == null)
+                        this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, mode));
+                }
                 Bukkit.getPluginManager().callEvent(new PlayerLoginSuccessEvent(event, bukkitCloudUser));
             } catch (SQLException ignored) {
             }
@@ -75,17 +86,33 @@ public class BukkitUserManager extends UserManager implements Listener {
         this.userMap.remove(event.getPlayer().getUniqueId());
     }
 
-    @EventHandler
+    @SneakyThrows
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
         final UUID uuid = event.getPlayer().getUniqueId();
         final BukkitCloudUser user = this.getUser(uuid);
         PunishmentModel activeMute = user.queryUserInfo().getActiveMute();
+        boolean mode = false;
         if (activeMute == null && this.plugin.getMode() != null) {
             activeMute = this.getUser(uuid).queryUserModeInfo(this.plugin.getMode()).getActiveMute();
+            mode = true;
         }
         if (activeMute == null) return;
+        if (activeMute.getEnd() != null && new Date().after(activeMute.getEnd())){
+            final UpdateBuilder<?, Long> updateBuilder;
+            if (mode) {
+                updateBuilder = getPlugin().getUserModeInfoDao().updateBuilder();
+            } else {
+                updateBuilder = getPlugin().getUserInfoDao().updateBuilder();
+            }
+            updateBuilder.updateColumnValue("activeMute_id", null);
+            updateBuilder.where().idEq(user.getDatabaseId());
+            updateBuilder.update();
+            return;
+        }
         event.setCancelled(true);
-        // Todo add muted message
+        user.sendMessage(MessageType.ERROR, CoreMessageKeys.MUTED, "{0}", activeMute.getReason(), "{1}",
+                Util.formatDate(activeMute.getEnd(), user.getLocale()));
     }
 
     @Override

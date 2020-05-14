@@ -28,13 +28,16 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
     CMD_UNBAN_SYNTAX(false),
     CMD_UNBAN_DESCRIPTION(false),
     CMD_TEMPMUTE_SYNTAX(false),
-    CMD_TEMPMUTE_DESCRIPTION(false);
+    CMD_TEMPMUTE_DESCRIPTION(false),
+    MUTE,
+    MUTED;
 
     private boolean prefix;
 
     CoreMessageKeys(boolean prefix) {
         this.prefix = prefix;
     }
+
     CoreMessageKeys() {
         this.prefix = true;
     }
@@ -44,7 +47,7 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
 
     @Override
     public MessageKey getMessageKey() {
-        return MessageKey.of(masterKey+"."+name().toLowerCase());
+        return MessageKey.of(masterKey + "." + name().toLowerCase());
     }
 
     @Override

@@ -9,10 +9,22 @@ main: de.lightfall.core.bungee.MainBungee
 permissions:
   core.*:
     children:
-      core: true
-      core.killtask: true
-      core.reload.*: true
+      core.admin.*: true
+      core.punish.*: true
+  core.punish.*:
+    children:
+      core.punish.ban: true
+      core.punish.tempban: true
+      core.punish.mute: true
+      core.punish.tempmute: true
+      core.punish.unban: true
+      core.punish.unmute: true
+  core.admin.*:
+    children:
+      core.admin: true
+      core.admin.killtask: true
+      core.admin.reload.*: true
   core.reload.*:
     children:
-      core.reload: true
-      core.reload.messages: true
+      core.admin.reload: true
+      core.admin.reload.messages: true

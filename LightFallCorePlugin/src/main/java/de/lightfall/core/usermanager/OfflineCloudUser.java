@@ -52,7 +52,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
 
     @SneakyThrows
     public UserModeInfoModel queryUserModeInfo(String mode) {
-        return this.userManager.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("playerInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
+        return this.userManager.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("userInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
     }
 
     public CompletableFuture<IUserModeInfo> queryUserModeInfoAsync(String mode) {
@@ -89,7 +89,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
     }
 
     public void tempMute(ICloudUser sender, String mode, long length, String reason) {
-        punish(sender, mode, PunishmentType.TEMP_BAN, length, reason);
+        punish(sender, mode, PunishmentType.TEMP_MUTE, length, reason);
     }
 
     public CompletableFuture<Boolean> unMute(ICloudUser sender, String mode, String reason) {

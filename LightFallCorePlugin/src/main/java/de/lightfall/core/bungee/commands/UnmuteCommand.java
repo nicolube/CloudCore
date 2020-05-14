@@ -11,7 +11,7 @@ import de.lightfall.core.api.usermanager.ICloudUser;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 
 @CommandAlias("unmute")
-@CommandPermission("system.punishments.command.unmute")
+@CommandPermission("core.punish.unmute")
 public class UnmuteCommand extends BaseCommand {
 
     @Default

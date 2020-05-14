@@ -13,7 +13,7 @@ import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 
 import java.util.UUID;
 
-@CommandPermission("system.punishments.command.mute")
+@CommandPermission("core.punish.mute")
 @CommandAlias("mute")
 public class MuteCommand extends BaseCommand {
 
@@ -26,65 +26,23 @@ public class MuteCommand extends BaseCommand {
     @Default
     @Description("{@@core.cmd_mute_description}")
     @Syntax("{@@core.cmd_mute_syntax}")
-    @CommandPermission("system.punishments.noreason")
-    @CommandCompletion("@cloudPlayers")
-    public void onMute(BungeeCloudUser sender, OnlinePlayer onlinePlayer) {
-        CommandIssuer issuer = getCurrentCommandIssuer();
-        final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
-        this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
-            offlineCloudUser.mute(sender, null, "Kein Grund angegeben /  No reason given");
-            issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER_PERMANENTLY, "{0}", onlinePlayer.getPlayer().getName(), "{1}", "Kein Grund angegeben / No reason given");
-        });
-    }
-
-    @Default
-    @Description("{@@core.cmd_mute_description}")
-    @Syntax("{@@core.cmd_mute_syntax}")
-    @CommandCompletion("@cloudPlayers")
-    public void onMute(BungeeCloudUser sender, String offlinePlayer) {
+    @CommandCompletion("@cloudPlayers @nothing")
+    public void onMute(BungeeCloudUser sender, @Single String offlinePlayer, @Optional String reason) {
         CommandIssuer issuer = getCurrentCommandIssuer();
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(offlinePlayer).onComplete((listITask, iCloudOfflinePlayers) -> {
+            String lReason;
+            if (reason == null)
+                lReason = "Kein Grund angegeben / No reason given";
+            else
+                lReason = reason;
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
                 return;
             }
             final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
-                offlineCloudUser.mute(sender, null, "Kein Grund angegeben / No reason given");
-                issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER_PERMANENTLY, "{0}", iCloudOfflinePlayers.get(0).getName(), "{1}", "Kein Grund angegeben / No reason given");
-            });
-        });
-    }
-
-    @Default
-    @Description("{@@core.cmd_mute_description}")
-    @Syntax("{@@core.cmd_mute_syntax}")
-    @CommandPermission("system.punishments.noreason")
-    @CommandCompletion("@cloudPlayers @nothing")
-    public void onMute(BungeeCloudUser sender, OnlinePlayer onlinePlayer, String reason) {
-        CommandIssuer issuer = getCurrentCommandIssuer();
-        final UUID uniqueId = onlinePlayer.getPlayer().getUniqueId();
-        this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
-            offlineCloudUser.mute(sender, null, reason);
-            issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER_PERMANENTLY, "{0}", onlinePlayer.getPlayer().getName(), "{1}", reason);
-        });
-    }
-
-    @Default
-    @Description("{@@core.cmd_mute_description}")
-    @Syntax("{@@core.cmd_mute_syntax}")
-    @CommandCompletion("@cloudPlayers @nothing")
-    public void onMute(BungeeCloudUser sender, String offlinePlayer, String reason) {
-        CommandIssuer issuer = getCurrentCommandIssuer();
-        BridgePlayerManager.getInstance().getOfflinePlayerAsync(offlinePlayer).onComplete((listITask, iCloudOfflinePlayers) -> {
-            if (iCloudOfflinePlayers.isEmpty()) {
-                issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
-                return;
-            }
-            final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
-            this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
-                offlineCloudUser.mute(sender, null, reason);
-                issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER_PERMANENTLY, "{0}", iCloudOfflinePlayers.get(0).getName(), "{1}", reason);
+                offlineCloudUser.mute(sender, null, lReason);
+                issuer.sendInfo(CoreMessageKeys.MUTED_PLAYER_PERMANENTLY, "{0}", iCloudOfflinePlayers.get(0).getName(), "{1}", lReason);
             });
         });
     }

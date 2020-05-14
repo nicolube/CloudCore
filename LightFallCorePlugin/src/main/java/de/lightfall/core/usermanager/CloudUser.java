@@ -11,6 +11,7 @@ import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.MessageDocument;
 import de.lightfall.core.api.channelhandeler.documents.TeleportDocument;
+import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.api.punishments.PunishmentType;
 import de.lightfall.core.api.usermanager.ICloudUser;
@@ -31,6 +32,10 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
 
     @Override
     public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements) {
+        if (isOnline()) {
+            this.userManager.getPlugin().getCommandManager().getCommandIssuer(getPlayer()).sendMessage(type, key, replacements);
+            return;
+        }
         BridgePlayerManager.getInstance().getOnlinePlayerAsync(this.uuid).onComplete((iTask, iCloudPlayer) -> {
             final ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(iCloudPlayer.getConnectedService().getUniqueId());
             ChannelHandler.send(cloudService, new MessageDocument(this.uuid, type, key, replacements));
@@ -99,12 +104,15 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
                 return;
             }
             if (isMute) {
-                // Todo send mute info to player
+                sendMessage(MessageType.ERROR, CoreMessageKeys.MUTE, "{0}", punishmentModel.getReason(), "{1}",
+                        Util.formatDate(punishmentModel.getEnd(), getLocale()));
                 return;
             }
             if (type.equals(PunishmentType.KICK)) {
-                if (mode == null)
+                if (mode == null) {
                     BridgePlayerManager.getInstance().proxyKickPlayer(getCloudPlayer(), ChatColor.translateAlternateColorCodes('&', reason));
+                    return;
+                }
                 // Todo send kick info to player
                 move("Lobby-1");
             }

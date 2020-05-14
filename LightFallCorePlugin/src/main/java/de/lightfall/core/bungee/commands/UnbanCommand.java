@@ -11,7 +11,7 @@ import de.lightfall.core.api.usermanager.ICloudUser;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 
 @CommandAlias("unban")
-@CommandPermission("system.punishments.command.unban")
+@CommandPermission("core.punish.unmban")
 public class UnbanCommand extends BaseCommand {
 
     @Default

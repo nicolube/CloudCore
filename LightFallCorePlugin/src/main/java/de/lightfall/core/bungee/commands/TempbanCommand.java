@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @CommandAlias("tempban")
-@CommandPermission("system.punishments.command.tempban")
+@CommandPermission("core.punish.tempban")
 public class TempbanCommand extends BaseCommand {
 
     private final MainBungee plugin;
@@ -28,60 +28,12 @@ public class TempbanCommand extends BaseCommand {
     }
 
     @Default
-    @CommandCompletion("@cloudPlayers")
+    @CommandCompletion("@cloudPlayers @nothing")
     @Description("{@@core.cmd_tempban_description}")
     @Syntax("{@@core.cmd_tempban_syntax}")
-    @CommandPermission("system.punishments.noreason")
-    public void onTempBan(BungeeCloudUser sender, OnlinePlayer onlinePlayer, String time) {
+    public void onBan(BungeeCloudUser sender, @Single String player, @Single String time, @Optional String reason) {
         CommandIssuer issuer = getCurrentCommandIssuer();
-        String reason = "Kein Grund angegeben / No reason given";
-        Long timeInSeconds = parseString(time);
-
-        if (timeInSeconds == null) {
-            issuer.sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
-            return;
-        }
-
-        issuer.sendInfo(CoreMessageKeys.BANNED_PLAYER, "{0}", onlinePlayer.getPlayer().getName(),
-                "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
-                "{2}", reason);
-        CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
-                sender, null, timeInSeconds, reason
-        );
-
-    }
-
-    @Default
-    @CommandCompletion("@cloudPlayers")
-    @Description("{@@core.cmd_tempban_description}")
-    @Syntax("{@@core.cmd_tempban_syntax}")
-    public void onTempBan(BungeeCloudUser sender, OnlinePlayer onlinePlayer, String time, String reason) {
-        CommandIssuer issuer = getCurrentCommandIssuer();
-        Long timeInSeconds = parseString(time);
-
-        if (timeInSeconds == null) {
-            issuer.sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
-            return;
-        }
-
-        issuer.sendInfo(CoreMessageKeys.BANNED_PLAYER, "{0}", onlinePlayer.getPlayer().getName(),
-                "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
-                "{2}", reason);
-        CoreAPI.getInstance().getUserManager().getUser(onlinePlayer.getPlayer().getUniqueId()).tempMute(
-                sender, null, timeInSeconds, reason
-        );
-
-    }
-
-    @Default
-    @CommandCompletion("@cloudPlayers")
-    @Description("{@@core.cmd_tempban_description}")
-    @Syntax("{@@core.cmd_tempban_syntax}")
-    @CommandPermission("system.punishments.noreason")
-    public void onBan(BungeeCloudUser sender, String player, String time) {
-        CommandIssuer issuer = getCurrentCommandIssuer();
-        String reason = "Kein Grund angegeben / No reason given";
-        Long timeInSeconds = parseString(time);
+        Long timeInSeconds = Util.stringToMilesPhrase(time);;
 
         if (timeInSeconds == null) {
             issuer.sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
@@ -89,6 +41,11 @@ public class TempbanCommand extends BaseCommand {
         }
 
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
+            String lReason;
+            if (reason == null)
+                lReason = "Kein Grund angegeben / No reason given";
+            else
+                lReason = reason;
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
                 return;
@@ -97,92 +54,9 @@ public class TempbanCommand extends BaseCommand {
             this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
                 issuer.sendInfo(CoreMessageKeys.BANNED_PLAYER, "{0}", iCloudOfflinePlayers.get(0).getName(),
                         "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
-                        "{2}", reason);
-                offlineCloudUser.tempMute(
-                        sender, null, timeInSeconds, reason
-                );
+                        "{2}", lReason);
+                offlineCloudUser.tempMute(sender, null, timeInSeconds, lReason);
             });
         });
     }
-
-    @Default
-    @CommandCompletion("@cloudPlayers")
-    @Description("{@@core.cmd_tempban_description}")
-    @Syntax("{@@core.cmd_tempban_syntax}")
-    public void onBan(BungeeCloudUser sender, String player, String time, String reason) {
-        CommandIssuer issuer = getCurrentCommandIssuer();
-        Long timeInSeconds = parseString(time);
-
-        if (timeInSeconds == null) {
-            issuer.sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
-            return;
-        }
-
-        BridgePlayerManager.getInstance().getOfflinePlayerAsync(player).onComplete((listITask, iCloudOfflinePlayers) -> {
-            if (iCloudOfflinePlayers.isEmpty()) {
-                issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER);
-                return;
-            }
-            final UUID uniqueId = iCloudOfflinePlayers.get(0).getUniqueId();
-            this.plugin.getUserManager().loadUser(uniqueId).thenAccept(offlineCloudUser -> {
-                issuer.sendInfo(CoreMessageKeys.BANNED_PLAYER, "{0}", iCloudOfflinePlayers.get(0).getName(),
-                        "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
-                        "{2}", reason);
-                offlineCloudUser.tempMute(
-                        sender, null, timeInSeconds, reason
-                );
-            });
-        });
-    }
-
-
-    private Long parseString(String string) {
-
-        try {
-            if (string.contains(",")) {
-                long timeInSeconds = 0L;
-                for (String part : string.split(",")) {
-                    if (string.contains("s")) {
-                        timeInSeconds += Long.parseLong(string.split("s")[0]);
-                    }
-                    if (string.contains("m")) {
-                        timeInSeconds += TimeUnit.MINUTES.toSeconds(Long.parseLong(string.split("m")[0]));
-                    }
-                    if (string.contains("h")) {
-                        timeInSeconds += TimeUnit.HOURS.toSeconds(Long.parseLong(string.split("h")[0]));
-                    }
-                    if (string.contains("d")) {
-                        timeInSeconds += TimeUnit.DAYS.toSeconds(Long.parseLong(string.split("d")[0]));
-                    }
-                    if (string.contains("mo")) {
-                        timeInSeconds += TimeUnit.DAYS.toSeconds(Long.parseLong(string.split("mo")[0]) * 30);
-                    }
-                }
-                if (timeInSeconds == 0L || timeInSeconds < 0L) {
-                    return null;
-                }
-                return timeInSeconds;
-            } else {
-                if (string.contains("s")) {
-                    return Long.parseLong(string.split("s")[0]);
-                }
-                if (string.contains("m")) {
-                    return TimeUnit.MINUTES.toSeconds(Long.parseLong(string.split("m")[0]));
-                }
-                if (string.contains("h")) {
-                    return TimeUnit.HOURS.toSeconds(Long.parseLong(string.split("h")[0]));
-                }
-                if (string.contains("d")) {
-                    return TimeUnit.DAYS.toSeconds(Long.parseLong(string.split("d")[0]));
-                }
-                if (string.contains("mo")) {
-                    return TimeUnit.DAYS.toSeconds(Long.parseLong(string.split("mo")[0]) * 30);
-                }
-                return null;
-            }
-        } catch (Exception ignored) {
-            return null;
-        }
-    }
-
 }

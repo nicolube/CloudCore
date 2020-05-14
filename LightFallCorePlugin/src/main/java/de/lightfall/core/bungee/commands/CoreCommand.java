@@ -13,7 +13,7 @@ import de.lightfall.core.bungee.MainBungee;
 import net.md_5.bungee.api.CommandSender;
 
 @CommandAlias("core")
-@CommandPermission("core")
+@CommandPermission("core.admin")
 public class CoreCommand extends BaseCommand {
 
     private final MainBungee plugin;
@@ -23,7 +23,7 @@ public class CoreCommand extends BaseCommand {
     }
 
     @Subcommand("reload")
-    @CommandPermission("core.reload")
+    @CommandPermission("core.admin.reload")
     public class ReloadSubCommand extends BaseCommand {
 
         @CommandPermission("core.reload.messages")
@@ -36,7 +36,7 @@ public class CoreCommand extends BaseCommand {
 
     @Subcommand("killtask")
     @CommandCompletion("@taskGroup")
-    @CommandPermission("core.killtask")
+    @CommandPermission("core.admin.killtask")
     @Syntax("<taskGroup>")
     public void onDefault(CommandSender sender, GroupConfiguration groupConfiguration) {
         CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServicesByGroupAsync(groupConfiguration.getName()).onComplete(serviceInfoSnapshots -> {
