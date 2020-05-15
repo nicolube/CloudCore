@@ -15,6 +15,7 @@ import de.lightfall.core.api.channelhandeler.documents.Document;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class NodeChannelHandler extends ChannelHandler implements IPacketListener {
     private MainModule module;
@@ -34,10 +35,11 @@ public class NodeChannelHandler extends ChannelHandler implements IPacketListene
         final ByteArrayInputStream bis = new ByteArrayInputStream(packet.getBody());
         final ObjectInputStream objectInputStream = new ObjectInputStream(bis);
         final Document document = (Document) objectInputStream.readObject();
-        final UUID serviceTaskSender = UUID.fromString(packet.getHeader().getString("sender"));
-        CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServiceAsync(serviceTaskSender)
-                .onComplete(serviceInfoSnapshot -> receive(serviceInfoSnapshot, document));
-        System.out.println(document.getClass());
+        final String serviceTaskSender = packet.getHeader().getString("sender");
+        CompletableFuture.runAsync(() -> {
+            ServiceInfoSnapshot cloudServiceByName = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServiceByName(serviceTaskSender);
+            receive(cloudServiceByName, document);
+        });
     }
 
     @Override
@@ -45,7 +47,7 @@ public class NodeChannelHandler extends ChannelHandler implements IPacketListene
 
     private void receive(ServiceInfoSnapshot sender, Document document) {
         if (document instanceof ConfigRequestDocument) {
-            this.module.getLogger().info(sender.getServiceId().getName()+" requested configuration");
+            this.module.getLogger().info(sender.getServiceId().getName() + " requested configuration");
             send(sender, new ConfigDocument(this.module.getMConfig()));
         }
     }

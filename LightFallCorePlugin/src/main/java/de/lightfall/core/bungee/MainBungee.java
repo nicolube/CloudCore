@@ -80,9 +80,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     @SneakyThrows
     public void onEnable() {
         getLogger().info(Util.getLogo());
-        Thread.sleep(1000);
         ChannelHandler.sendToCloud(new ConfigRequestDocument());
-        Thread.sleep(1000);
 
         this.enabled = true;
         if (this.config != null) configure(this.config);

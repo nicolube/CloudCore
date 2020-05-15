@@ -81,7 +81,7 @@ public abstract class ChannelHandler {
                 objectOutputStream.flush();
                 bos.flush();
                 final byte[] bytes = bos.toByteArray();
-                final JsonDocument sender = new JsonDocument().append("sender", Wrapper.getInstance().getServiceId().getUniqueId().toString());
+                final JsonDocument sender = new JsonDocument().append("sender", Wrapper.getInstance().getServiceId().getName());
                 CloudNetDriver.getInstance().getNetworkClient().sendPacket(new Packet(100, sender, bytes));
                 return;
             }
