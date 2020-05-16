@@ -11,6 +11,7 @@ import java.io.*;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -99,7 +100,6 @@ public class Util {
             return null;
         }
     }
-
     static {
         logo = new BufferedReader(new InputStreamReader(Util.class.getResourceAsStream("/resources/logo.txt")))
                 .lines().parallel().collect(Collectors.joining("\n"));

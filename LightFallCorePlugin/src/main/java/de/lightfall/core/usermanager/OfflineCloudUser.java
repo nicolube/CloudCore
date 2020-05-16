@@ -14,12 +14,12 @@ import de.lightfall.core.models.UserModeInfoModel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.query.QueryOptions;
 
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class OfflineCloudUser implements IOfflineCloudUser {
@@ -47,7 +47,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
     }
 
     public CompletableFuture<IUserInfo> quarryUserInfoAsync() {
-        return CompletableFuture.supplyAsync(() -> queryUserInfo());
+        return CompletableFuture.supplyAsync(this::queryUserInfo);
     }
 
     @SneakyThrows
@@ -126,10 +126,10 @@ public class OfflineCloudUser implements IOfflineCloudUser {
                 }
                 if (punishmentModel == null)
                     return false;
-                String field = null;
+                String field;
                 if (isBan) {
                     field = "activeBan_id";
-                } else if (isMute) {
+                } else {
                     field = "activeMute_id";
                 }
                 punishmentModel.unPunish(sender.queryUserInfo(), new Date(), reason);
@@ -191,6 +191,19 @@ public class OfflineCloudUser implements IOfflineCloudUser {
                 throwables.printStackTrace();
             }
             return null;
+        });
+    }
+
+    public CompletableFuture<Integer> getWight() {
+        LuckPerms api = LuckPermsProvider.get();
+        return api.getUserManager().loadUser(this.uuid).thenApply(user -> {
+            QueryOptions queryOptions = api.getContextManager().getStaticQueryOptions();
+            try {
+                return Integer.parseInt(Objects.requireNonNull(user.getCachedData().getMetaData(queryOptions)
+                        .getMetaValue("weight")));
+            } catch (Exception ignore) {
+                return 0;
+            }
         });
     }
 
