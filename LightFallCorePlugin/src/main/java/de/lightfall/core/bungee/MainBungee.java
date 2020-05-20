@@ -147,6 +147,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         this.commandManager.registerCommand(new KickCommand(this));
         this.commandManager.registerCommand(new UnbanCommand());
         this.commandManager.registerCommand(new UnmuteCommand());
+        this.commandManager.registerCommand(new PingCommand());
 
         getLogger().info("Starting user manager...");
         this.userManager = new BungeeUserManager(this);

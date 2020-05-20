@@ -33,6 +33,8 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
     CMD_KICK_SYNTAX,
     CMD_KICK_DESCRIPTION,
     CMD_KICK_KICKED,
+    CMD_PING_RESPONSE,
+    CMD_PING_DESCRPTION,
     MUTE,
     MUTED,
     TIMEFORMAT_FAIL;
