@@ -9,6 +9,6 @@ public class Config {
 
     private DatabaseConfig database;
     private Map<String, String[]> chatColorConfig;
-    private String[] blcklistedWorlds;
+
 
 }
