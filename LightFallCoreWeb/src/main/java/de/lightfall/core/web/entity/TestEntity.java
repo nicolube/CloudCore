@@ -1,4 +1,4 @@
-package de.lightfall.core.app;
+package de.lightfall.core.web.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

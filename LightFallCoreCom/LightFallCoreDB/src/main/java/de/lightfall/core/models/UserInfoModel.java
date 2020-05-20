@@ -21,6 +21,9 @@ public class UserInfoModel implements IUserInfo {
     private long teamspeak_id;
 
     @DatabaseField
+    private long forum_id;
+
+    @DatabaseField
     private long discord_id;
 
     @DatabaseField

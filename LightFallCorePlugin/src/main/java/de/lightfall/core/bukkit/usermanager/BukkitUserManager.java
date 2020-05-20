@@ -52,8 +52,8 @@ public class BukkitUserManager extends UserManager implements Listener {
                 this.userMap.put(uuid, bukkitCloudUser);
                 if (this.plugin.getMode() != null)
                     this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
         });
     }
@@ -63,20 +63,22 @@ public class BukkitUserManager extends UserManager implements Listener {
         final Player player = event.getPlayer();
         CompletableFuture.runAsync(() -> {
             try {
-                final UserInfoModel playerInfo = this.plugin.getUserInfoDao().queryBuilder().where().eq("uuid", player.getUniqueId()).queryForFirst();
-                final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(player, playerInfo.getId(), this);
-                bukkitCloudUser.setLocale(playerInfo.getLocale(), false);
+                final UserInfoModel userInfo = quarryUserInfo(player.getUniqueId());
+                final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(player, userInfo.getId(), this);
+                bukkitCloudUser.setLocale(userInfo.getLocale(), false);
 
                 if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
                 this.userMap.put(player.getUniqueId(), bukkitCloudUser);
                 final String mode = this.plugin.getMode();
                 if (mode != null) {
-                    final UserModeInfoModel userModeInfoModel = quarryUserModeInfo(player.getPlayer().getUniqueId(), mode);
-                    if (userModeInfoModel == null)
-                        this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, mode));
+                    final UserModeInfoModel userModeInfoModel = quarryUserModeInfo(userInfo.getId(), mode);
+                    if (userModeInfoModel == null) {
+                        this.plugin.getUserModeInfoDao().create(new UserModeInfoModel(userInfo, mode));
+                    }
                 }
                 Bukkit.getPluginManager().callEvent(new PlayerLoginSuccessEvent(event, bukkitCloudUser));
-            } catch (SQLException ignored) {
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
         });
     }
@@ -94,11 +96,11 @@ public class BukkitUserManager extends UserManager implements Listener {
         PunishmentModel activeMute = user.queryUserInfo().getActiveMute();
         boolean mode = false;
         if (activeMute == null && this.plugin.getMode() != null) {
-            activeMute = this.getUser(uuid).queryUserModeInfo(this.plugin.getMode()).getActiveMute();
+            activeMute = user.queryUserModeInfo(this.plugin.getMode()).getActiveMute();
             mode = true;
         }
         if (activeMute == null) return;
-        if (activeMute.getEnd() != null && new Date().after(activeMute.getEnd())){
+        if (activeMute.getEnd() != null && new Date().after(activeMute.getEnd())) {
             final UpdateBuilder<?, Long> updateBuilder;
             if (mode) {
                 updateBuilder = getPlugin().getUserModeInfoDao().updateBuilder();

@@ -5,26 +5,4 @@ depends:
   - CloudNet-Bridge
 
 main: de.lightfall.core.bungee.MainBungee
-
-permissions:
-  core.*:
-    children:
-      core.admin.*: true
-      core.punish.*: true
-  core.punish.*:
-    children:
-      core.punish.ban: true
-      core.punish.tempban: true
-      core.punish.mute: true
-      core.punish.tempmute: true
-      core.punish.unban: true
-      core.punish.unmute: true
-  core.admin.*:
-    children:
-      core.admin: true
-      core.admin.killtask: true
-      core.admin.reload.*: true
-  core.reload.*:
-    children:
-      core.admin.reload: true
-      core.admin.reload.messages: true
+20

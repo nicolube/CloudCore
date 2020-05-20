@@ -75,8 +75,12 @@
     </build>
     <repositories>
         <repository>
+            <id>lightfall</id>
+            <url>https://nexus.lightfall.de/repository/maven-public/</url>
+        </repository>
+        <repository>
             <id>cloudnet</id>
-            <url>https://cloudnetservice.eu/repositories/</url>
+            <url>https://repo.cloudnetservice.eu/repository/releases/</url>
         </repository>
         <!-- This adds the Spigot Maven repository to the build -->
         <repository>
@@ -114,26 +118,26 @@
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-driver</artifactId>
-            <version>3.2.0-RELEASE</version>
+            <version>3.3.0-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-bridge</artifactId>
-            <version>3.0.0-RELEASE</version>
+            <version>3.3.0-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-wrapper-jvm</artifactId>
-            <version>3.2.0-RELEASE</version>
+            <version>3.3.0-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <!--  cloudnet common for plugins and modules -->
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-common</artifactId>
-            <version>3.2.0-RELEASE</version>
+            <version>3.3.0-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -146,13 +150,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.32.Final</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -5,7 +5,6 @@ import de.dytanic.cloudnet.common.concurrent.ITask;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
-import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
@@ -36,7 +35,7 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
             this.userManager.getPlugin().getCommandManager().getCommandIssuer(getPlayer()).sendMessage(type, key, replacements);
             return;
         }
-        BridgePlayerManager.getInstance().getOnlinePlayerAsync(this.uuid).onComplete((iTask, iCloudPlayer) -> {
+        this.userManager.getPlayerManager().getOnlinePlayerAsync(this.uuid).onComplete((iTask, iCloudPlayer) -> {
             final ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(iCloudPlayer.getConnectedService().getUniqueId());
             ChannelHandler.send(cloudService, new MessageDocument(this.uuid, type, key, replacements));
         });
@@ -52,7 +51,7 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
 
     @Override
     public ITask<? extends ICloudPlayer> moveToPlayer(UUID uuid) {
-        final ITask<? extends ICloudPlayer> playerAsync = BridgePlayerManager.getInstance().getOnlinePlayerAsync(uuid);
+        final ITask<? extends ICloudPlayer> playerAsync = this.userManager.getPlayerManager().getOnlinePlayerAsync(uuid);
         playerAsync.onComplete(p -> move(p.getConnectedService().getServerName()));
         return playerAsync;
     }
@@ -74,15 +73,15 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
 
     @Override
     public void move(String service) {
-        BridgePlayerManager.getInstance().getOnlinePlayerAsync(getUuid()).onComplete(p -> {
+        this.userManager.getPlayerManager().getOnlinePlayerAsync(this.uuid).onComplete(p -> {
             if (p.getConnectedService().getServerName().equals(service)) return;
-            BridgePlayerManager.getInstance().proxySendPlayer(getCloudPlayer(), service);
+            this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).connect(service);
         });
     }
 
     @Override
     public ICloudPlayer getCloudPlayer() {
-        return BridgePlayerManager.getInstance().getOnlinePlayer(this.uuid);
+        return this.userManager.getPlayerManager().getOnlinePlayer(this.uuid);
     }
 
     @Override
@@ -95,12 +94,12 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
             if (isBan) {
                 final String formatBan = Util.formatBan(punishmentModel.getEnd(), reason, this.locale);
                 if (mode == null) {
-                    BridgePlayerManager.getInstance().proxyKickPlayer(getCloudPlayer(), formatBan);
+                    this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).kick(formatBan);
                     return;
                 }
                 move("Lobby-1");
                 // Todo send mode ban info to player (temporary solution)
-                BridgePlayerManager.getInstance().proxySendPlayerMessage(cloudPlayer, formatBan);
+                this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).sendChatMessage(formatBan);
                 return;
             }
             if (isMute) {
@@ -110,7 +109,7 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
             }
             if (type.equals(PunishmentType.KICK)) {
                 if (mode == null) {
-                    BridgePlayerManager.getInstance().proxyKickPlayer(getCloudPlayer(), ChatColor.translateAlternateColorCodes('&', reason));
+                    this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).kick(ChatColor.translateAlternateColorCodes('&', reason));
                     return;
                 }
                 // Todo send kick info to player

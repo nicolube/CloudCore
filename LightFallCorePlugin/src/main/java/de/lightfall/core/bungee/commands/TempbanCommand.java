@@ -40,11 +40,6 @@ public class TempbanCommand extends BaseCommand {
         }
 
         BridgePlayerManager.getInstance().getOfflinePlayerAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
-            String lReason;
-            if (reason == null)
-                lReason = "Kein Grund angegeben / No reason given";
-            else
-                lReason = reason;
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER, "{search}", offlinePlayerName);
                 return;
@@ -58,8 +53,8 @@ public class TempbanCommand extends BaseCommand {
                     }
                     issuer.sendInfo(CoreMessageKeys.CMD_TEMPBAN_BANNED, "{0}", iCloudOfflinePlayers.get(0).getName(),
                             "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
-                            "{2}", lReason);
-                    offlineCloudUser.tempMute(sender, null, timeInSeconds, lReason);
+                            "{2}", reason);
+                    offlineCloudUser.tempMute(sender, null, timeInSeconds, reason);
                 } catch (ExecutionException | InterruptedException ex) {
                     ex.printStackTrace();
                 }
