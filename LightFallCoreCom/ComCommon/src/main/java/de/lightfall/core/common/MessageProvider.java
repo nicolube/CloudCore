@@ -1,39 +1,31 @@
-package de.lightfall.core;
+package de.lightfall.core.common;
 
-import co.aikar.commands.CommandManager;
 import co.aikar.locales.MessageKeyProvider;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import de.lightfall.core.api.message.IMessageKeyProvider;
-import de.lightfall.core.api.message.IMessageProvider;
 import de.lightfall.core.models.MessageModel;
 import lombok.SneakyThrows;
-import net.md_5.bungee.api.ChatColor;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class MessageProvider implements IMessageProvider {
+public class MessageProvider {
 
     private final Dao<MessageModel, Long> messageDao;
-    private final CommandManager commandManager;
-    private final HashMap<Locale, HashMap<MessageKeyProvider, String>> messages;
+    protected final HashMap<Locale, HashMap<MessageKeyProvider, String>> messages;
     private Logger logger;
 
     @SneakyThrows
-    public MessageProvider(ConnectionSource connectionSource, CommandManager commandManager, Logger logger) {
+    public MessageProvider(Dao<MessageModel, Long> messageDao, Logger logger) {
         this.logger = logger;
-        this.commandManager = commandManager;
         this.messages = new HashMap<>();
-        this.messageDao = DaoManager.createDao(connectionSource, MessageModel.class);
-        TableUtils.createTableIfNotExists(connectionSource, MessageModel.class);
+        this.messageDao = messageDao;
     }
 
-    @Override
     @SneakyThrows
     public void registerMessageBundle(IMessageKeyProvider keyProvider, ResourceBundle bundle) {
         MessageKeyProvider[] keys = null;
@@ -70,33 +62,21 @@ public class MessageProvider implements IMessageProvider {
             }
         });
         final String prefixKey = mappedMessages.remove(keyProvider);
-        final String prefix = ChatColor.translateAlternateColorCodes('&', prefixKey);
+        final String prefix = translateAlternateColorCodes('&', prefixKey);
         mappedMessages.forEach((k, v) -> {
-            v = ChatColor.translateAlternateColorCodes('&', v);
+            v = translateAlternateColorCodes('&', v);
             this.messages.get(locale).put(k, v);
             if (k.hasPrefix())
                 v = prefix + v;
-            this.commandManager.getLocales().addMessage(locale, k, v);
+            addMessage(locale, k, v);
         });
     }
 
-    public void loadCommandManagerAsync(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager){
-        CompletableFuture.runAsync(() -> loadCommandManager(prefixKey, keyProvider, commandManager));
+    protected String translateAlternateColorCodes(char c, String prefixKey) {
+        return prefixKey.replaceAll("&\\S", "");
     }
 
-    @SneakyThrows
-    public void loadCommandManager(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager) {
-        IMessageKeyProvider[] keys = (IMessageKeyProvider[]) keyProvider.getClass().getDeclaredMethod("values").invoke(null);
-        final Set<Locale> supportedLanguages = this.commandManager.getSupportedLanguages();
-        supportedLanguages.forEach(locale -> {
-            for (IMessageKeyProvider key : keys) {
-                String message = this.messages.get(locale).get(key);
-                if (key.hasPrefix())
-                    message = this.messages.get(locale).get(prefixKey)+message;
-                this.commandManager.getLocales().addMessage(locale, key, message);
-            }
-        });
-    }
+    protected native void addMessage(Locale locale, IMessageKeyProvider k, String v);
 
     public String getMessage(IMessageKeyProvider key, Locale locale) {
         final HashMap<MessageKeyProvider, String> providerStringHashMap = this.messages.get(locale);

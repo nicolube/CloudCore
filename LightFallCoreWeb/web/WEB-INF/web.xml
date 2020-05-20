@@ -2,6 +2,7 @@
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         metadata-complete="true"
          version="4.0">
     <context-param>
         <param-name>resteasy.servlet.mapping.prefix</param-name>
@@ -15,7 +16,7 @@
         </servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>de.lightfall.core.app.LighfallWebApplication</param-value>
+            <param-value>de.lightfall.core.web.app.LighfallWebApplication</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

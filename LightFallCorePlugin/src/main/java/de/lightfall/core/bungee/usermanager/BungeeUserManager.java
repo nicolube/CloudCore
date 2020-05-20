@@ -62,12 +62,9 @@ public class BungeeUserManager extends UserManager implements Listener {
     @EventHandler
     public void onLogin(LoginEvent event) {
         final UUID uuid = event.getConnection().getUniqueId();
-        try {
-            this.plugin.getUserInfoDao().create(new UserInfoModel(uuid));
-        } catch (SQLException ignored) {
-
-        }
-        final UserInfoModel userInfoModel = quarryUserInfo(uuid);
+        UserInfoModel userInfoModel = quarryUserInfo(uuid);
+        if (userInfoModel == null)
+            userInfoModel = this.plugin.getUserInfoDao().createIfNotExists(new UserInfoModel(uuid));
         final BungeeCloudUser bungeeCloudUser = new BungeeCloudUser(uuid, userInfoModel.getId(), this);
         // Todo whitelist
         Locale locale = Locale.forLanguageTag(userInfoModel.getLocale());

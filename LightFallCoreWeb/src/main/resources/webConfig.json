@@ -1,0 +1,7 @@
+{
+  "database": {
+    "url": "jdbc:h2:mem:lightfallcore",
+    "user": "username",
+    "password": "password"
+  }
+}

@@ -1,7 +1,6 @@
 package de.lightfall.core.api.message;
 
 import co.aikar.commands.CommandManager;
-import co.aikar.locales.MessageKey;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

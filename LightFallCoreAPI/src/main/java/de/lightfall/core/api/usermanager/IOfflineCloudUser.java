@@ -61,7 +61,7 @@ public interface IOfflineCloudUser {
      *
      * @return CompletableFuture<IUserInfo>
      */
-    public CompletableFuture<IUserInfo> quarryUserInfoAsync();
+    public CompletableFuture<IUserInfo> queryUserInfoAsync();
 
     /**
      * Quarry {@link IUserModeInfo} for current {@link ICloudUser}
@@ -91,7 +91,7 @@ public interface IOfflineCloudUser {
      *
      * @return CompletableFuture<List < ? extends IPunishment>>
      */
-    public CompletableFuture<List<? extends IPunishment>> quarryPunishmentsAsync(String mode);
+    public CompletableFuture<List<? extends IPunishment>> queryPunishmentsAsync(String mode);
 
 
     /**

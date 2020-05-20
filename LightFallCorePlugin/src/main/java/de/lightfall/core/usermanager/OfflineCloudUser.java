@@ -43,16 +43,18 @@ public class OfflineCloudUser implements IOfflineCloudUser {
 
     @SneakyThrows
     public UserInfoModel queryUserInfo() {
-        return this.userManager.getPlugin().getUserInfoDao().queryForId(databaseId);
+        UserInfoModel model = this.userManager.getPlugin().getUserInfoDao().queryForId(databaseId);
+        return model.getId() == 0 ? null : model;
     }
 
-    public CompletableFuture<IUserInfo> quarryUserInfoAsync() {
+    public CompletableFuture<IUserInfo> queryUserInfoAsync() {
         return CompletableFuture.supplyAsync(this::queryUserInfo);
     }
 
     @SneakyThrows
     public UserModeInfoModel queryUserModeInfo(String mode) {
-        return this.userManager.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("userInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
+        UserModeInfoModel model = this.userManager.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("userInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
+        return model.getId() == 0 ? null : model;
     }
 
     public CompletableFuture<IUserModeInfo> queryUserModeInfoAsync(String mode) {
@@ -68,7 +70,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
                 .where().eq("userInfo_id", this.databaseId).and().eq("userModeInfo", queryUserModeInfo(mode)).query();
     }
 
-    public CompletableFuture<List<? extends IPunishment>> quarryPunishmentsAsync(String mode) {
+    public CompletableFuture<List<? extends IPunishment>> queryPunishmentsAsync(String mode) {
         return CompletableFuture.supplyAsync(() -> queryPunishments(mode));
     }
 

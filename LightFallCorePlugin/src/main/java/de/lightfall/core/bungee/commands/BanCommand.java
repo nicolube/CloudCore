@@ -9,6 +9,8 @@ import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 
+import javax.swing.text.NumberFormatter;
+import java.text.DecimalFormat;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 

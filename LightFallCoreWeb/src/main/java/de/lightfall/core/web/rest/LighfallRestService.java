@@ -1,7 +1,8 @@
-package de.lightfall.core.rest;
+package de.lightfall.core.web.rest;
 
-import de.lightfall.core.app.Secured;
-import de.lightfall.core.app.TestEntity;
+import de.lightfall.core.web.app.Secured;
+import de.lightfall.core.web.entity.TestEntity;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

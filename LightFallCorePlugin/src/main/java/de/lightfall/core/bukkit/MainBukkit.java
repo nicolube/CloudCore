@@ -3,18 +3,17 @@ package de.lightfall.core.bukkit;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import de.dytanic.cloudnet.wrapper.Wrapper;
 import de.lightfall.core.InternalCoreAPI;
-import de.lightfall.core.MessageProvider;
+import de.lightfall.core.ModuleMessageProvider;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.ConfigRequestDocument;
 import de.lightfall.core.api.config.Config;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bukkit.usermanager.BukkitUserManager;
+import de.lightfall.core.common.DatabaseProvider;
 import de.lightfall.core.models.PunishmentModel;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.models.UserModeInfoModel;
@@ -41,7 +40,7 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     @Getter
     private PaperCommandManager commandManager;
     @Getter
-    private MessageProvider messageProvider;
+    private ModuleMessageProvider messageProvider;
     @Getter
     private Dao<UserInfoModel, Long> userInfoDao;
     @Getter
@@ -78,16 +77,10 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     private void configure(Config config) {
         getLogger().info("Connect to database...");
         //System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "INFO");
-
-        this.connectionSource = new JdbcConnectionSource(this.config.getDatabase().getUrl(),
-                this.config.getDatabase().getUser(), this.config.getDatabase().getPassword());
-
-        this.userInfoDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
-        this.userModeInfoDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
-        this.punishmentDao = DaoManager.createDao(this.connectionSource, PunishmentModel.class);
-        TableUtils.createTableIfNotExists(this.connectionSource, UserInfoModel.class);
-        TableUtils.createTableIfNotExists(this.connectionSource, UserModeInfoModel.class);
-        TableUtils.createTableIfNotExists(this.connectionSource, PunishmentModel.class);
+        DatabaseProvider databaseProvider = new DatabaseProvider(config.getDatabase());
+        this.userInfoDao = databaseProvider.getUserInfoDao();
+        this.userModeInfoDao = databaseProvider.getUserModeInfoDao();
+        this.punishmentDao = databaseProvider.getPunishmentDao();
 
         getLogger().info("Create Event based executor...");
         this.eventBasedExecutions = new EventBasedExecutions(this);
@@ -107,7 +100,7 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
         });
 
         getLogger().info("Loading messages...");
-        this.messageProvider = new MessageProvider(this.connectionSource, this.commandManager, getLogger());
+        this.messageProvider = new ModuleMessageProvider(databaseProvider.getMessageDao(), this.commandManager, getLogger());
         this.commandManager.getSupportedLanguages().clear();
         this.commandManager.addSupportedLanguage(Locale.GERMAN);
         this.commandManager.addSupportedLanguage(Locale.ENGLISH);
