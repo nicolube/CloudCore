@@ -4,20 +4,17 @@ import de.lightfall.core.common.DatabaseProvider;
 import de.lightfall.core.models.UserInfoModel;
 import de.lightfall.core.web.app.ResponseBuilder;
 import de.lightfall.core.web.app.Secured;
-import de.lightfall.core.web.entity.PermissionsMapEntity;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.query.QueryOptions;
-import org.jboss.resteasy.plugins.providers.FormUrlEncodedProvider;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 @Path("/users/")
 public class UserService {
