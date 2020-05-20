@@ -1,4 +1,4 @@
-package de.lightfall.core.app;
+package de.lightfall.core.web.app;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

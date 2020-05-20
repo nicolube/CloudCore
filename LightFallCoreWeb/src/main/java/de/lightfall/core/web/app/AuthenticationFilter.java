@@ -1,4 +1,6 @@
-package de.lightfall.core.app;
+package de.lightfall.core.web.app;
+
+import de.lightfall.core.web.Secured;
 
 import java.io.IOException;
 import javax.annotation.Priority;

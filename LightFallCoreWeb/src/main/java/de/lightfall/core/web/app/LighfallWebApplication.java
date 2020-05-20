@@ -1,6 +1,6 @@
-package de.lightfall.core.app;
+package de.lightfall.core.web.app;
 
-import de.lightfall.core.rest.LighfallRestService;
+import de.lightfall.core.web.rest.LighfallRestService;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
