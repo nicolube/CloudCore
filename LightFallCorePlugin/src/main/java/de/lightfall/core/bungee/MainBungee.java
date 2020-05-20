@@ -144,6 +144,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         this.commandManager.registerCommand(new BanCommand(this));
         this.commandManager.registerCommand(new TempbanCommand(this));
         this.commandManager.registerCommand(new TempmuteCommand(this));
+        this.commandManager.registerCommand(new KickCommand(this));
         this.commandManager.registerCommand(new UnbanCommand());
         this.commandManager.registerCommand(new UnmuteCommand());
 
