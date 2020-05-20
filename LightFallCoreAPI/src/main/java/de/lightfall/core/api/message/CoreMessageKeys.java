@@ -30,6 +30,9 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
     CMD_UNMUTE_NOT_MUTED,
     CMD_UNMUTE_DESCRIPTION(false),
     CMD_UNMUTE_SYNTAX(false),
+    CMD_KICK_SYNTAX,
+    CMD_KICK_DESCRIPTION,
+    CMD_KICK_KICKED,
     MUTE,
     MUTED,
     TIMEFORMAT_FAIL;
