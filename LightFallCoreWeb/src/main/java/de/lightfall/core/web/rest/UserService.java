@@ -1,20 +1,24 @@
 package de.lightfall.core.web.rest;
 
+import com.j256.ormlite.stmt.Where;
 import de.lightfall.core.common.DatabaseProvider;
-import de.lightfall.core.models.UserInfoModel;
+import de.lightfall.core.common.models.TeamRecordModel;
+import de.lightfall.core.common.models.UserInfoModel;
 import de.lightfall.core.web.app.ResponseBuilder;
 import de.lightfall.core.web.app.Secured;
+import de.lightfall.core.web.app.Util;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.query.QueryOptions;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Path("/users/")
 public class UserService {
@@ -35,20 +39,30 @@ public class UserService {
     @Secured
     @Produces({"application/json"})
     @Path("permissions/{uuid}")
-    public Response getPermissions(@PathParam("uuid") String uuidString) {
+    public Response getPermissions(@PathParam("uuid") String uuid) {
         try {
-            if (!uuidString.contains("-")) {
-                uuidString = uuidString
-                        .replaceFirst( "([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)", "$1-$2-$3-$4-$5" );
-            }
-            UUID uuid = UUID.fromString(uuidString);
-            User user = luckPerms.getUserManager().loadUser(uuid).get();
-            Map<String, Boolean> permissionMap = user.getCachedData().getPermissionData(queryOptions).getPermissionMap();
+            User user = luckPerms.getUserManager().loadUser(Util.uuiFromString(uuid)).get();
+            Map<String, Boolean> permissionMap = user.getCachedData().getPermissionData().getPermissionMap();
             return new ResponseBuilder().success(permissionMap).build();
         } catch (Exception ex) {
             return new ResponseBuilder().error("invalid uuid").build();
         }
     }
+
+    @GET
+    @Secured
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("meta/{uuid}")
+    public Response getMeta(@PathParam("uuid") String uuid) {
+        try {
+            User user = luckPerms.getUserManager().loadUser(Util.uuiFromString(uuid)).get();
+            @NonNull Map<String, List<String>> metaMap = user.getCachedData().getMetaData().getMeta();
+            return new ResponseBuilder().success(metaMap).build();
+        } catch (Exception ex) {
+            return new ResponseBuilder().error("invalid uuid").build();
+        }
+    }
+
 
     @SneakyThrows
     @GET
@@ -57,7 +71,6 @@ public class UserService {
     @Path("{id}")
     public Response getUser(@PathParam("id") Long id, @QueryParam("type") String idType) {
         String column;
-        System.out.println(idType);
         if (idType == null)
             return new ResponseBuilder().error("invalid type").build();
         switch (idType) {
@@ -81,5 +94,30 @@ public class UserService {
         return new ResponseBuilder().success(userInfoModel).getResponse();
     }
 
+
+    @SneakyThrows
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("user/{id}")
+    public Response putRecord(@PathParam("id") Long id) {
+        if (this.databaseProvider.getWebTeamRecordDao().queryBuilder().where().eq("userInfo_id", id) != null)
+            return new ResponseBuilder().error("Record already exists.").build();
+        UserInfoModel userInfoModel = new UserInfoModel();
+        userInfoModel.setId(id);
+        TeamRecordModel teamRecordModel = new TeamRecordModel(userInfoModel);
+        return new ResponseBuilder().success(this.databaseProvider.getWebTeamRecordDao()
+                .createIfNotExists(teamRecordModel)).build();
+    }
+
+    @SneakyThrows
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("user/{id}")
+    public Response getRecord(@PathParam("id") Long id) {
+        Where<TeamRecordModel, Long> teamRecord = this.databaseProvider.getWebTeamRecordDao().queryBuilder().where().eq("userInfo_id", id);
+        if (teamRecord == null)
+            return new ResponseBuilder().error("Record not exists.").build();
+        return new ResponseBuilder().success(teamRecord).build();
+    }
 
 }

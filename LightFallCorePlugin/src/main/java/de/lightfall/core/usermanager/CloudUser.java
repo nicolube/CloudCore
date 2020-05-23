@@ -14,7 +14,7 @@ import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.api.punishments.PunishmentType;
 import de.lightfall.core.api.usermanager.ICloudUser;
-import de.lightfall.core.models.PunishmentModel;
+import de.lightfall.core.common.models.PunishmentModel;
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
 

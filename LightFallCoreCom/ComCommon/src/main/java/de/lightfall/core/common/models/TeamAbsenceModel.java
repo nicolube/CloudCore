@@ -1,4 +1,4 @@
-package de.lightfall.core.models;
+package de.lightfall.core.common.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@DatabaseTable(tableName = "web_team_record")
+@DatabaseTable(tableName = "web_team_absence")
 @NoArgsConstructor
-public class TeamRecordModel {
+public class TeamAbsenceModel {
 
     @DatabaseField(generatedId = true)
     private long id;

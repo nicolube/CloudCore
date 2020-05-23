@@ -3,6 +3,7 @@ package de.lightfall.core.web.app;
 import de.lightfall.core.common.DatabaseProvider;
 import de.lightfall.core.web.app.config.Config;
 import de.lightfall.core.web.rest.LighfallRestService;
+import de.lightfall.core.web.rest.TeamService;
 import de.lightfall.core.web.rest.UserService;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -46,8 +47,7 @@ public class LighfallWebApplication extends Application {
     }
 
     private void registerSingletons() {
-
-        this.singletons.add(new LighfallRestService("kakhaufen"));
+        this.singletons.add(new TeamService(this.luckPerms, this.databaseProvider));
         this.singletons.add(new UserService(this.luckPerms, this.databaseProvider));
         this.singletons.add(new AuthenticationFilter(this.databaseProvider));
     }

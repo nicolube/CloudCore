@@ -1,7 +1,7 @@
 package de.lightfall.core.web.app;
 
 import de.lightfall.core.common.DatabaseProvider;
-import de.lightfall.core.models.WebApiTokenModel;
+import de.lightfall.core.common.models.WebApiTokenModel;
 
 import javax.annotation.Priority;
 import javax.ws.rs.container.ContainerRequestContext;

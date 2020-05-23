@@ -3,20 +3,16 @@ package de.lightfall.core;
 import co.aikar.commands.CommandManager;
 import co.aikar.locales.MessageKeyProvider;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.api.message.IMessageProvider;
 import de.lightfall.core.common.MessageProvider;
-import de.lightfall.core.models.MessageModel;
+import de.lightfall.core.common.models.MessageModel;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class ModuleMessageProvider extends MessageProvider implements IMessageProvider {
 

@@ -4,8 +4,8 @@ import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.lightfall.core.InternalCoreAPI;
 import de.lightfall.core.api.usermanager.IUserManager;
-import de.lightfall.core.models.UserInfoModel;
-import de.lightfall.core.models.UserModeInfoModel;
+import de.lightfall.core.common.models.UserInfoModel;
+import de.lightfall.core.common.models.UserModeInfoModel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 

@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>de.lightfall.core</groupId>
-            <artifactId>LightFallCoreDB</artifactId>
+            <artifactId>Server</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

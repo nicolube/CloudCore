@@ -2,11 +2,8 @@ package de.lightfall.core.common;
 
 import co.aikar.locales.MessageKeyProvider;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import de.lightfall.core.api.message.IMessageKeyProvider;
-import de.lightfall.core.models.MessageModel;
+import de.lightfall.core.common.models.MessageModel;
 import lombok.SneakyThrows;
 
 import java.util.*;

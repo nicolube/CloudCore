@@ -1,5 +1,6 @@
 package de.lightfall.core.web.rest;
 
+import de.lightfall.core.web.app.ResponseBuilder;
 import de.lightfall.core.web.app.Secured;
 import de.lightfall.core.web.entity.TestEntity;
 
@@ -9,7 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@Path("/")
+@Path("/test/")
 public class LighfallRestService {
     String test;
 
@@ -18,16 +19,16 @@ public class LighfallRestService {
     }
 
     @GET
-    @Path("/hello")
+    @Path("default")
     public Response hello() {
-        return Response.status(200).entity("hello").build();
+        return new ResponseBuilder().success("Hello world!").build();
     }
 
     @Secured
     @GET
     @Produces({"application/json"})
-    @Path("test/{id}")
-    public Response test(@PathParam("id") Long id) {
-        return Response.status(200).encoding("UTF-8").entity(new TestEntity(this.test)).build();
+    @Path("secured")
+    public Response test() {
+        return new ResponseBuilder().success("'Hello world!' is now secured...").build();
     }
 }

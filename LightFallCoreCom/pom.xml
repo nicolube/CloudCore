@@ -10,7 +10,6 @@
     </parent>
     <artifactId>LightFallCoreCom</artifactId>
     <modules>
-        <module>LightFallCoreDB</module>
         <module>LightFallCoreDBAPI</module>
         <module>Server</module>
         <module>Client</module>
