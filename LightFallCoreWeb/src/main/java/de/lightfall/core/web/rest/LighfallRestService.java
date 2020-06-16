@@ -8,27 +8,24 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/test/")
 public class LighfallRestService {
-    String test;
-
-    public LighfallRestService(String test) {
-        this.test = test;
-    }
 
     @GET
     @Path("default")
-    public Response hello() {
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getDefault() {
         return new ResponseBuilder().success("Hello world!").build();
     }
 
     @Secured
     @GET
-    @Produces({"application/json"})
+    @Produces({MediaType.APPLICATION_JSON})
     @Path("secured")
-    public Response test() {
+    public Response getSecured() {
         return new ResponseBuilder().success("'Hello world!' is now secured...").build();
     }
 }

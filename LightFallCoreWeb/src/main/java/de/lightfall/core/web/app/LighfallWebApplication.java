@@ -27,7 +27,7 @@ public class LighfallWebApplication extends Application {
     @Getter
     private final Set<Object> singletons = new HashSet<>();
     @Getter
-    Set<Class<?>> resources = new HashSet<>();
+    private final Set<Class<?>> classes = new HashSet<>();
 
     @SneakyThrows
     public LighfallWebApplication() {
@@ -42,7 +42,7 @@ public class LighfallWebApplication extends Application {
         this.databaseProvider.setupWebApi();
         new LPExternalBootstrap(new File(configDir, "LuckPerms"));
         this.luckPerms = LuckPermsProvider.get();
-        this.registerResources();
+        this.registerClasses();
         this.registerSingletons();
     }
 
@@ -52,6 +52,8 @@ public class LighfallWebApplication extends Application {
         this.singletons.add(new AuthenticationFilter(this.databaseProvider));
     }
 
-    private void registerResources() {
+    private void registerClasses() {
+;        this.classes.add(LighfallRestService.class);
     }
+
 }

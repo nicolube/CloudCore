@@ -78,7 +78,7 @@
             <groupId>de.lightfall.core</groupId>
             <artifactId>LightFallCoreDBAPI</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.j256.ormlite</groupId>

@@ -13,6 +13,12 @@ public class StrikeTemplateModel {
     @DatabaseField(generatedId = true)
     private long id;
 
+    @DatabaseField(width = 25, canBeNull = false)
+    private String name;
+
+    @DatabaseField(canBeNull = false)
+    private String deception;
+
     @DatabaseField
     private long points;
 

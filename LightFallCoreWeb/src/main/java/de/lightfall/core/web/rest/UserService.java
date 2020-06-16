@@ -94,30 +94,4 @@ public class UserService {
         return new ResponseBuilder().success(userInfoModel).getResponse();
     }
 
-
-    @SneakyThrows
-    @PUT
-    @Produces({MediaType.APPLICATION_JSON})
-    @Path("user/{id}")
-    public Response putRecord(@PathParam("id") Long id) {
-        if (this.databaseProvider.getWebTeamRecordDao().queryBuilder().where().eq("userInfo_id", id) != null)
-            return new ResponseBuilder().error("Record already exists.").build();
-        UserInfoModel userInfoModel = new UserInfoModel();
-        userInfoModel.setId(id);
-        TeamRecordModel teamRecordModel = new TeamRecordModel(userInfoModel);
-        return new ResponseBuilder().success(this.databaseProvider.getWebTeamRecordDao()
-                .createIfNotExists(teamRecordModel)).build();
-    }
-
-    @SneakyThrows
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    @Path("user/{id}")
-    public Response getRecord(@PathParam("id") Long id) {
-        Where<TeamRecordModel, Long> teamRecord = this.databaseProvider.getWebTeamRecordDao().queryBuilder().where().eq("userInfo_id", id);
-        if (teamRecord == null)
-            return new ResponseBuilder().error("Record not exists.").build();
-        return new ResponseBuilder().success(teamRecord).build();
-    }
-
 }
