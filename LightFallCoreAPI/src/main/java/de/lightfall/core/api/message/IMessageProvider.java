@@ -9,6 +9,8 @@ public interface IMessageProvider {
 
     public void registerMessageBundle(IMessageKeyProvider keyProvider, ResourceBundle bundle);
 
+    public void loadCommandManagerAsync(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager);
+
     public void loadCommandManager(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager);
 
     public String getMessage(IMessageKeyProvider key, Locale locale);
