@@ -121,7 +121,7 @@
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet</artifactId>
-            <version>3.2.0-RELEASE</version>
+            <version>3.3.0-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
