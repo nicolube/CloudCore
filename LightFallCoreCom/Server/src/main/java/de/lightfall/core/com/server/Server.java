@@ -16,14 +16,15 @@
  */
 package de.lightfall.core.com.server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.j256.ormlite.dao.Dao;
 import de.lightfall.core.com.server.handlers.NetworkHandler;
 import de.lightfall.core.common.PacketDecoder;
 import de.lightfall.core.common.PacketEncoder;
+import de.lightfall.core.common.models.InterComTokenModel;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
@@ -31,26 +32,76 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
+import sun.security.tools.keytool.CertAndKeyGen;
+import sun.security.x509.X500Name;
 
 import javax.net.ssl.SSLException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.security.*;
+
+import java.security.cert.CertificateException;
+import java.util.logging.Logger;
 
 public class Server {
 
     public static boolean EPPLL = Epoll.isAvailable();
+    @Setter @Getter
+    private static Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     private final Config config;
+    private final InputStream certInputStream;
+    private final InputStream privkeyInputStream;
+    private final Dao<InterComTokenModel,Long> dao;
 
-    public Server() throws InterruptedException, SSLException {
-        this.config = new Config();
+    public Server(File configDir, Dao<InterComTokenModel,Long> dao) throws IOException, NoSuchProviderException {
+        this.dao = dao;
+        if (!configDir.exists()) {
+            configDir.mkdirs();
+        }
+        File configFile = new File(configDir, "config.json");
+        if (!configFile.exists()) {
+            LOGGER.info("Copy default config out of jar");
+            Files.copy(getClass().getResourceAsStream("/server/config.json"), configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        File csrCertFile = new File(configDir, "csr.pem");
+        File privkeyCertFile = new File(configDir, "privkey.pem");
+        if (!csrCertFile.exists() || !privkeyCertFile.exists()) {
+            try {
+                LOGGER.info("Generate X509 certificate pair....");
+                CertAndKeyGen keypair = new CertAndKeyGen("RSA", "SHA1WithRSA", null);
+                X500Name x500Name = new X500Name("ComServer", "None", "None", "None", "None", "None");
+                keypair.generate(4096);
+                FileOutputStream fileOutputStream = new FileOutputStream(privkeyCertFile);
+                saveCert(privkeyCertFile, "PRIVATE KEY", keypair.getPrivateKey().getEncoded());
+                saveCert(csrCertFile, "CERTIFICATE", keypair.getSelfCertificate(x500Name, 946944000).getEncoded());
+                LOGGER.info("Certificate generated! Pleas copy the csr.pem to all clients.");
+            } catch (InvalidKeyException | NoSuchAlgorithmException | CertificateException | SignatureException e) {
+                e.printStackTrace();
+            }
+        }
+        this.certInputStream = new FileInputStream(csrCertFile);
+        this.privkeyInputStream = new FileInputStream(privkeyCertFile);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        this.config = gson.fromJson(new FileReader(configFile), Config.class);
+    }
+
+    public void startServer() {
+        LOGGER.info("Starting server...");
         EventLoopGroup eventLoopGroup = EPPLL ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-        SslContext sslContext = SslContextBuilder.forServer(getClass().getResourceAsStream("/csr.pem"), getClass().getResourceAsStream("/privkey.pem")).build();
         try {
-            new ServerBootstrap()
+            SslContext sslContext = SslContextBuilder.forServer(this.certInputStream, this.privkeyInputStream).build();
+            ChannelFuture channelFuture = new ServerBootstrap()
                     .group(eventLoopGroup)
                     .channel(EPPLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<Channel>() {
                         @Override
-                        protected void initChannel(Channel ch) throws Exception {
+                        protected void initChannel(Channel ch) {
                             ch.pipeline()
                                     .addLast("ssl", sslContext.newHandler(ch.alloc()))
                                     .addLast(new PacketEncoder())
@@ -60,7 +111,11 @@ public class Server {
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.SO_BACKLOG, 50)
-                    .bind(config.getHost(), config.getPort()).sync().channel().closeFuture().syncUninterruptibly();
+                    .bind(config.getHost(), config.getPort());
+            LOGGER.info("Server started!");
+            channelFuture.sync().channel().closeFuture().syncUninterruptibly();
+        } catch (InterruptedException | SSLException e) {
+            e.printStackTrace();
         } finally {
             eventLoopGroup.shutdownGracefully();
         }
@@ -68,6 +123,14 @@ public class Server {
 
     public void disconnect(Channel channel) {
 
+    }
+
+    private void saveCert(File file, String comment, byte[] encoded) throws IOException {
+        PemObject pemObject = new PemObject(comment, encoded);
+        PemWriter pemWriter = new PemWriter(new FileWriter(file));
+        pemWriter.writeObject(pemObject);
+        pemWriter.flush();
+        pemWriter.close();
     }
 
 }

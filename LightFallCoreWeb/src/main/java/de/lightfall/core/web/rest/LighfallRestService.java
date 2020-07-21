@@ -1,5 +1,6 @@
 package de.lightfall.core.web.rest;
 
+import de.lightfall.core.web.app.LighfallWebApplication;
 import de.lightfall.core.web.app.ResponseBuilder;
 import de.lightfall.core.web.app.Secured;
 import de.lightfall.core.web.entity.TestEntity;
@@ -14,6 +15,12 @@ import javax.ws.rs.core.Response;
 @Path("/test/")
 public class LighfallRestService {
 
+    LighfallWebApplication app;
+
+    public LighfallRestService(LighfallWebApplication app) {
+        this.app = app;
+    }
+
     @GET
     @Path("default")
     @Produces({MediaType.APPLICATION_JSON})
@@ -27,5 +34,12 @@ public class LighfallRestService {
     @Path("secured")
     public Response getSecured() {
         return new ResponseBuilder().success("'Hello world!' is now secured...").build();
+    }
+
+    @GET
+    @Produces({MediaType.TEXT_PLAIN})
+    @Path("ready")
+    public Response isReady() {
+        return Response.accepted().entity(app.isReady()).build();
     }
 }

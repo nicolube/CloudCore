@@ -4,7 +4,7 @@ import de.lightfall.core.common.packet.*;
 
 public enum PacketRegistry {
 
-    ;
+    PACKET_IN_AUTHENTICATION(PacketInAuthentication.class);
 
     private final Class<? extends Packet> packetClass;
 

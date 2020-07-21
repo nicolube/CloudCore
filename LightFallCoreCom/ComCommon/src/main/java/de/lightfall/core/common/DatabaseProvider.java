@@ -23,6 +23,7 @@ public class DatabaseProvider {
     private Dao<TeamAbsenceModel, Long> webTeamAbsenceDao;
     private Dao<StrikeTemplateModel, Long> webStrikeTemplateDao;
     private Dao<StrikeModel, Long> webStrikeDao;
+    private Dao<InterComTokenModel,Long> interComTokenDao;
 
     @SneakyThrows
     public DatabaseProvider(DatabaseConfig config) {
@@ -40,12 +41,14 @@ public class DatabaseProvider {
 
     @SneakyThrows
     public void setupWebApi() {
-        this.webApiTokenDao = DaoManager.createDao(this.connectionSource, WebApiTokenModel.class);
+        this.webApiTokenDao = DaoManager.createDao(this.connectionSource, WebApiTokenModel.class);;
+        this.interComTokenDao = DaoManager.createDao(this.connectionSource, InterComTokenModel.class);
         this.webTeamRecordDao = DaoManager.createDao(this.connectionSource, TeamRecordModel.class);
         this.webTeamAbsenceDao = DaoManager.createDao(this.connectionSource, TeamAbsenceModel.class);
         this.webStrikeTemplateDao = DaoManager.createDao(this.connectionSource, StrikeTemplateModel.class);
         this.webStrikeDao = DaoManager.createDao(this.connectionSource, StrikeModel.class);
         TableUtils.createTableIfNotExists(connectionSource, WebApiTokenModel.class);
+        TableUtils.createTableIfNotExists(connectionSource, InterComTokenModel.class);
         TableUtils.createTableIfNotExists(connectionSource, TeamRecordModel.class);
         TableUtils.createTableIfNotExists(connectionSource, TeamAbsenceModel.class);
         TableUtils.createTableIfNotExists(connectionSource, StrikeModel.class);
