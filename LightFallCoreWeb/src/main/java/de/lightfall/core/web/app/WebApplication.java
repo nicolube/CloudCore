@@ -27,7 +27,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 
 @Log
 public class WebApplication {
