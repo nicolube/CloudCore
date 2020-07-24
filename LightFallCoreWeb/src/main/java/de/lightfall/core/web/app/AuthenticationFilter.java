@@ -2,6 +2,7 @@ package de.lightfall.core.web.app;
 
 import de.lightfall.core.common.DatabaseProvider;
 import de.lightfall.core.common.models.WebApiTokenModel;
+import de.lightfall.core.web.app.Secured;
 
 import javax.annotation.Priority;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -16,7 +17,6 @@ import java.io.IOException;
 @Priority(1000)
 public class AuthenticationFilter implements ContainerRequestFilter {
     private static final String REALM = "auth";
-    private static final String AUTHENTICATION_SCHEME = "Bearer";
     private final DatabaseProvider databaseProvider;
 
     public AuthenticationFilter(DatabaseProvider databaseProvider) {
