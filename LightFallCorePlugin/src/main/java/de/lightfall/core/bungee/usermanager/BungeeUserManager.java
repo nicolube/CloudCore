@@ -5,7 +5,7 @@ import de.lightfall.core.api.Util;
 import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.common.models.PunishmentModel;
 import de.lightfall.core.common.models.UserInfoModel;
-import de.lightfall.core.usermanager.UserManager;
+import de.lightfall.core.utils.usermanager.UserManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.TextComponent;

@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Config {
     private DatabaseConfig database;
+    private String baseUrl;
 }

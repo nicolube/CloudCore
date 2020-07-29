@@ -1,4 +1,4 @@
-package de.lightfall.core.usermanager;
+package de.lightfall.core.utils.usermanager;
 
 import com.j256.ormlite.stmt.UpdateBuilder;
 import de.lightfall.core.InternalCoreAPI;

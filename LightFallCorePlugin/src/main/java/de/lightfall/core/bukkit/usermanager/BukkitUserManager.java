@@ -9,7 +9,7 @@ import de.lightfall.core.bukkit.MainBukkit;
 import de.lightfall.core.common.models.PunishmentModel;
 import de.lightfall.core.common.models.UserInfoModel;
 import de.lightfall.core.common.models.UserModeInfoModel;
-import de.lightfall.core.usermanager.UserManager;
+import de.lightfall.core.utils.usermanager.UserManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

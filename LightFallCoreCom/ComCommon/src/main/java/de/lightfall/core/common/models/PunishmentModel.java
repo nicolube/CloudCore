@@ -30,7 +30,7 @@ public class PunishmentModel implements IPunishment {
     @DatabaseField
     private PunishmentType type;
 
-    @DatabaseField(canBeNull = false, readOnly = true, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL")
+    @DatabaseField(readOnly = true, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private Date created_at;
 
     @DatabaseField

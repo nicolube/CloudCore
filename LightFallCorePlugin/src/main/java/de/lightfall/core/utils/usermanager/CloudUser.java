@@ -1,4 +1,4 @@
-package de.lightfall.core.usermanager;
+package de.lightfall.core.utils.usermanager;
 
 import co.aikar.commands.MessageType;
 import de.dytanic.cloudnet.common.concurrent.ITask;

@@ -1,12 +1,9 @@
 package de.lightfall.core.bukkit.usermanager;
 
 import co.aikar.commands.MessageType;
-import de.dytanic.cloudnet.common.registry.IServicesRegistry;
-import de.dytanic.cloudnet.driver.CloudNetDriver;
-import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.bukkit.MainBukkit;
-import de.lightfall.core.usermanager.CloudUser;
+import de.lightfall.core.utils.usermanager.CloudUser;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

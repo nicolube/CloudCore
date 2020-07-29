@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import me.lucko.luckperms.external.LPExternalBootstrap;
+import me.lucko.luckperms.external.LPExternalPlugin;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
@@ -43,28 +44,23 @@ public class WebApplication {
     @Getter
     private final Set<Class<?>> classes = new HashSet<>();
     CompletableFuture<Void> completableFuture;
+    private HttpServer httpServer;
 
     public static void main(String[] args) throws IOException {
         WebApplication webApplication = new WebApplication();
-        ResourceConfig rc = new ResourceConfig();
-        rc.packages("de.lightfall.core.web.provider", "de.lightfall.core.web.rest.resources");
-        rc.packages("org.glassfish.jersey.jackson.internal.jackson.jaxrs.json");
-        webApplication.getSingletons().forEach(s -> rc.registerInstances(s));
-        HttpServer httpServer = JdkHttpServerFactory.createHttpServer(URI.create("http://localhost:8087"), rc);
+        webApplication.start();
         System.in.read();
-        httpServer.stop(0);
+        webApplication.stop();
     }
 
     @SneakyThrows
     public WebApplication() {
-        File configDir = new File("LightFallCoreWeb");
+        File configDir = new File("config");
         configDir.mkdir();
         File configFile = new File(configDir, "config.json");
-        System.out.println(configFile.getAbsolutePath());
         if (!configFile.exists())
             Files.copy(getClass().getResourceAsStream("/webConfig.json"), configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         this.config = Util.getGSON().fromJson(new FileReader(configFile), Config.class);
-
         log.info("Connect to Database...");
         this.databaseProvider = new DatabaseProvider(this.config.getDatabase());
         this.databaseProvider.setupWebApi();
@@ -73,11 +69,28 @@ public class WebApplication {
         log.info("Get luckperms external...");
         this.luckPerms = LuckPermsProvider.get();
         log.info("Start comServer...");
-        this.comServer = new Server(new File(configDir, "comServer"), databaseProvider.getInterComTokenDao());
+        this.comServer = new Server(new File(configDir, "comServer"), this.databaseProvider.getInterComTokenDao());
         Server.setLOGGER(log);
         CompletableFuture.runAsync(() -> this.comServer.startServer());
         this.registerClasses();
         this.registerSingletons();
+    }
+
+    public void start() {
+        WebApplication webApplication = new WebApplication();
+        ResourceConfig rc = new ResourceConfig();
+        rc.packages("de.lightfall.core.web.provider", "de.lightfall.core.web.rest.resources");
+        rc.packages("org.glassfish.jersey.jackson.internal.jackson.jaxrs.json");
+        rc.registerClasses(webApplication.getClasses());
+        this.httpServer = JdkHttpServerFactory.createHttpServer(URI.create(this.config.getBaseUrl()), rc);
+    }
+
+    @SneakyThrows
+    public void stop() {
+        this.httpServer.stop(0);
+        LPExternalPlugin plugin = (LPExternalPlugin) LPExternalBootstrap.class.getField("plugin").get(this.lpExternalBootstrap);
+        plugin.disable();
+        this.databaseProvider.disconnect();
     }
 
     private void registerSingletons() {

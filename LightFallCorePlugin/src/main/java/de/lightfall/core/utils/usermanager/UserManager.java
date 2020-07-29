@@ -1,4 +1,4 @@
-package de.lightfall.core.usermanager;
+package de.lightfall.core.utils.usermanager;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;

@@ -17,6 +17,11 @@ public class DatabaseProvider {
     private final Dao<UserModeInfoModel, Long> userModeInfoDao;
     private final Dao<PunishmentModel, Long> punishmentDao;
     private final Dao<MessageModel, Long> messageDao;
+    private final Dao<StatModel, Long> statsDao;
+    private final Dao<StatUpdateModel,Long> statsUpdateDao;
+    private final Dao<ModeInstanceModel, Long> modeInstanceDao;
+    private final Dao<ModeInstanceUserModel,Long> modeInstanceUserDao;
+    private final Dao<ModeInstanceDataModel,Long> modeInstanceDataDao;
 
     private Dao<WebApiTokenModel, Long> webApiTokenDao;
     private Dao<TeamRecordModel, Long> webTeamRecordDao;
@@ -29,14 +34,25 @@ public class DatabaseProvider {
     public DatabaseProvider(DatabaseConfig config) {
         this.connectionSource = new JdbcPooledConnectionSource(config.getUrl(),
                 config.getUser(), config.getPassword());
+        
         this.messageDao = DaoManager.createDao(connectionSource, MessageModel.class);
         this.userInfoDao = DaoManager.createDao(this.connectionSource, UserInfoModel.class);
         this.userModeInfoDao = DaoManager.createDao(this.connectionSource, UserModeInfoModel.class);
         this.punishmentDao = DaoManager.createDao(this.connectionSource, PunishmentModel.class);
+        this.statsDao = DaoManager.createDao(this.connectionSource, StatModel.class);
+        this.statsUpdateDao = DaoManager.createDao(this.connectionSource, StatUpdateModel.class);
+        this.modeInstanceDao = DaoManager.createDao(this.connectionSource, ModeInstanceModel.class);
+        this.modeInstanceUserDao = DaoManager.createDao(this.connectionSource, ModeInstanceUserModel.class);
+        this.modeInstanceDataDao = DaoManager.createDao(this.connectionSource, ModeInstanceDataModel.class);
         TableUtils.createTableIfNotExists(connectionSource, MessageModel.class);
         TableUtils.createTableIfNotExists(connectionSource, UserInfoModel.class);
         TableUtils.createTableIfNotExists(connectionSource, UserModeInfoModel.class);
         TableUtils.createTableIfNotExists(connectionSource, PunishmentModel.class);
+        TableUtils.createTableIfNotExists(connectionSource, StatModel.class);
+        TableUtils.createTableIfNotExists(connectionSource, StatUpdateModel.class);
+        TableUtils.createTableIfNotExists(connectionSource, ModeInstanceModel.class);
+        TableUtils.createTableIfNotExists(connectionSource, ModeInstanceUserModel.class);
+        TableUtils.createTableIfNotExists(connectionSource, ModeInstanceDataModel.class);
     }
 
     @SneakyThrows
@@ -54,5 +70,10 @@ public class DatabaseProvider {
         TableUtils.createTableIfNotExists(connectionSource, StrikeModel.class);
         TableUtils.createTableIfNotExists(connectionSource, StrikeTemplateModel.class);
         TableUtils.createTableIfNotExists(connectionSource, StrikeModel.class);
+    }
+
+    @SneakyThrows
+    public void disconnect() {
+        this.connectionSource.close();
     }
 }

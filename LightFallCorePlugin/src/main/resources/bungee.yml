@@ -5,4 +5,3 @@ depends:
   - CloudNet-Bridge
 
 main: de.lightfall.core.bungee.MainBungee
-20

@@ -1,4 +1,5 @@
 {
+  "baseUrl": "http://0.0.0.0:8087/",
   "database": {
     "url": "jdbc:h2:mem:lightfallcore",
     "user": "username",

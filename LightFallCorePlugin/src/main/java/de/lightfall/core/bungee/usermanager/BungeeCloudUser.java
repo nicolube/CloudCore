@@ -3,7 +3,7 @@ package de.lightfall.core.bungee.usermanager;
 import co.aikar.commands.MessageType;
 import de.lightfall.core.api.message.IMessageKeyProvider;
 import de.lightfall.core.bungee.MainBungee;
-import de.lightfall.core.usermanager.CloudUser;
+import de.lightfall.core.utils.usermanager.CloudUser;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
