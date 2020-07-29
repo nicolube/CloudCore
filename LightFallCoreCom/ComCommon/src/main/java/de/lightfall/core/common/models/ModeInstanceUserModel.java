@@ -4,15 +4,14 @@ import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import de.lightfall.core.api.stats.IModeInstanceUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @DatabaseTable(tableName = "mode_instance_user")
 @NoArgsConstructor
-public class ModeInstanceUserModel {
+public class ModeInstanceUserModel implements IModeInstanceUser {
 
     @DatabaseField(generatedId = true)
     private long id;

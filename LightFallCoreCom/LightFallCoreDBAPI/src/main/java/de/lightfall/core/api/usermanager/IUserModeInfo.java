@@ -1,4 +1,6 @@
-package de.lightfall.core.api.punishments;
+package de.lightfall.core.api.usermanager;
+
+import de.lightfall.core.api.punishments.IPunishment;
 
 public interface IUserModeInfo {
     public long getId();

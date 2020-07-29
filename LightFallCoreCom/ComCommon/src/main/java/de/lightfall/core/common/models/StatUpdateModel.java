@@ -2,6 +2,7 @@ package de.lightfall.core.common.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import de.lightfall.core.api.stats.IStatUpdate;
 import de.lightfall.core.common.StatUpdateType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.Date;
 @Data
 @DatabaseTable(tableName = "stats_history")
 @NoArgsConstructor
-public class StatUpdateModel {
+public class StatUpdateModel implements IStatUpdate {
 
     @DatabaseField(generatedId = true)
     private long id;

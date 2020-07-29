@@ -1,6 +1,6 @@
 package de.lightfall.core.common.packet;
 
-import de.lightfall.core.common.ClientType;
+import de.lightfall.core.api.ClientType;
 import io.netty.buffer.ByteBuf;
 import lombok.Data;
 import lombok.NoArgsConstructor;

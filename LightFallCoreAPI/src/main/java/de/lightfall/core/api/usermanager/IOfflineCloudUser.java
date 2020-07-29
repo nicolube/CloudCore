@@ -1,8 +1,6 @@
 package de.lightfall.core.api.usermanager;
 
 import de.lightfall.core.api.punishments.IPunishment;
-import de.lightfall.core.api.punishments.IUserInfo;
-import de.lightfall.core.api.punishments.IUserModeInfo;
 
 import java.util.List;
 import java.util.Locale;

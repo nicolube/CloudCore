@@ -2,7 +2,7 @@ package de.lightfall.core.common.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import de.lightfall.core.api.punishments.IUserModeInfo;
+import de.lightfall.core.api.usermanager.IUserModeInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

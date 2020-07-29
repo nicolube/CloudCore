@@ -1,4 +1,4 @@
-package de.lightfall.core.common;
+package de.lightfall.core.api;
 
 public enum ClientType {
     MINECRAFT,

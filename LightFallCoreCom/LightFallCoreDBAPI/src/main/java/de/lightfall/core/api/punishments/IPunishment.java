@@ -1,5 +1,8 @@
 package de.lightfall.core.api.punishments;
 
+import de.lightfall.core.api.usermanager.IUserInfo;
+import de.lightfall.core.api.usermanager.IUserModeInfo;
+
 import java.util.Date;
 
 public interface IPunishment {

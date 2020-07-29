@@ -1,18 +1,20 @@
 package de.lightfall.core.common.models;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import de.lightfall.core.api.stats.IModeInstance;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 @Data
 @DatabaseTable(tableName = "mode_instance")
 @NoArgsConstructor
-public class ModeInstanceModel {
+public class ModeInstanceModel implements IModeInstance {
 
     @DatabaseField(generatedId = true)
     private long id;
@@ -21,11 +23,17 @@ public class ModeInstanceModel {
     private String mode;
 
     @ForeignCollectionField
-    ForeignCollection<ModeInstanceUserModel> modeInstanceUsers;
+    Collection<ModeInstanceUserModel> modeInstanceUsers;
 
     @ForeignCollectionField
-    ForeignCollection<ModeInstanceDataModel> statDate;
+    Collection<ModeInstanceDataModel> statData;
 
     @DatabaseField(canBeNull = false, readOnly = true, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL")
     private Date created_at;
+
+    public ModeInstanceModel(String mode) {
+        this.mode = mode;
+        this.modeInstanceUsers = new ArrayList<>();
+        this.statData = new ArrayList<>();
+    }
 }
