@@ -1,10 +1,12 @@
 package de.lightfall.core.api.channelhandeler.documents;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class TeleportDocument extends Document {

@@ -11,7 +11,7 @@ public interface IUserManager {
      * @param uuid of player you want to get.
      * @return ICloudUser or null if he is not login.
      */
-    public ICloudUser getUser(UUID uuid);
+    ICloudUser getUser(UUID uuid);
 
 
     /**
@@ -22,6 +22,6 @@ public interface IUserManager {
      * @param uuid of player you want to get.
      * @return CompletableFuture<? extends IOfflineCloudUser>
      */
-    public CompletableFuture<? extends IOfflineCloudUser> loadUser(UUID uuid);
+    CompletableFuture<? extends IOfflineCloudUser> loadUser(UUID uuid);
 
 }

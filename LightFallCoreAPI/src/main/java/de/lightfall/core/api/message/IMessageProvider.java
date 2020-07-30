@@ -7,11 +7,11 @@ import java.util.ResourceBundle;
 
 public interface IMessageProvider {
 
-    public void registerMessageBundle(IMessageKeyProvider keyProvider, ResourceBundle bundle);
+    void registerMessageBundle(IMessageKeyProvider keyProvider, ResourceBundle bundle);
 
-    public void loadCommandManagerAsync(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager);
+    void loadCommandManagerAsync(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager);
 
-    public void loadCommandManager(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager);
+    void loadCommandManager(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager);
 
-    public String getMessage(IMessageKeyProvider key, Locale locale);
+    String getMessage(IMessageKeyProvider key, Locale locale);
 }

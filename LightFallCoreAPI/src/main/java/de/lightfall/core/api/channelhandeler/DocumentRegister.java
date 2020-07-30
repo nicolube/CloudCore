@@ -12,7 +12,7 @@ public enum  DocumentRegister {
     MESSAGE(MessageDocument.class),
     RELOAD(ReloadDocument.class);
 
-    private Class clazz;
+    private final Class clazz;
 
     DocumentRegister(Class clazz) {
         this.clazz = clazz;

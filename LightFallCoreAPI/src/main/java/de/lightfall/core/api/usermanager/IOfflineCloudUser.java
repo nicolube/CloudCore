@@ -18,14 +18,14 @@ public interface IOfflineCloudUser {
      *
      * @return boolean
      */
-    public boolean isOnline();
+    boolean isOnline();
 
     /**
      * Gets the current {@link UUID}
      *
      * @return UUID of the current player
      */
-    public UUID getUuid();
+    UUID getUuid();
 
     /**
      * Unbanns a user.
@@ -35,7 +35,7 @@ public interface IOfflineCloudUser {
      * @param reason why the punishment get removed
      * @return CompletableFuture<Boolean> (async) if the user was punished
      */
-    public CompletableFuture<Boolean> unBan(ICloudUser sender, String mode, String reason);
+    CompletableFuture<Boolean> unBan(ICloudUser sender, String mode, String reason);
 
     /**
      * Unmute a user.
@@ -45,35 +45,35 @@ public interface IOfflineCloudUser {
      * @param reason why the punishment get removed
      * @return CompletableFuture<Boolean> (async) if the user was punished
      */
-    public CompletableFuture<Boolean> unMute(ICloudUser sender, String mode, String reason);
+    CompletableFuture<Boolean> unMute(ICloudUser sender, String mode, String reason);
 
     /**
      * Quarry {@link IUserInfo} for current {@link ICloudUser}
      *
      * @return IUserInfo
      */
-    public IUserInfo queryUserInfo();
+    IUserInfo queryUserInfo();
 
     /**
      * Quarry {@link IUserInfo} async for current {@link ICloudUser}
      *
      * @return CompletableFuture<IUserInfo>
      */
-    public CompletableFuture<IUserInfo> queryUserInfoAsync();
+    CompletableFuture<IUserInfo> queryUserInfoAsync();
 
     /**
      * Quarry {@link IUserModeInfo} for current {@link ICloudUser}
      *
      * @return IUserModeInfo
      */
-    public IUserModeInfo queryUserModeInfo(String mode);
+    IUserModeInfo queryUserModeInfo(String mode);
 
     /**
      * Quarry {@link IUserModeInfo} async for current {@link ICloudUser}
      *
      * @return CompletableFuture<IUserModeInfo>
      */
-    public CompletableFuture<IUserModeInfo> queryUserModeInfoAsync(String mode);
+    CompletableFuture<IUserModeInfo> queryUserModeInfoAsync(String mode);
 
     /**
      * Quarry list of {@link IPunishment} for current {@link ICloudUser}
@@ -81,7 +81,7 @@ public interface IOfflineCloudUser {
      *
      * @return CompletableFuture<IUserModeInfo>
      */
-    public List<? extends IPunishment> queryPunishments(String mode);
+    List<? extends IPunishment> queryPunishments(String mode);
 
     /**
      * Quarry list of {@link IPunishment} async for current {@link ICloudUser}
@@ -89,7 +89,7 @@ public interface IOfflineCloudUser {
      *
      * @return CompletableFuture<List < ? extends IPunishment>>
      */
-    public CompletableFuture<List<? extends IPunishment>> queryPunishmentsAsync(String mode);
+    CompletableFuture<List<? extends IPunishment>> queryPunishmentsAsync(String mode);
 
 
     /**
@@ -99,7 +99,7 @@ public interface IOfflineCloudUser {
      * @param mode   mode name or null for global context
      * @param reason why the user was punished
      */
-    public void ban(ICloudUser sender, String mode, String reason);
+    void ban(ICloudUser sender, String mode, String reason);
 
     /**
      * Banns a user temporary.
@@ -109,7 +109,7 @@ public interface IOfflineCloudUser {
      * @param length length of punishment in seconds
      * @param reason why the user was punished
      */
-    public void tempBan(ICloudUser sender, String mode, long length, String reason);
+    void tempBan(ICloudUser sender, String mode, long length, String reason);
 
     /**
      * Mutes a user permanent.
@@ -118,7 +118,7 @@ public interface IOfflineCloudUser {
      * @param mode   mode name or null for global context
      * @param reason why the user was punished
      */
-    public void mute(ICloudUser sender, String mode, String reason);
+    void mute(ICloudUser sender, String mode, String reason);
 
     /**
      * Mutes a user temporary.
@@ -128,7 +128,7 @@ public interface IOfflineCloudUser {
      * @param length length of punishment in seconds
      * @param reason why the user was punished
      */
-    public void tempMute(ICloudUser sender, String mode, long length, String reason);
+    void tempMute(ICloudUser sender, String mode, long length, String reason);
 
     /**
      * Kicks a player.
@@ -137,7 +137,7 @@ public interface IOfflineCloudUser {
      * @param mode   mode name or null for global context
      * @param reason why the user was punished
      */
-    public void kick(ICloudUser sender, String mode, String reason);
+    void kick(ICloudUser sender, String mode, String reason);
 
     /**
      * Setts the locale of the user.
@@ -145,12 +145,12 @@ public interface IOfflineCloudUser {
      * @param locale {@link Locale#GERMAN} or {@link Locale#ENGLISH} are Supported
      * @param update boolean if the locale should be updated to database
      */
-    public void setLocale(Locale locale, boolean update);
+    void setLocale(Locale locale, boolean update);
 
     /**
      * Returns the current locale of the user
      *
      * @return Locale
      */
-    public Locale getLocale();
+    Locale getLocale();
 }

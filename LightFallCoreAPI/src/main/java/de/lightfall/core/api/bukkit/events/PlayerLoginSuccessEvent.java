@@ -10,9 +10,9 @@ public class PlayerLoginSuccessEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
     @Getter
-    private PlayerLoginEvent event;
+    private final PlayerLoginEvent event;
     @Getter
-    private ICloudUser cloudUser;
+    private final ICloudUser cloudUser;
 
     public PlayerLoginSuccessEvent(PlayerLoginEvent event, ICloudUser cloudUser) {
         this.event = event;

@@ -11,7 +11,6 @@ import java.io.*;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -21,9 +20,9 @@ public class Util {
     protected static CoreAPI coreInstance = null;
 
     @Getter
-    private static String logo;
+    private static final String logo;
     @Getter
-    private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     @Setter
     private static String banFormat;
 

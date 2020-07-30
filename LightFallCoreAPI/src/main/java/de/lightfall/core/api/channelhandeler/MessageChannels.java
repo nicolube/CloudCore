@@ -3,12 +3,12 @@ package de.lightfall.core.api.channelhandeler;
 import lombok.Getter;
 
 public enum MessageChannels {
-    DEFAULT("lightfall-core");
+    DEFAULT();
 
     @Getter
-    private String channelName;
+    private final String channelName;
 
-    MessageChannels(String channelName) {
-        this.channelName = channelName;
+    MessageChannels() {
+        this.channelName = "lightfall-core";
     }
 }
