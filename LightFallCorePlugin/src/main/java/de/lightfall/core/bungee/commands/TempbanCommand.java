@@ -4,7 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.annotation.*;
-import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
+import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.lightfall.core.api.Util;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.MainBungee;
@@ -32,14 +33,12 @@ public class TempbanCommand extends BaseCommand {
     public void onBan(BungeeCloudUser sender, @Single String offlinePlayerName, @Single String time, @Optional String reason) {
         CommandIssuer issuer = getCurrentCommandIssuer();
         Long timeInSeconds = Util.stringToMilesPhrase(time);
-        ;
-
         if (timeInSeconds == null) {
             issuer.sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
             return;
         }
-
-        BridgePlayerManager.getInstance().getOfflinePlayerAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
+        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        playerManager.getOfflinePlayersAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER, "{search}", offlinePlayerName);
                 return;

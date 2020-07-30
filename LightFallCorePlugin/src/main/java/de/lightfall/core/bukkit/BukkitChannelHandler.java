@@ -2,7 +2,6 @@ package de.lightfall.core.bukkit;
 
 import de.dytanic.cloudnet.driver.event.EventListener;
 import de.dytanic.cloudnet.driver.event.events.channel.ChannelMessageReceiveEvent;
-import de.lightfall.core.api.channelhandeler.documents.ReloadType;
 import de.lightfall.core.api.bukkit.events.ReloadEvent;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.*;
@@ -41,17 +40,14 @@ public class BukkitChannelHandler extends ChannelHandler {
                 player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                 return;
             }
-            this.plugin.getEventBasedExecutions().scheduleExecution(new EventBasedExecutions.EventExecutorTask<PlayerJoinEvent>() {
-                @Override
-                public boolean execute(PlayerJoinEvent event) {
-                    if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
-                    if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
-                        event.getPlayer().teleport(target);
-                        return true;
-                    }
-                    event.getPlayer().teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
+            this.plugin.getEventBasedExecutions().scheduleExecution((EventBasedExecutions.EventExecutorTask<PlayerJoinEvent>) event -> {
+                if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
+                if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
+                    event.getPlayer().teleport(target);
                     return true;
                 }
+                event.getPlayer().teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
+                return true;
             });
             return;
         }

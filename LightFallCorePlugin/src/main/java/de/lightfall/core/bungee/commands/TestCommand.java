@@ -8,12 +8,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
 import de.lightfall.core.api.CoreAPI;
 import de.lightfall.core.bungee.MainBungee;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.query.QueryOptions;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("test")
 @CommandPermission("core.test")

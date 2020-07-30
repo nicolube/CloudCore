@@ -36,7 +36,7 @@ public class BungeeUserManager extends UserManager implements Listener {
             try {
                 Long[] ids = userMap.values().stream().map(BungeeCloudUser::getDatabaseId).toArray(Long[]::new);
                 if (ids.length == 0) return;
-                final UpdateBuilder<UserInfoModel, Long> ontime = this.plugin.getUserInfoDao().updateBuilder()
+                final UpdateBuilder<UserInfoModel, Long> ontime = this.plugin.getDatabaseProvider().getUserInfoDao().updateBuilder()
                         .updateColumnExpression("ontime", "ontime+60");
                 ontime.where().in("id", ids);
                 ontime.update();
@@ -64,7 +64,7 @@ public class BungeeUserManager extends UserManager implements Listener {
         final UUID uuid = event.getConnection().getUniqueId();
         UserInfoModel userInfoModel = quarryUserInfo(uuid);
         if (userInfoModel == null)
-            userInfoModel = this.plugin.getUserInfoDao().createIfNotExists(new UserInfoModel(uuid));
+            userInfoModel = this.plugin.getDatabaseProvider().getUserInfoDao().createIfNotExists(new UserInfoModel(uuid));
         final BungeeCloudUser bungeeCloudUser = new BungeeCloudUser(uuid, userInfoModel.getId(), this);
         // Todo whitelist
         Locale locale = Locale.forLanguageTag(userInfoModel.getLocale());
@@ -72,7 +72,7 @@ public class BungeeUserManager extends UserManager implements Listener {
         if (activeBan != null) {
             if (activeBan.getEnd() != null && activeBan.getEnd().before(new Date())) {
                 userInfoModel.setActiveBan(null);
-                this.plugin.getUserInfoDao().update(userInfoModel);
+                this.plugin.getDatabaseProvider().getUserInfoDao().update(userInfoModel);
             } else {
                 event.setCancelled(true);
                 event.setCancelReason(new TextComponent((Util.formatBan(activeBan.getEnd(), activeBan.getReason(), locale))));

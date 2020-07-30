@@ -24,7 +24,7 @@ public class CoreCommand extends BaseCommand {
 
     @Subcommand("reload")
     @CommandPermission("core.admin.reload")
-    public class ReloadSubCommand extends BaseCommand {
+    public static class ReloadSubCommand extends BaseCommand {
 
         @CommandPermission("core.reload.messages")
         @Subcommand("messages")

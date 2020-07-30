@@ -4,7 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.annotation.*;
-import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
+import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
@@ -28,7 +29,8 @@ public class MuteCommand extends BaseCommand {
     @CommandCompletion("@cloudPlayers @nothing")
     public void onMute(BungeeCloudUser sender, @Single String offlinePlayerName, @Optional String reason) {
         CommandIssuer issuer = getCurrentCommandIssuer();
-        BridgePlayerManager.getInstance().getOfflinePlayerAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
+        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        playerManager.getOfflinePlayersAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
             String lReason;
             if (reason == null)
                 lReason = "Kein Grund angegeben / No reason given";

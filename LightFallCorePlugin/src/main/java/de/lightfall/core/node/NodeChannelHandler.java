@@ -14,11 +14,10 @@ import de.lightfall.core.api.channelhandeler.documents.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class NodeChannelHandler extends ChannelHandler implements IPacketListener {
-    private MainModule module;
+    private final MainModule module;
 
     public NodeChannelHandler(MainModule module) {
         super();

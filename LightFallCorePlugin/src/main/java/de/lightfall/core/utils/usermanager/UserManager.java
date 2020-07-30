@@ -20,7 +20,7 @@ public abstract class UserManager implements IUserManager {
 
     @SneakyThrows
     public UserInfoModel quarryUserInfo(UUID uuid) {
-        return this.getPlugin().getUserInfoDao().queryBuilder().where().eq("uuid", uuid).queryForFirst();
+        return this.getPlugin().getDatabaseProvider().getUserInfoDao().queryBuilder().where().eq("uuid", uuid).queryForFirst();
     }
 
     public CompletableFuture<UserInfoModel> quarryUserInfoAsync(UUID uuid) {
@@ -30,7 +30,7 @@ public abstract class UserManager implements IUserManager {
     @SneakyThrows
     public UserModeInfoModel quarryUserModeInfo(long userDatabaseId, String mode) {
         if (mode == null) return null;
-        return this.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("userInfo_id", userDatabaseId).and().eq("mode", mode).queryForFirst();
+        return this.getPlugin().getDatabaseProvider().getUserModeInfoDao().queryBuilder().where().eq("userInfo_id", userDatabaseId).and().eq("mode", mode).queryForFirst();
     }
 
     public CompletableFuture<UserModeInfoModel> quarryUserModeInfoAsync(long userDatabaseId, String mode) {

@@ -51,6 +51,6 @@ public class EventBasedExecutions implements Listener {
     }
 
     public interface EventExecutorTask<E extends Event> {
-        public boolean execute(E event);
+        boolean execute(E event);
     }
 }

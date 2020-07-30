@@ -3,11 +3,11 @@ package de.lightfall.core.utils.usermanager;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import de.lightfall.core.InternalCoreAPI;
 import de.lightfall.core.api.punishments.IPunishment;
-import de.lightfall.core.api.usermanager.IUserInfo;
-import de.lightfall.core.api.usermanager.IUserModeInfo;
 import de.lightfall.core.api.punishments.PunishmentType;
 import de.lightfall.core.api.usermanager.ICloudUser;
 import de.lightfall.core.api.usermanager.IOfflineCloudUser;
+import de.lightfall.core.api.usermanager.IUserInfo;
+import de.lightfall.core.api.usermanager.IUserModeInfo;
 import de.lightfall.core.common.models.PunishmentModel;
 import de.lightfall.core.common.models.UserInfoModel;
 import de.lightfall.core.common.models.UserModeInfoModel;
@@ -43,7 +43,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
 
     @SneakyThrows
     public UserInfoModel queryUserInfo() {
-        UserInfoModel model = this.userManager.getPlugin().getUserInfoDao().queryForId(databaseId);
+        UserInfoModel model = this.userManager.getPlugin().getDatabaseProvider().getUserInfoDao().queryForId(databaseId);
         return model.getId() == 0 ? null : model;
     }
 
@@ -53,7 +53,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
 
     @SneakyThrows
     public UserModeInfoModel queryUserModeInfo(String mode) {
-        UserModeInfoModel model = this.userManager.getPlugin().getUserModeInfoDao().queryBuilder().where().eq("userInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
+        UserModeInfoModel model = this.userManager.getPlugin().getDatabaseProvider().getUserModeInfoDao().queryBuilder().where().eq("userInfo_id", this.databaseId).and().eq("mode", mode).queryForFirst();
         return model.getId() == 0 ? null : model;
     }
 
@@ -64,9 +64,9 @@ public class OfflineCloudUser implements IOfflineCloudUser {
     @SneakyThrows
     public List<? extends IPunishment> queryPunishments(String mode) {
         if (mode == null)
-            return this.userManager.getPlugin().getPunishmentDao().queryBuilder().orderBy("created_at", false)
+            return this.userManager.getPlugin().getDatabaseProvider().getPunishmentDao().queryBuilder().orderBy("created_at", false)
                     .where().eq("userInfo_id", this.databaseId).and().eq("userModeInfo", null).query();
-        return this.userManager.getPlugin().getPunishmentDao().queryBuilder().orderBy("created_at", false)
+        return this.userManager.getPlugin().getDatabaseProvider().getPunishmentDao().queryBuilder().orderBy("created_at", false)
                 .where().eq("userInfo_id", this.databaseId).and().eq("userModeInfo", queryUserModeInfo(mode)).query();
     }
 
@@ -117,14 +117,14 @@ public class OfflineCloudUser implements IOfflineCloudUser {
                     } else if (isMute) {
                         punishmentModel = queryUserInfo().getActiveMute();
                     }
-                    updateBuilder = this.userManager.getPlugin().getUserInfoDao().updateBuilder();
+                    updateBuilder = this.userManager.getPlugin().getDatabaseProvider().getUserInfoDao().updateBuilder();
                 } else {
                     if (isBan) {
                         punishmentModel = queryUserModeInfo(mode).getActiveBan();
                     } else if (isMute) {
                         punishmentModel = queryUserModeInfo(mode).getActiveMute();
                     }
-                    updateBuilder = this.userManager.getPlugin().getUserModeInfoDao().updateBuilder();
+                    updateBuilder = this.userManager.getPlugin().getDatabaseProvider().getUserModeInfoDao().updateBuilder();
                 }
                 if (punishmentModel == null)
                     return false;
@@ -135,7 +135,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
                     field = "activeMute_id";
                 }
                 punishmentModel.unPunish(sender.queryUserInfo(), new Date(), reason);
-                this.userManager.getPlugin().getPunishmentDao().update(punishmentModel);
+                this.userManager.getPlugin().getDatabaseProvider().getPunishmentDao().update(punishmentModel);
                 updateBuilder.updateColumnValue(field, null);
                 updateBuilder.where().idEq(this.databaseId);
                 updateBuilder.update();
@@ -164,14 +164,14 @@ public class OfflineCloudUser implements IOfflineCloudUser {
             PunishmentModel punishmentModel = new PunishmentModel(userInfoModel, null, sender.queryUserInfo(),
                     type, endDate, reason);
             try {
-                punishmentModel = plugin.getPunishmentDao().createIfNotExists(punishmentModel);
+                punishmentModel = plugin.getDatabaseProvider().getPunishmentDao().createIfNotExists(punishmentModel);
                 if (type.equals(PunishmentType.BAN) || type.equals(PunishmentType.TEMP_BAN)) {
                     if (mode == null) {
-                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getUserInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
+                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getDatabaseProvider().getUserInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
                         updateBuilder.where().idEq(this.databaseId);
                         updateBuilder.update();
                     } else {
-                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getUserModeInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
+                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getDatabaseProvider().getUserModeInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
                         updateBuilder.where().idEq(userModeInfoModel.getId()).and().eq("mode", mode);
                         updateBuilder.update();
                     }
@@ -179,11 +179,11 @@ public class OfflineCloudUser implements IOfflineCloudUser {
                 }
                 if (type.equals(PunishmentType.MUTE) || type.equals(PunishmentType.TEMP_MUTE)) {
                     if (mode == null) {
-                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getUserInfoDao().updateBuilder().updateColumnValue("activeMute_id", punishmentModel.getId());
+                        UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getDatabaseProvider().getUserInfoDao().updateBuilder().updateColumnValue("activeMute_id", punishmentModel.getId());
                         updateBuilder.where().idEq(this.databaseId);
                         updateBuilder.update();
                     } else {
-                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getUserModeInfoDao().updateBuilder().updateColumnValue("activeMute_id", punishmentModel.getId());
+                        UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getDatabaseProvider().getUserModeInfoDao().updateBuilder().updateColumnValue("activeMute_id", punishmentModel.getId());
                         updateBuilder.where().idEq(userModeInfoModel.getId()).and().eq("mode", mode);
                         updateBuilder.update();
                     }
@@ -218,7 +218,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
         if (!update) return;
         CompletableFuture.runAsync(() -> {
             try {
-                final UpdateBuilder<UserInfoModel, Long> updateBuilder = this.userManager.getPlugin().getUserInfoDao()
+                final UpdateBuilder<UserInfoModel, Long> updateBuilder = this.userManager.getPlugin().getDatabaseProvider().getUserInfoDao()
                         .updateBuilder().updateColumnValue("locale", locale.getLanguage());
                 updateBuilder.where().idEq(this.getDatabaseId());
                 updateBuilder.update();

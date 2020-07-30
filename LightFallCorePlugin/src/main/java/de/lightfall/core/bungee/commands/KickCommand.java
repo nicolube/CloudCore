@@ -4,7 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.annotation.*;
-import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
+import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.lightfall.core.api.message.CoreMessageKeys;
 import de.lightfall.core.bungee.MainBungee;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
@@ -30,8 +31,8 @@ public class KickCommand extends BaseCommand {
     public void onKick(BungeeCloudUser sender, @Single String offlinePlayerName, @Optional String reason) {
         CommandIssuer issuer = getCurrentCommandIssuer();
         final String reasonString = reason == null ? "Kein Grund angegeben / No reason given" : reason;
-
-        BridgePlayerManager.getInstance().getOnlinePlayerAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
+        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        playerManager.getOnlinePlayersAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER, "{search}", offlinePlayerName);
                 return;

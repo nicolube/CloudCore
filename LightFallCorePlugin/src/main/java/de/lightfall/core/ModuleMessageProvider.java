@@ -10,7 +10,9 @@ import de.lightfall.core.common.models.MessageModel;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 

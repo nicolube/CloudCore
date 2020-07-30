@@ -1,19 +1,12 @@
 package de.lightfall.core;
 
 import co.aikar.commands.CommandManager;
-import com.j256.ormlite.dao.Dao;
 import de.lightfall.core.api.CoreAPI;
-import de.lightfall.core.common.models.PunishmentModel;
-import de.lightfall.core.common.models.UserInfoModel;
-import de.lightfall.core.common.models.UserModeInfoModel;
+import de.lightfall.core.common.DatabaseProvider;
 
 public interface InternalCoreAPI extends CoreAPI {
 
-    public Dao<UserInfoModel, Long> getUserInfoDao();
+    DatabaseProvider getDatabaseProvider();
 
-    public Dao<UserModeInfoModel, Long> getUserModeInfoDao();
-
-    public Dao<PunishmentModel, Long> getPunishmentDao();
-
-    public CommandManager getCommandManager();
+    CommandManager getCommandManager();
 }

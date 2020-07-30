@@ -2,12 +2,13 @@ package de.lightfall.core.bungee;
 
 import co.aikar.commands.BungeeCommandManager;
 import co.aikar.commands.MessageType;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import de.dytanic.cloudnet.CloudNet;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
 import de.dytanic.cloudnet.ext.bridge.BridgePlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
+import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.lightfall.core.InternalCoreAPI;
 import de.lightfall.core.ModuleMessageProvider;
 import de.lightfall.core.api.Util;
@@ -19,9 +20,6 @@ import de.lightfall.core.bungee.commands.*;
 import de.lightfall.core.bungee.usermanager.BungeeCloudUser;
 import de.lightfall.core.bungee.usermanager.BungeeUserManager;
 import de.lightfall.core.common.DatabaseProvider;
-import de.lightfall.core.common.models.PunishmentModel;
-import de.lightfall.core.common.models.UserInfoModel;
-import de.lightfall.core.common.models.UserModeInfoModel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
@@ -32,8 +30,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
 public class MainBungee extends Plugin implements InternalCoreAPI {
@@ -53,11 +51,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     @Getter
     private static MainBungee instance;
     @Getter
-    private Dao<UserInfoModel, Long> userInfoDao;
-    @Getter
-    private Dao<UserModeInfoModel, Long> userModeInfoDao;
-    @Getter
-    private Dao<PunishmentModel,Long> punishmentDao;
+    private DatabaseProvider databaseProvider;
 
     @Override
     @SneakyThrows
@@ -89,10 +83,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     public void configure(Config config) {
         getLogger().info("Connect to database...");
         // System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "INFO");
-        DatabaseProvider databaseProvider = new DatabaseProvider(config.getDatabase());
-        this.userInfoDao = databaseProvider.getUserInfoDao();
-        this.userModeInfoDao = databaseProvider.getUserModeInfoDao();
-        this.punishmentDao = databaseProvider.getPunishmentDao();
+        this.databaseProvider = new DatabaseProvider(config.getDatabase());
 
         getLogger().info("Starting command manager...");
         this.commandManager = new BungeeCommandManager(this);
@@ -102,8 +93,9 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
             CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
             return groups;
         });
+        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
         this.commandManager.getCommandCompletions().registerAsyncCompletion("cloudPlayers", context ->
-                BridgePlayerManager.getInstance().getOnlinePlayers().stream().map(ICloudPlayer::getName).collect(Collectors.toList()));
+                playerManager.getOnlinePlayers().stream().map(ICloudPlayer::getName).collect(Collectors.toList()));
 
 
         this.commandManager.getCommandContexts().registerContext(GroupConfiguration.class, context ->

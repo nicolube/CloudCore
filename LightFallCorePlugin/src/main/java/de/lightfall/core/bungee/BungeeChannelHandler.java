@@ -2,12 +2,12 @@ package de.lightfall.core.bungee;
 
 import de.dytanic.cloudnet.driver.event.EventListener;
 import de.dytanic.cloudnet.driver.event.events.channel.ChannelMessageReceiveEvent;
-import de.lightfall.core.api.channelhandeler.documents.ReloadType;
 import de.lightfall.core.api.bungee.events.ReloadEvent;
 import de.lightfall.core.api.channelhandeler.ChannelHandler;
 import de.lightfall.core.api.channelhandeler.documents.ConfigDocument;
 import de.lightfall.core.api.channelhandeler.documents.Document;
 import de.lightfall.core.api.channelhandeler.documents.ReloadDocument;
+import de.lightfall.core.api.channelhandeler.documents.ReloadType;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
