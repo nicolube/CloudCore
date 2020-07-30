@@ -16,7 +16,11 @@ public class ModeInstanceUserModel implements IModeInstanceUser {
     @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(canBeNull = false, foreign = true)
+
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true)
+    private UserInfoModel userInfo;
+
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true)
     private ModeInstanceModel modeInstance;
 
     @ForeignCollectionField

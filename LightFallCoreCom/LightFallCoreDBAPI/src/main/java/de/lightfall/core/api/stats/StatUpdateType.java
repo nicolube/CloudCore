@@ -1,4 +1,4 @@
-package de.lightfall.core.common;
+package de.lightfall.core.api.stats;
 
 public enum  StatUpdateType {
     DEFAULT,

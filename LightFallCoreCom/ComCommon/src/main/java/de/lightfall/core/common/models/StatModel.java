@@ -2,14 +2,14 @@ package de.lightfall.core.common.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import de.lightfall.core.api.stats.IStatUpdate;
+import de.lightfall.core.api.stats.IStat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @DatabaseTable(tableName = "stats")
 @NoArgsConstructor
-public class StatModel implements IStatUpdate {
+public class StatModel implements IStat {
 
     @DatabaseField(generatedId = true)
     private long id;

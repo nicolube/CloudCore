@@ -3,7 +3,7 @@ package de.lightfall.core.common.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import de.lightfall.core.api.stats.IStatUpdate;
-import de.lightfall.core.common.StatUpdateType;
+import de.lightfall.core.api.stats.StatUpdateType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
