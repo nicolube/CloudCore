@@ -33,7 +33,7 @@ public interface IOfflineCloudUser {
      * @param sender user who removed the punishment or null for console
      * @param mode   mode name or null for global context
      * @param reason why the punishment get removed
-     * @return CompletableFuture<Boolean> (async) if the user was punished
+     * @return CompletableFuture of Boolean (async) if the user was punished
      */
     CompletableFuture<Boolean> unBan(ICloudUser sender, String mode, String reason);
 
@@ -43,7 +43,7 @@ public interface IOfflineCloudUser {
      * @param sender user who removed the punishment or null for console
      * @param mode   mode name or null for global context
      * @param reason why the punishment get removed
-     * @return CompletableFuture<Boolean> (async) if the user was punished
+     * @return CompletableFuture of Boolean (async) if the user was punished
      */
     CompletableFuture<Boolean> unMute(ICloudUser sender, String mode, String reason);
 
@@ -57,13 +57,14 @@ public interface IOfflineCloudUser {
     /**
      * Quarry {@link IUserInfo} async for current {@link ICloudUser}
      *
-     * @return CompletableFuture<IUserInfo>
+     * @return CompletableFuture of IUserInfo
      */
     CompletableFuture<IUserInfo> queryUserInfoAsync();
 
     /**
      * Quarry {@link IUserModeInfo} for current {@link ICloudUser}
      *
+     * @param mode who should by queried
      * @return IUserModeInfo
      */
     IUserModeInfo queryUserModeInfo(String mode);
@@ -71,7 +72,8 @@ public interface IOfflineCloudUser {
     /**
      * Quarry {@link IUserModeInfo} async for current {@link ICloudUser}
      *
-     * @return CompletableFuture<IUserModeInfo>
+     * @param mode who should by queried
+     * @return CompletableFuture of IUserModeInfo
      */
     CompletableFuture<IUserModeInfo> queryUserModeInfoAsync(String mode);
 
@@ -79,7 +81,8 @@ public interface IOfflineCloudUser {
      * Quarry list of {@link IPunishment} for current {@link ICloudUser}
      * ordered by creation day
      *
-     * @return CompletableFuture<IUserModeInfo>
+     * @param mode who should by queried
+     * @return CompletableFuture of IUserModeInfo
      */
     List<? extends IPunishment> queryPunishments(String mode);
 
@@ -87,7 +90,8 @@ public interface IOfflineCloudUser {
      * Quarry list of {@link IPunishment} async for current {@link ICloudUser}
      * ordered by creation day
      *
-     * @return CompletableFuture<List < ? extends IPunishment>>
+     * @param mode who should by queried
+     * @return CompletableFuture of List with IPunishment
      */
     CompletableFuture<List<? extends IPunishment>> queryPunishmentsAsync(String mode);
 

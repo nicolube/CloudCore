@@ -12,5 +12,5 @@ public interface IModeInstanceUser {
 
     IModeInstance getModeInstance();
 
-    Collection<IStatUpdate> getStatUpdates();
+    Collection<? extends IStatUpdate> getStatUpdates();
 }

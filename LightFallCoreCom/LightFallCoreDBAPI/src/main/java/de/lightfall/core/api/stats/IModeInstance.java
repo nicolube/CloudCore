@@ -9,9 +9,9 @@ public interface IModeInstance {
 
     public String getMode();
 
-    Collection<IModeInstanceUser> getModeInstanceUsers();
+    Collection<? extends IModeInstanceUser> getModeInstanceUsers();
 
-    Collection<IModeInstanceData> getStatData();
+    Collection<? extends IModeInstanceData> getStatData();
 
     public Date getCreated_at();
 }

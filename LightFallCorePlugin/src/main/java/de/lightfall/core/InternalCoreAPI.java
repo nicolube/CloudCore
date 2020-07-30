@@ -9,4 +9,5 @@ public interface InternalCoreAPI extends CoreAPI {
     DatabaseProvider getDatabaseProvider();
 
     CommandManager getCommandManager();
+
 }

@@ -20,7 +20,7 @@ public interface IUserManager {
      * {@link IOfflineCloudUser} when user is offline or null when he is not registered.
      *
      * @param uuid of player you want to get.
-     * @return CompletableFuture<? extends IOfflineCloudUser>
+     * @return a CompletableFuture of IOfflineCloudUser
      */
     CompletableFuture<? extends IOfflineCloudUser> loadUser(UUID uuid);
 
