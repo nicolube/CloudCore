@@ -1,7 +1,7 @@
 package de.lightfall.core.web.rest;
 
 
-import de.lightfall.core.common.ClientType;
+import de.lightfall.core.api.ClientType;
 import de.lightfall.core.common.DatabaseProvider;
 import de.lightfall.core.common.models.InterComTokenModel;
 import de.lightfall.core.common.models.WebApiTokenModel;
