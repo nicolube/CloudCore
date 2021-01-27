@@ -2,30 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.lightfall.core</groupId>
-    <artifactId>LightFallCore</artifactId>
+    <groupId>de.cloud.core</groupId>
+    <artifactId>CloudCore</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>LightFallCoreAPI</module>
-        <module>LightFallCorePlugin</module>
-        <module>LightFallCoreWeb</module>
-        <module>LightFallCoreCom</module>
+        <module>CloudCoreAPI</module>
+        <module>CloudCorePlugin</module>
+        <module>CloudCoreWeb</module>
+        <module>CloudCoreCom</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <authors>nicolube</authors>
     </properties>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>lightfall</id>
-            <url>https://nexus.lightfall.de/repository/maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>lightfall</id>
-            <url>https://nexus.lightfall.de/repository/maven-releases/</url>
-        </repository>
-    </distributionManagement>
     <build>
         <plugins>
             <plugin>
@@ -53,10 +43,6 @@
         </resources>
     </build>
     <repositories>
-        <repository>
-            <id>lightfall</id>
-            <url>https://nexus.lightfall.de/repository/maven-public/</url>
-        </repository>
         <repository>
             <id>cloudnet</id>
             <url>https://repo.cloudnetservice.eu/repository/releases/</url>
