@@ -1,0 +1,10 @@
+{
+  "group": "de.cloud.core",
+  "name": "${project.name}",
+  "version": "${project.version}",
+  "author": "${authors}",
+  "main": "de.cloud.core.node.MainModule",
+  "properties": {
+  },
+  "dataFolder": "modules/CloudCore"
+}

@@ -1,0 +1,7 @@
+name: ${project.name}
+version: ${project.version}
+authors: [${authors}]
+depends:
+  - CloudNet-Bridge
+
+main: de.cloud.core.bungee.MainBungee
