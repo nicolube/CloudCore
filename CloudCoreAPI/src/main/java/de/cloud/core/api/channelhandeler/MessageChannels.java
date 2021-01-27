@@ -9,6 +9,6 @@ public enum MessageChannels {
     private final String channelName;
 
     MessageChannels() {
-        this.channelName = "lightfall-core";
+        this.channelName = "cloud-core";
     }
 }

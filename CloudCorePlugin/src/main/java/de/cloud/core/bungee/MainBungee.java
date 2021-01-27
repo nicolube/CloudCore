@@ -138,7 +138,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         getProxy().getPluginManager().registerListener(this, this.userManager);
 
         // Todo Move this to config
-        Util.setBanFormat("&7● &bLightfall &7●\n§cDu bist vom Netzwerk gebannt!\n\n§7Grund §8» §e%1$s\n§7Ende des Banns §8» §e%2$s" +
+        Util.setBanFormat("&7● &bCloudCore &7●\n§cDu bist vom Netzwerk gebannt!\n\n§7Grund §8» §e%1$s\n§7Ende des Banns §8» §e%2$s" +
                 "\n\n§7Einen Entbannungsantrag kannst du im Forum schreiben.\n§7Forum §8» §aforum.lightfall.de\n" +
                 "§7Teamspeak §8» §blightfall.de");
     }

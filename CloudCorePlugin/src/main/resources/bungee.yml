@@ -4,4 +4,4 @@ authors: [${authors}]
 depends:
   - CloudNet-Bridge
 
-main: de.lightfall.core.bungee.MainBungee
+main: de.cloud.core.bungee.MainBungee
