@@ -1,0 +1,38 @@
+{
+  "database": {
+    "url": "jdbc:h2:mem:lightfallcore",
+    "user": "username",
+    "password": "password"
+  },
+  "chatColorConfig": {
+    "INFO": [
+      "GOLD",
+      "GRAY",
+      "DARK_GRAY",
+      "GREEN",
+      "RED",
+      "YELLOW"
+    ],
+    "ERROR": [
+      "GOLD",
+      "RED",
+      "DARK_GRAY",
+      "GREEN",
+      "DARK_RED"
+    ],
+    "SYNTAX": [
+      "GOLD",
+      "GREEN",
+      "DARK_GRAY",
+      "DARK_GREEN",
+      "RED"
+    ],
+    "HELP": [
+      "GOLD",
+      "GREEN",
+      "DARK_GRAY",
+      "DARK_GREEN",
+      "RED"
+    ]
+  }
+}
