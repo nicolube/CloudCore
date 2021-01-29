@@ -14,6 +14,13 @@ public interface CoreAPI {
     void setMode(boolean mode);
 
     /**
+     * Registers a plugin in to the API
+     *
+     * @param plugin instance of bungeecord or bukkit plugin
+     */
+    void registerPlugin(ICorePlugin plugin);
+
+    /**
      * Gets the current {@link IUserManager} singleton
      *
      * @return you the current instance of the user manager.

@@ -5,6 +5,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import de.cloud.core.InternalCoreAPI;
 import de.cloud.core.ModuleMessageProvider;
+import de.cloud.core.api.ICorePlugin;
 import de.cloud.core.api.Util;
 import de.cloud.core.api.channelhandeler.ChannelHandler;
 import de.cloud.core.api.channelhandeler.documents.ConfigRequestDocument;
@@ -20,6 +21,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -41,10 +44,12 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     private String mode;
     @Getter
     private DatabaseProvider databaseProvider;
+    private List<ICorePlugin> plugins;
 
     @Override
     @SneakyThrows
     public void onLoad() {
+        this.plugins = new ArrayList<>();
         getLogger().setLevel(Level.FINER);
         getLogger().info(Util.getLogo());
         getLogger().info("Create channel handler executor...");
@@ -98,6 +103,9 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
         getLogger().info("Create user manager...");
         this.userManager = new BukkitUserManager(this);
         Bukkit.getPluginManager().registerEvents(this.userManager, this);
+
+        getLogger().info("Enable API plugins...");
+        this.plugins.forEach(this::enableApiPlugin);
     }
 
     @SneakyThrows
@@ -114,5 +122,19 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     @Override
     public void setMode(boolean mode) {
         this.mode = mode ? Wrapper.getInstance().getServiceId().getTaskName() : null;
+    }
+
+    @Override
+    public void registerPlugin(ICorePlugin plugin) {
+        this.plugins.add(plugin);
+        if (this.config != null) {
+            enableApiPlugin(plugin);
+        }
+    }
+
+    @SneakyThrows
+    private void enableApiPlugin(ICorePlugin plugin) {
+        getLogger().info("Enable API-plugin: %s" + plugin.getName());
+        plugin.onApiEnable();
     }
 }

@@ -5,6 +5,7 @@ import co.aikar.commands.MessageType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import de.cloud.core.InternalCoreAPI;
 import de.cloud.core.ModuleMessageProvider;
+import de.cloud.core.api.ICorePlugin;
 import de.cloud.core.api.Util;
 import de.cloud.core.api.channelhandeler.ChannelHandler;
 import de.cloud.core.api.channelhandeler.documents.ConfigRequestDocument;
@@ -25,10 +26,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -51,10 +49,12 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     private static MainBungee instance;
     @Getter
     private DatabaseProvider databaseProvider;
+    private List<ICorePlugin> plugins;
 
     @Override
     @SneakyThrows
     public void onLoad() {
+        this.plugins = new ArrayList<>();
         getLogger().setLevel(Level.FINER);
         getLogger().info(Util.getLogo());
         getLogger().info("Create channel handler executor...");
@@ -141,6 +141,10 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         Util.setBanFormat("&7● &bCloudCore &7●\n§cDu bist vom Netzwerk gebannt!\n\n§7Grund §8» §e%1$s\n§7Ende des Banns §8» §e%2$s" +
                 "\n\n§7Einen Entbannungsantrag kannst du im Forum schreiben.\n§7Forum §8» §aforum.lightfall.de\n" +
                 "§7Teamspeak §8» §blightfall.de");
+
+
+        getLogger().info("Enable API plugins...");
+        this.plugins.forEach(this::enableApiPlugin);
     }
 
     public void onConfigure(Config config) {
@@ -155,4 +159,18 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
 
     @Override
     public native void setMode(boolean mode);
+
+    @Override
+    public void registerPlugin(ICorePlugin plugin) {
+        this.plugins.add(plugin);
+        if (config != null) {
+            enableApiPlugin(plugin);
+        }
+    }
+
+    @SneakyThrows
+    private void enableApiPlugin(ICorePlugin plugin) {
+        getLogger().info("Enable API-plugin: %s" + plugin.getName());
+        plugin.onApiEnable();
+    }
 }
