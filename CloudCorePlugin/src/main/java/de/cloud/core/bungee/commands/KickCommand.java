@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.*;
 import de.cloud.core.api.message.CoreMessageKeys;
 import de.cloud.core.bungee.MainBungee;
 import de.cloud.core.bungee.usermanager.BungeeCloudUser;
-import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class KickCommand extends BaseCommand {
     public void onKick(BungeeCloudUser sender, @Single String offlinePlayerName, @Optional String reason) {
         CommandIssuer issuer = getCurrentCommandIssuer();
         final String reasonString = reason == null ? "Kein Grund angegeben / No reason given" : reason;
-        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
         playerManager.getOnlinePlayersAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER, "{search}", offlinePlayerName);

@@ -8,6 +8,7 @@ import de.cloud.core.api.CoreAPI;
 import de.cloud.core.api.message.CoreMessageKeys;
 import de.cloud.core.bungee.usermanager.BungeeCloudUser;
 import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 
 @CommandAlias("unban")
@@ -19,7 +20,7 @@ public class UnbanCommand extends BaseCommand {
     @Description("{@@core.cmd_unban_description}")
     public void onUnban(BungeeCloudUser sender, @Single String offlinePlayerName, @Optional String comment) {
         CommandIssuer issuer = getCurrentCommandIssuer();
-        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
         playerManager.getOfflinePlayersAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER, "{search}", offlinePlayerName);

@@ -8,6 +8,7 @@ import de.cloud.core.api.message.CoreMessageKeys;
 import de.cloud.core.bungee.MainBungee;
 import de.cloud.core.bungee.usermanager.BungeeCloudUser;
 import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class MuteCommand extends BaseCommand {
     @CommandCompletion("@cloudPlayers @nothing")
     public void onMute(BungeeCloudUser sender, @Single String offlinePlayerName, @Optional String reason) {
         CommandIssuer issuer = getCurrentCommandIssuer();
-        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
         playerManager.getOfflinePlayersAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
             String lReason;
             if (reason == null)

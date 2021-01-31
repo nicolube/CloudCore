@@ -9,6 +9,7 @@ import de.cloud.core.api.message.CoreMessageKeys;
 import de.cloud.core.bungee.MainBungee;
 import de.cloud.core.bungee.usermanager.BungeeCloudUser;
 import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 
 import java.util.Date;
@@ -37,7 +38,7 @@ public class TempbanCommand extends BaseCommand {
             issuer.sendError(CoreMessageKeys.TIMEFORMAT_FAIL);
             return;
         }
-        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
         playerManager.getOfflinePlayersAsync(offlinePlayerName).onComplete((listITask, iCloudOfflinePlayers) -> {
             if (iCloudOfflinePlayers.isEmpty()) {
                 issuer.sendError(MessageKeys.COULD_NOT_FIND_PLAYER, "{search}", offlinePlayerName);
