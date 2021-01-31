@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class EventBasedExecutions implements Listener {
@@ -34,7 +35,9 @@ public class EventBasedExecutions implements Listener {
     }
 
     public void scheduleExecution(EventExecutorTask executor) {
-        final Class<? extends Event> clazz = (Class<? extends Event>) ((ParameterizedType) executor.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        Type genericInterface = executor.getClass().getGenericInterfaces()[0];
+        System.out.println(genericInterface.getTypeName());
+        final Class<? extends Event> clazz = (Class<? extends Event>) ((ParameterizedType) genericInterface).getActualTypeArguments()[0];
         if (!this.registeredEvents.contains(clazz)) {
             Bukkit.getPluginManager().registerEvent(clazz, dummyListener, EventPriority.NORMAL, this.executor, this.plugin);
             this.registeredEvents.add(clazz);

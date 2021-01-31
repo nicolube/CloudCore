@@ -17,7 +17,16 @@
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
     </repositories>
+    <scm>
+
+        <connection>scm:git:http://gitlab.demonparadise.de/demonparadise/CloudCore.git</connection>
+        <developerConnection>ssh://git@gitlab.demonparadise.de:demonparadise/CloudCore.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://gitlab.demonparadise.de/demonparadise/CloudCore</url>
+    </scm>
+
     <build>
+        <finalName>$\{project.artifactId}-$\{project.version}-r$\{buildNumber}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -30,6 +39,16 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <relocations>
                                 <relocation>
                                     <pattern>io.netty</pattern>
@@ -39,6 +58,23 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>true</doCheck>
+                    <doUpdate>true</doUpdate>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

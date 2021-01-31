@@ -82,19 +82,10 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
         getLogger().info("Starting command manager...");
         this.commandManager = new PaperCommandManager(this);
         this.commandManager.getLocales().setDefaultLocale(Locale.ENGLISH);
-        config.getChatColorConfig().forEach((t, c) -> {
-            final ChatColor[] chatColors = new ChatColor[c.length];
-            for (int i = 0; i < c.length; i++) chatColors[i] = ChatColor.valueOf(c[i].toUpperCase());
-            try {
-                MessageType type = (MessageType) MessageType.class.getDeclaredField(t).get(null);
-                this.commandManager.setFormat(type, chatColors);
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        });
 
         getLogger().info("Loading messages...");
         this.messageProvider = new ModuleMessageProvider(databaseProvider.getMessageDao(), this.commandManager, getLogger());
+        this.messageProvider.setColorConfig(config.getChatColorConfig());
         this.commandManager.getSupportedLanguages().clear();
         this.commandManager.addSupportedLanguage(Locale.GERMAN);
         this.commandManager.addSupportedLanguage(Locale.ENGLISH);

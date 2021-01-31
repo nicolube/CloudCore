@@ -1,7 +1,14 @@
 package de.cloud.core.utils.usermanager;
 
+import co.aikar.commands.CommandManager;
+import co.aikar.commands.MessageType;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import de.cloud.core.InternalCoreAPI;
+import de.cloud.core.api.Util;
+import de.cloud.core.api.channelhandeler.ChannelHandler;
+import de.cloud.core.api.channelhandeler.documents.MessageDocument;
+import de.cloud.core.api.message.CoreMessageKeys;
+import de.cloud.core.api.message.IMessageKeyProvider;
 import de.cloud.core.api.punishments.IPunishment;
 import de.cloud.core.api.punishments.PunishmentType;
 import de.cloud.core.api.usermanager.ICloudUser;
@@ -11,12 +18,19 @@ import de.cloud.core.api.usermanager.IUserModeInfo;
 import de.cloud.core.common.models.PunishmentModel;
 import de.cloud.core.common.models.UserInfoModel;
 import de.cloud.core.common.models.UserModeInfoModel;
+import de.dytanic.cloudnet.common.concurrent.ITask;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
+import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
+import de.dytanic.cloudnet.ext.bridge.player.ICloudOfflinePlayer;
+import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.query.QueryOptions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -166,14 +180,17 @@ public class OfflineCloudUser implements IOfflineCloudUser {
             try {
                 punishmentModel = plugin.getDatabaseProvider().getPunishmentDao().createIfNotExists(punishmentModel);
                 if (type.equals(PunishmentType.BAN) || type.equals(PunishmentType.TEMP_BAN)) {
+                    final String formatBan = Util.formatBan(punishmentModel.getEnd(), reason, this.locale);
                     if (mode == null) {
                         UpdateBuilder<UserInfoModel, Long> updateBuilder = plugin.getDatabaseProvider().getUserInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
                         updateBuilder.where().idEq(this.databaseId);
                         updateBuilder.update();
+                            kick(formatBan);
                     } else {
                         UpdateBuilder<UserModeInfoModel, Long> updateBuilder = plugin.getDatabaseProvider().getUserModeInfoDao().updateBuilder().updateColumnValue("activeBan_id", punishmentModel.getId());
                         updateBuilder.where().idEq(userModeInfoModel.getId()).and().eq("mode", mode);
                         updateBuilder.update();
+                        // TODO Mode kick
                     }
                     return punishmentModel;
                 }
@@ -187,6 +204,15 @@ public class OfflineCloudUser implements IOfflineCloudUser {
                         updateBuilder.where().idEq(userModeInfoModel.getId()).and().eq("mode", mode);
                         updateBuilder.update();
                     }
+                    sendMessage(MessageType.ERROR, CoreMessageKeys.MUTE, "{0}", punishmentModel.getReason(), "{1}",
+                            Util.formatDate(punishmentModel.getEnd(), getLocale()));
+                    return punishmentModel;
+                }
+                if (type.equals(PunishmentType.KICK)){
+                    if (mode == null) {
+                        CommandManager commandManager = this.userManager.getPlugin().getCommandManager();
+                        //kick(CoreMessageKeys.KICK);
+                    }
                     return punishmentModel;
                 }
             } catch (SQLException throwables) {
@@ -195,7 +221,27 @@ public class OfflineCloudUser implements IOfflineCloudUser {
             return null;
         });
     }
+    private void kick(String message) {
+        Objects.requireNonNull(getCloudPlayerAsync()).onComplete((iTask, iCloudPlayer) -> {
+            if (iCloudPlayer == null) return;
+            this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).kick(message);
+        });
+    }
 
+    private void modeKick(String message) {
+
+    }
+
+    @Override
+    public void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements) {
+        this.userManager.getPlayerManager().getOnlinePlayerAsync(this.uuid).onComplete((iTask, iCloudPlayer) -> {
+            if (iCloudPlayer == null) return;
+            final ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(iCloudPlayer.getConnectedService().getUniqueId());
+            ChannelHandler.send(cloudService, new MessageDocument(this.uuid, type, key, replacements));
+        });
+    }
+
+    @Override
     public CompletableFuture<Integer> getWight() {
         LuckPerms api = LuckPermsProvider.get();
         return api.getUserManager().loadUser(this.uuid).thenApply(user -> {
@@ -213,6 +259,7 @@ public class OfflineCloudUser implements IOfflineCloudUser {
         setLocale(Locale.forLanguageTag(tag), update);
     }
 
+    @Override
     public void setLocale(@NonNull Locale locale, boolean update) {
         this.locale = locale;
         if (!update) return;
@@ -231,5 +278,24 @@ public class OfflineCloudUser implements IOfflineCloudUser {
     @Override
     public boolean isOnline() {
         return false;
+    }
+    @Override
+    public ICloudPlayer getCloudPlayer() {
+        return this.userManager.getPlayerManager().getOnlinePlayer(this.uuid);
+    }
+
+    @Override
+    public ITask<? extends ICloudPlayer> getCloudPlayerAsync() {
+        return this.userManager.getPlayerManager().getOnlinePlayerAsync(this.uuid);
+    }
+
+    @Override
+    public @Nullable ICloudOfflinePlayer getCloudOfflinePlayer() {
+        return this.userManager.getPlayerManager().getOfflinePlayer(this.uuid);
+    }
+
+    @Override
+    public ITask<ICloudOfflinePlayer> getCloudOfflinePlayerAsync() {
+        return this.userManager.getPlayerManager().getOfflinePlayerAsync(this.uuid);
     }
 }

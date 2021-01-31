@@ -35,10 +35,7 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
             this.userManager.getPlugin().getCommandManager().getCommandIssuer(getPlayer()).sendMessage(type, key, replacements);
             return;
         }
-        this.userManager.getPlayerManager().getOnlinePlayerAsync(this.uuid).onComplete((iTask, iCloudPlayer) -> {
-            final ServiceInfoSnapshot cloudService = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudService(iCloudPlayer.getConnectedService().getUniqueId());
-            ChannelHandler.send(cloudService, new MessageDocument(this.uuid, type, key, replacements));
-        });
+        super.sendMessage(type, key, replacements);
     }
 
     @Override
@@ -77,47 +74,6 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
             if (p.getConnectedService().getServerName().equals(service)) return;
             this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).connect(service);
         });
-    }
-
-    @Override
-    public ICloudPlayer getCloudPlayer() {
-        return this.userManager.getPlayerManager().getOnlinePlayer(this.uuid);
-    }
-
-    @Override
-    public CompletableFuture<PunishmentModel> punish(ICloudUser iSender, String mode, PunishmentType type, long length, String reason) {
-        final CompletableFuture<PunishmentModel> punish = super.punish(iSender, mode, type, length, reason);
-        punish.thenAcceptAsync(punishmentModel -> {
-            final boolean isBan = type.equals(PunishmentType.BAN) || type.equals(PunishmentType.TEMP_BAN);
-            final boolean isMute = type.equals(PunishmentType.MUTE) || type.equals(PunishmentType.TEMP_MUTE);
-            final ICloudPlayer cloudPlayer = getCloudPlayer();
-            if (isBan) {
-                final String formatBan = Util.formatBan(punishmentModel.getEnd(), reason, this.locale);
-                if (mode == null) {
-                    this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).kick(formatBan);
-                    return;
-                }
-                move("Lobby-1");
-                // Todo send mode ban info to player (temporary solution)
-                this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).sendChatMessage(formatBan);
-                return;
-            }
-            if (isMute) {
-                sendMessage(MessageType.ERROR, CoreMessageKeys.MUTE, "{0}", punishmentModel.getReason(), "{1}",
-                        Util.formatDate(punishmentModel.getEnd(), getLocale()));
-                return;
-            }
-            if (type.equals(PunishmentType.KICK)) {
-                if (mode == null) {
-                    this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).kick(ChatColor.translateAlternateColorCodes('&', reason));
-                    return;
-                }
-                // Todo send kick info to player
-                move("Lobby-1");
-            }
-        });
-
-        return punish;
     }
 
     @Override

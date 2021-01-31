@@ -15,7 +15,6 @@ import de.cloud.core.bungee.commands.*;
 import de.cloud.core.bungee.usermanager.BungeeCloudUser;
 import de.cloud.core.bungee.usermanager.BungeeUserManager;
 import de.cloud.core.common.DatabaseProvider;
-import de.dytanic.cloudnet.CloudNet;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
@@ -92,29 +91,19 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
             CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
             return groups;
         });
-        IPlayerManager playerManager = CloudNet.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
         this.commandManager.getCommandCompletions().registerAsyncCompletion("cloudPlayers", context ->
                 playerManager.getOnlinePlayers().stream().map(ICloudPlayer::getName).collect(Collectors.toList()));
-
 
         this.commandManager.getCommandContexts().registerContext(GroupConfiguration.class, context ->
                 CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfiguration(context.popFirstArg()));
         this.commandManager.getCommandContexts().registerIssuerOnlyContext(BungeeCloudUser.class, ioc -> this.userManager.getUser(ioc.getPlayer().getUniqueId()));
 
         getLogger().info("Configure ChatColor...");
-        config.getChatColorConfig().forEach((t, c) -> {
-            final ChatColor[] chatColors = new ChatColor[c.length];
-            for (int i = 0; i < c.length; i++) chatColors[i] = ChatColor.valueOf(c[i].toUpperCase());
-            try {
-                MessageType type = (MessageType) MessageType.class.getDeclaredField(t).get(null);
-                this.commandManager.setFormat(type, chatColors);
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        });
 
         getLogger().info("Loading messages...");
         this.messageProvider = new ModuleMessageProvider(databaseProvider.getMessageDao(), this.commandManager, getLogger());
+        this.messageProvider.setColorConfig(config.getChatColorConfig());
         this.commandManager.getSupportedLanguages().clear();
         this.commandManager.addSupportedLanguage(Locale.GERMAN);
         this.commandManager.addSupportedLanguage(Locale.ENGLISH);

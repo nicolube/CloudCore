@@ -16,15 +16,6 @@ import java.util.UUID;
 public interface ICloudUser extends IOfflineCloudUser {
 
     /**
-     * Send a message to the player via a message kay you provided.
-     *
-     * @param type         {@link MessageType}
-     * @param key          {@link IMessageKeyProvider}
-     * @param replacements "key1", "value1", "key2", "value2"...
-     */
-    void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements);
-
-    /**
      * Moves the player to the server of a anther player and returns the
      * NetworkServiceInfo of the server where the player get moved to.
      *
@@ -71,12 +62,6 @@ public interface ICloudUser extends IOfflineCloudUser {
      */
     void move(String service);
 
-    /**
-     * Gets the current {@link ICloudPlayer}
-     *
-     * @return ICloudPlayer of the current player
-     */
-    ICloudPlayer getCloudPlayer();
 
     /**
      * Returns name of CloudUser

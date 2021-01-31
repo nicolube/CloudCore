@@ -37,6 +37,8 @@ public enum CoreMessageKeys implements IMessageKeyProvider {
     CMD_PING_DESCRIPTION,
     MUTE,
     MUTED,
+    KICK,
+    BAN,
     TIMEFORMAT_FAIL;
 
     private boolean prefix;

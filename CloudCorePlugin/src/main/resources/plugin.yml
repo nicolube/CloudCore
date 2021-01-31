@@ -1,5 +1,6 @@
 name: ${project.name}
 version: ${project.version}
 authors: [${authors}]
+api-version: 1.12
 
 main: de.cloud.core.bukkit.MainBukkit

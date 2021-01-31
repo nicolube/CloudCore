@@ -3,6 +3,7 @@ package de.cloud.core.bukkit;
 import de.cloud.core.api.bukkit.events.ReloadEvent;
 import de.cloud.core.api.channelhandeler.ChannelHandler;
 import de.cloud.core.api.channelhandeler.documents.*;
+import de.cloud.core.bukkit.EventBasedExecutions.EventExecutorTask;
 import de.dytanic.cloudnet.driver.event.EventListener;
 import de.dytanic.cloudnet.driver.event.events.channel.ChannelMessageReceiveEvent;
 import org.bukkit.Bukkit;
@@ -40,7 +41,7 @@ public class BukkitChannelHandler extends ChannelHandler {
                 player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                 return;
             }
-            this.plugin.getEventBasedExecutions().scheduleExecution((EventBasedExecutions.EventExecutorTask<PlayerJoinEvent>) event -> {
+            this.plugin.getEventBasedExecutions().scheduleExecution((EventExecutorTask<PlayerJoinEvent>) event -> {
                 if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
                 if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
                     event.getPlayer().teleport(target);

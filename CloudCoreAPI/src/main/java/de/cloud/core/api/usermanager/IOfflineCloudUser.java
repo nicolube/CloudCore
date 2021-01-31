@@ -1,6 +1,13 @@
 package de.cloud.core.api.usermanager;
 
+import co.aikar.commands.MessageType;
+import de.cloud.core.api.message.IMessageKeyProvider;
 import de.cloud.core.api.punishments.IPunishment;
+import de.dytanic.cloudnet.common.concurrent.ITask;
+import de.dytanic.cloudnet.ext.bridge.player.ICloudOfflinePlayer;
+import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -144,6 +151,22 @@ public interface IOfflineCloudUser {
     void kick(ICloudUser sender, String mode, String reason);
 
     /**
+     * Send a message to the player via a message kay you provided.
+     *
+     * @param type         {@link MessageType}
+     * @param key          {@link IMessageKeyProvider}
+     * @param replacements "key1", "value1", "key2", "value2"...
+     */
+    void sendMessage(MessageType type, IMessageKeyProvider key, String... replacements);
+
+    /**
+     * Gets group wight of user, is taken from luckperms
+     *
+     * @return CompletableFuture if Integer
+     */
+    CompletableFuture<Integer> getWight();
+
+    /**
      * Setts the locale of the user.
      *
      * @param locale {@link Locale#GERMAN} or {@link Locale#ENGLISH} are Supported
@@ -157,4 +180,33 @@ public interface IOfflineCloudUser {
      * @return Locale
      */
     Locale getLocale();
+
+    /**
+     * Gets the current {@link ICloudPlayer}, returns null when offline or not exist
+     *
+     * @return ICloudPlayer of the current player
+     */
+    @Nullable ICloudPlayer getCloudPlayer();
+
+    /**
+     * Gets the current {@link ICloudPlayer}, returns null when offline or net exist
+     *
+     * @return ITask of ICloudPlayer from the current player
+     */
+    @Nullable ITask<? extends ICloudPlayer> getCloudPlayerAsync();
+
+    /**
+     * Gets the corresponding offline player, returns null when not exist
+     *
+     * @return ICloudOfflinePlayer from the current player
+     */
+    @Nullable ICloudOfflinePlayer getCloudOfflinePlayer();
+
+    /**
+     * Gets the corresponding offline player, returns null when not exist
+     *
+     * @return ITask of ICloudOfflinePlayer from the current player
+     */
+    ITask<ICloudOfflinePlayer> getCloudOfflinePlayerAsync();
+
 }
