@@ -58,12 +58,12 @@ public class MessageProvider {
                 }
             }
         });
-        final String prefixKey = mappedMessages.remove(keyProvider);
+        final String prefixKey = mappedMessages.get(keyProvider);
         final String prefix = translateAlternateColorCodes('&', prefixKey);
         mappedMessages.forEach((k, v) -> {
             v = translateAlternateColorCodes('&', v);
             this.messages.get(locale).put(k, v);
-            if (k.hasPrefix())
+            if (k != keyProvider && k.hasPrefix())
                 v = prefix + v;
             addMessage(locale, k, v);
         });

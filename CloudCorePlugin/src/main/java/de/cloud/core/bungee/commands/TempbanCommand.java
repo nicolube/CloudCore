@@ -53,7 +53,7 @@ public class TempbanCommand extends BaseCommand {
                     issuer.sendInfo(CoreMessageKeys.CMD_TEMPBAN_BANNED, "{0}", iCloudOfflinePlayers.get(0).getName(),
                             "{1}", Util.formatDate(new Date(TimeUnit.SECONDS.toMillis(timeInSeconds) + System.currentTimeMillis()), sender.getLocale()),
                             "{2}", reason);
-                    offlineCloudUser.tempMute(sender, null, timeInSeconds, reason);
+                    offlineCloudUser.tempBan(sender, null, timeInSeconds, reason);
                 } catch (ExecutionException | InterruptedException ex) {
                     ex.printStackTrace();
                 }

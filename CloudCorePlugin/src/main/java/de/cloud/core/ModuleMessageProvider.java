@@ -18,13 +18,13 @@ import java.util.logging.Logger;
 
 public class ModuleMessageProvider extends MessageProvider implements IMessageProvider {
 
-    private final CommandManager commandManager;
+    private final InternalCoreAPI plugin;
     private Logger logger;
 
     @SneakyThrows
-    public ModuleMessageProvider(Dao<MessageModel, Long> messageDao, CommandManager commandManager, Logger logger) {
+    public ModuleMessageProvider(Dao<MessageModel, Long> messageDao, InternalCoreAPI plugin, Logger logger) {
         super(messageDao, logger);
-        this.commandManager = commandManager;
+        this.plugin = plugin;
     }
 
     public void loadCommandManagerAsync(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager) {
@@ -33,14 +33,18 @@ public class ModuleMessageProvider extends MessageProvider implements IMessagePr
 
     @SneakyThrows
     public void loadCommandManager(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager) {
+        this.plugin.configChatColor(commandManager);
         IMessageKeyProvider[] keys = (IMessageKeyProvider[]) keyProvider.getClass().getDeclaredMethod("values").invoke(null);
-        final Set<Locale> supportedLanguages = this.commandManager.getSupportedLanguages();
+        CommandManager pluginCommandManager = this.plugin.getCommandManager();
+        final Set<Locale> supportedLanguages = pluginCommandManager.getSupportedLanguages();
         supportedLanguages.forEach(locale -> {
+            String prefix = this.messages.get(locale).get(prefixKey);
             for (IMessageKeyProvider key : keys) {
                 String message = this.messages.get(locale).get(key);
                 if (key.hasPrefix())
-                    message = this.messages.get(locale).get(prefixKey) + message;
-                this.commandManager.getLocales().addMessage(locale, key, message);
+                    message = prefix + message;
+                commandManager.getLocales().addMessage(locale, key, message);
+                pluginCommandManager.getLocales().addMessage(locale, key, message);
             }
         });
     }
@@ -54,7 +58,7 @@ public class ModuleMessageProvider extends MessageProvider implements IMessagePr
 
     @Override
     protected void addMessage(Locale locale, IMessageKeyProvider k, String v) {
-        this.commandManager.getLocales().addMessage(locale, k, v);
+        this.plugin.getCommandManager().getLocales().addMessage(locale, k, v);
     }
 
     @Override

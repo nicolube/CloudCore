@@ -1,6 +1,7 @@
 package de.cloud.core.bungee;
 
 import co.aikar.commands.BungeeCommandManager;
+import co.aikar.commands.CommandManager;
 import co.aikar.commands.MessageType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import de.cloud.core.InternalCoreAPI;
@@ -87,6 +88,7 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         getLogger().info("Starting command manager...");
         this.commandManager = new BungeeCommandManager(this);
         this.commandManager.usePerIssuerLocale(true);
+        this.commandManager.getLocales().setDefaultLocale(Locale.ENGLISH);
         this.commandManager.getCommandCompletions().registerAsyncCompletion("taskGroup", context -> {
             Set<String> groups = new HashSet<>();
             CloudNetDriver.getInstance().getGroupConfigurationProvider().getGroupConfigurations().forEach(t -> groups.add(t.getName()));
@@ -114,11 +116,12 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         });
 
         getLogger().info("Loading messages...");
-        this.messageProvider = new ModuleMessageProvider(databaseProvider.getMessageDao(), this.commandManager, getLogger());
+        this.messageProvider = new ModuleMessageProvider(databaseProvider.getMessageDao(), this, getLogger());
         this.commandManager.getSupportedLanguages().clear();
         this.commandManager.addSupportedLanguage(Locale.GERMAN);
         this.commandManager.addSupportedLanguage(Locale.ENGLISH);
         loadMessages();
+        this.messageProvider.loadCommandManager(CoreMessageKeys.PREFIX, CoreMessageKeys.PREFIX, this.commandManager);
 
         getLogger().info("Registering commands...");
         // Todo remove Test command before release!
@@ -172,5 +175,20 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     private void enableApiPlugin(ICorePlugin plugin) {
         getLogger().info("Enable API-plugin: %s" + plugin.getName());
         plugin.onApiEnable();
+    }
+
+    @Override
+    public void configChatColor(CommandManager commandManager) {
+        Map<String, String[]> chatColorConfig = this.config.getChatColorConfig();
+        chatColorConfig.forEach((t, c) -> {
+            final ChatColor[] chatColors = new ChatColor[c.length];
+            for (int i = 0; i < c.length; i++) chatColors[i] = ChatColor.valueOf(c[i].toUpperCase());
+            try {
+                MessageType type = (MessageType) MessageType.class.getDeclaredField(t).get(null);
+                this.commandManager.setFormat(type, chatColors);
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
