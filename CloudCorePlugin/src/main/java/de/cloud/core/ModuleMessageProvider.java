@@ -20,14 +20,13 @@ import java.util.logging.Logger;
 
 public class ModuleMessageProvider extends MessageProvider implements IMessageProvider {
 
-    private final CommandManager commandManager;
+    private final InternalCoreAPI plugin;
     private Logger logger;
-    private Map<String, String[]> chatColorConfig;
 
     @SneakyThrows
-    public ModuleMessageProvider(Dao<MessageModel, Long> messageDao, CommandManager commandManager, Logger logger) {
+    public ModuleMessageProvider(Dao<MessageModel, Long> messageDao, InternalCoreAPI plugin, Logger logger) {
         super(messageDao, logger);
-        this.commandManager = commandManager;
+        this.plugin = plugin;
     }
 
     public void loadCommandManagerAsync(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager) {
@@ -36,26 +35,18 @@ public class ModuleMessageProvider extends MessageProvider implements IMessagePr
 
     @SneakyThrows
     public void loadCommandManager(IMessageKeyProvider prefixKey, IMessageKeyProvider keyProvider, CommandManager commandManager) {
-        chatColorConfig.forEach((t, c) -> {
-            final org.bukkit.ChatColor[] chatColors = new org.bukkit.ChatColor[c.length];
-            for (int i = 0; i < c.length; i++) chatColors[i] = org.bukkit.ChatColor.valueOf(c[i].toUpperCase());
-            try {
-                MessageType type = (MessageType) MessageType.class.getDeclaredField(t).get(null);
-                this.commandManager.setFormat(type, chatColors);
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        });
-
+        this.plugin.configChatColor(commandManager);
         IMessageKeyProvider[] keys = (IMessageKeyProvider[]) keyProvider.getClass().getDeclaredMethod("values").invoke(null);
-        final Set<Locale> supportedLanguages = this.commandManager.getSupportedLanguages();
+        CommandManager pluginCommandManager = this.plugin.getCommandManager();
+        final Set<Locale> supportedLanguages = pluginCommandManager.getSupportedLanguages();
         supportedLanguages.forEach(locale -> {
+            String prefix = this.messages.get(locale).get(prefixKey);
             for (IMessageKeyProvider key : keys) {
                 String message = this.messages.get(locale).get(key);
                 if (key.hasPrefix())
-                    message = this.messages.get(locale).get(prefixKey) + message;
+                    message = prefix + message;
                 commandManager.getLocales().addMessage(locale, key, message);
-                this.commandManager.getLocales().addMessage(locale, key, message);
+                pluginCommandManager.getLocales().addMessage(locale, key, message);
             }
         });
     }
@@ -69,15 +60,11 @@ public class ModuleMessageProvider extends MessageProvider implements IMessagePr
 
     @Override
     protected void addMessage(Locale locale, IMessageKeyProvider k, String v) {
-        this.commandManager.getLocales().addMessage(locale, k, v);
+        this.plugin.getCommandManager().getLocales().addMessage(locale, k, v);
     }
 
     @Override
     protected String translateAlternateColorCodes(char c, String prefixKey) {
         return ChatColor.translateAlternateColorCodes(c, prefixKey);
-    }
-
-    public void setColorConfig(Map<String, String[]> chatColorConfig) {
-        this.chatColorConfig = chatColorConfig;
     }
 }

@@ -41,7 +41,7 @@ public class KickCommand extends BaseCommand {
             this.plugin.getUserManager().loadUser(uniqueId).thenAcceptAsync(offlineCloudUser -> {
                 try {
                     if (sender.getWight().get() <= offlineCloudUser.getWight().get()) {
-                        issuer.sendInfo(CoreMessageKeys.CMD_BAN_LOWER_RANK);
+                        issuer.sendInfo(CoreMessageKeys.CMD_KICK_LOWER_RANK);
                         return;
                     }
                     offlineCloudUser.kick(sender,null,reasonString);

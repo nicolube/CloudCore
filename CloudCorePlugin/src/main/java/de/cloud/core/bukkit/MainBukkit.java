@@ -1,5 +1,6 @@
 package de.cloud.core.bukkit;
 
+import co.aikar.commands.CommandManager;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -21,10 +22,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Level;
 
 public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
@@ -81,15 +79,26 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
 
         getLogger().info("Starting command manager...");
         this.commandManager = new PaperCommandManager(this);
+        this.commandManager.usePerIssuerLocale(true, false);
         this.commandManager.getLocales().setDefaultLocale(Locale.ENGLISH);
+        config.getChatColorConfig().forEach((t, c) -> {
+            final ChatColor[] chatColors = new ChatColor[c.length];
+            for (int i = 0; i < c.length; i++) chatColors[i] = ChatColor.valueOf(c[i].toUpperCase());
+            try {
+                MessageType type = (MessageType) MessageType.class.getDeclaredField(t).get(null);
+                this.commandManager.setFormat(type, chatColors);
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        });
 
         getLogger().info("Loading messages...");
-        this.messageProvider = new ModuleMessageProvider(databaseProvider.getMessageDao(), this.commandManager, getLogger());
-        this.messageProvider.setColorConfig(config.getChatColorConfig());
+        this.messageProvider = new ModuleMessageProvider(databaseProvider.getMessageDao(), this, getLogger());
         this.commandManager.getSupportedLanguages().clear();
         this.commandManager.addSupportedLanguage(Locale.GERMAN);
         this.commandManager.addSupportedLanguage(Locale.ENGLISH);
         loadMessages();
+        this.messageProvider.loadCommandManager(CoreMessageKeys.PREFIX, CoreMessageKeys.PREFIX, this.commandManager);
 
         getLogger().info("Create user manager...");
         this.userManager = new BukkitUserManager(this);
@@ -127,5 +136,19 @@ public class MainBukkit extends JavaPlugin implements InternalCoreAPI {
     private void enableApiPlugin(ICorePlugin plugin) {
         getLogger().info("Enable API-plugin: %s" + plugin.getName());
         plugin.onApiEnable();
+    }
+
+    @Override
+    public void configChatColor(CommandManager commandManager) {
+        this.config.getChatColorConfig().forEach((t, c) -> {
+            final ChatColor[] chatColors = new ChatColor[c.length];
+            for (int i = 0; i < c.length; i++) chatColors[i] = ChatColor.valueOf(c[i].toUpperCase());
+            try {
+                MessageType type = (MessageType) MessageType.class.getDeclaredField(t).get(null);
+                this.commandManager.setFormat(type, chatColors);
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

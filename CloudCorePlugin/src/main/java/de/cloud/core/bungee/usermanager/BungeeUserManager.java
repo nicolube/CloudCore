@@ -66,7 +66,6 @@ public class BungeeUserManager extends UserManager implements Listener {
         if (userInfoModel == null)
             userInfoModel = this.plugin.getDatabaseProvider().getUserInfoDao().createIfNotExists(new UserInfoModel(uuid));
         final BungeeCloudUser bungeeCloudUser = new BungeeCloudUser(uuid, userInfoModel.getId(), this);
-        // Todo whitelist
         Locale locale = Locale.forLanguageTag(userInfoModel.getLocale());
         final PunishmentModel activeBan = userInfoModel.getActiveBan();
         if (activeBan != null) {

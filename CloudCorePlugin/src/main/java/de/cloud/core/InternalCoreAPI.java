@@ -10,4 +10,6 @@ public interface InternalCoreAPI extends CoreAPI {
 
     CommandManager getCommandManager();
 
+    void configChatColor(CommandManager commandManager);
+
 }
