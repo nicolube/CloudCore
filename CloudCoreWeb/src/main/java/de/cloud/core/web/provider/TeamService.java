@@ -1,4 +1,4 @@
-package de.cloud.core.web.rest;
+package de.cloud.core.web.provider;
 
 import de.cloud.core.common.DatabaseProvider;
 import de.cloud.core.common.models.UserInfoModel;
@@ -16,6 +16,7 @@ import net.luckperms.api.node.matcher.NodeMatcher;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.query.QueryOptions;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,17 +28,14 @@ import java.util.stream.Stream;
 @Path("/team/")
 public class TeamService {
 
-    private final LuckPerms luckPerms;
-    private final ImmutableContextSet context;
-    private final QueryOptions queryOptions;
-    private final DatabaseProvider databaseProvider;
-
-    public TeamService(LuckPerms luckPerms, DatabaseProvider databaseProvider) {
-        this.luckPerms = luckPerms;
-        this.databaseProvider = databaseProvider;
-        this.context = luckPerms.getContextManager().getStaticContext();
-        this.queryOptions = luckPerms.getContextManager().getStaticQueryOptions();
-    }
+    @Inject
+    private LuckPerms luckPerms;
+    @Inject
+    private ImmutableContextSet context;
+    @Inject
+    private QueryOptions queryOptions;
+    @Inject
+    private DatabaseProvider databaseProvider;
 
     @SneakyThrows
     @GET

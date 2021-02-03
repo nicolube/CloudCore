@@ -57,6 +57,7 @@ public class Server {
     private final Config config;
     private final InputStream certInputStream;
     private final InputStream privkeyInputStream;
+    @Getter
     private final Dao<InterComTokenModel,Long> dao;
 
     public Server(File configDir, Dao<InterComTokenModel,Long> dao) throws IOException, NoSuchProviderException {

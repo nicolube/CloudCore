@@ -1,5 +1,6 @@
-package de.cloud.core.web.rest;
+package de.cloud.core.web.provider;
 
+import com.google.inject.Inject;
 import de.cloud.core.common.DatabaseProvider;
 import de.cloud.core.common.models.UserInfoModel;
 import de.cloud.core.web.app.ResponseBuilder;
@@ -21,17 +22,15 @@ import java.util.Map;
 @Path("/users/")
 public class UserService {
 
-    private final LuckPerms luckPerms;
-    private final ImmutableContextSet context;
-    private final QueryOptions queryOptions;
-    private final DatabaseProvider databaseProvider;
+    @Inject
+    private LuckPerms luckPerms;
+    @Inject
+    private ImmutableContextSet context;
+    @Inject
+    private QueryOptions queryOptions;
+    @Inject
+    private DatabaseProvider databaseProvider;
 
-    public UserService(LuckPerms luckPerms, DatabaseProvider databaseProvider) {
-        this.luckPerms = luckPerms;
-        this.databaseProvider = databaseProvider;
-        this.context = luckPerms.getContextManager().getStaticContext();
-        this.queryOptions = luckPerms.getContextManager().getStaticQueryOptions();
-    }
 
     @GET
     @Secured

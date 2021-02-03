@@ -4,6 +4,7 @@ import de.cloud.core.common.DatabaseProvider;
 import de.cloud.core.common.models.WebApiTokenModel;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
@@ -16,11 +17,9 @@ import java.io.IOException;
 @Priority(1000)
 public class AuthenticationFilter implements ContainerRequestFilter {
     private static final String REALM = "auth";
-    private final DatabaseProvider databaseProvider;
 
-    public AuthenticationFilter(DatabaseProvider databaseProvider) {
-        this.databaseProvider = databaseProvider;
-    }
+    @Inject
+    private DatabaseProvider databaseProvider;
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -29,6 +28,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             this.abortWithUnauthorized(requestContext);
         } else {
             String token = authorizationHeader.substring("Bearer".length()).trim();
+            System.out.println(token);
+            System.out.println(databaseProvider);
             try {
                 this.validateToken(token, requestContext);
             } catch (Exception var5) {

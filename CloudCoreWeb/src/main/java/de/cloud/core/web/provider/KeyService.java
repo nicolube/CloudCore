@@ -1,4 +1,4 @@
-package de.cloud.core.web.rest;
+package de.cloud.core.web.provider;
 
 
 import de.cloud.core.common.DatabaseProvider;
@@ -9,17 +9,16 @@ import de.cloud.core.web.app.ResponseBuilder;
 import de.cloud.core.web.app.Secured;
 import lombok.SneakyThrows;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/keys/")
 public class KeyService {
-    private final DatabaseProvider databaseProvider;
 
-    public KeyService(DatabaseProvider databaseProvider) {
-        this.databaseProvider = databaseProvider;
-    }
+    @Inject
+    private DatabaseProvider databaseProvider;
 
     @SneakyThrows
     @GET

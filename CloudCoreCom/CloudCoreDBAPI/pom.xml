@@ -31,8 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-core</artifactId>
-            <version>5.1</version>
+            <artifactId>ormlite-jdbc</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -21,7 +21,6 @@
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>locales</artifactId>
-            <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

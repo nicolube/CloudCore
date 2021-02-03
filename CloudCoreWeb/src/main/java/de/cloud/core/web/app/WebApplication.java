@@ -1,13 +1,10 @@
 package de.cloud.core.web.app;
 
+import com.google.inject.*;
 import com.sun.net.httpserver.HttpServer;
 import de.cloud.core.web.app.config.Config;
 import de.cloud.core.com.server.Server;
 import de.cloud.core.common.DatabaseProvider;
-import de.cloud.core.web.rest.LighfallRestService;
-import de.cloud.core.web.rest.TeamService;
-import de.cloud.core.web.rest.UserService;
-import de.cloud.core.web.rest.KeyService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -16,9 +13,10 @@ import me.lucko.luckperms.external.LPExternalBootstrap;
 import me.lucko.luckperms.external.LPExternalPlugin;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.context.ImmutableContextSet;
+import net.luckperms.api.query.QueryOptions;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,18 +28,15 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @Log
-public class WebApplication {
+public class WebApplication extends AbstractModule {
 
     @Getter(value = AccessLevel.PROTECTED)
     private LPExternalBootstrap lpExternalBootstrap;
     private Server comServer;
     private LuckPerms luckPerms;
     private final Config config;
-    @Getter
     private DatabaseProvider databaseProvider;
-    @Getter
     private final Set<Object> singletons = new HashSet<>();
-    @Getter
     private final Set<Class<?>> classes = new HashSet<>();
     private HttpServer httpServer;
     @Getter
@@ -66,7 +61,7 @@ public class WebApplication {
         this.databaseProvider = new DatabaseProvider(this.config.getDatabase());
         this.databaseProvider.setupWebApi();
         log.info("Setup luckperms external...");
-        this.lpExternalBootstrap = new LPExternalBootstrap(new File(configDir, "LuckPerms"));;
+        this.lpExternalBootstrap = new LPExternalBootstrap(new File(configDir, "LuckPerms"));
         log.info("Get luckperms external...");
         this.luckPerms = LuckPermsProvider.get();
         log.info("Start comServer...");
@@ -77,11 +72,18 @@ public class WebApplication {
         this.registerSingletons();
     }
 
+    @Override
+    protected void configure() {}
+
     public void start() {
         ResourceConfig rc = new ResourceConfig();
+
+        Injector injector = Guice.createInjector(this);
+        HK2toGuiceModule hk2Module = new HK2toGuiceModule(injector);
+        rc.registerClasses(Secured.class, AuthenticationFilter.class);
+        rc.register(hk2Module);
         rc.packages("de.cloud.core.web.provider", "de.cloud.core.web.rest.resources");
         rc.packages("org.glassfish.jersey.jackson.internal.jackson.jaxrs.json");
-        rc.registerClasses(getClasses());
         this.httpServer = JdkHttpServerFactory.createHttpServer(URI.create(this.config.getBaseUrl()), rc);
         ready = true;
     }
@@ -95,16 +97,38 @@ public class WebApplication {
     }
 
     private void registerSingletons() {
-        this.singletons.add(new TeamService(this.luckPerms, this.databaseProvider));
-        this.singletons.add(new UserService(this.luckPerms, this.databaseProvider));
-        this.singletons.add(new AuthenticationFilter(this.databaseProvider));
-        this.singletons.add(new KeyService(this.databaseProvider));
-        this.singletons.add(new LighfallRestService(this));
     }
 
     private void registerClasses() {
     }
 
+    @Provides
+    public Config getConfig() {
+        return config;
+    }
 
+    @Provides
+    public DatabaseProvider getDatabaseProvider() {
+        return databaseProvider;
+    }
 
+    @Provides
+    public LuckPerms getLuckPerms() {
+        return luckPerms;
+    }
+
+    @Provides
+    public WebApplication getApp() {
+        return this;
+    }
+
+    @Provides
+    public ImmutableContextSet getLPContext() {
+        return this.luckPerms.getContextManager().getStaticContext();
+    }
+
+    @Provides
+    public QueryOptions getLPQueryOptions() {
+        return this.luckPerms.getContextManager().getStaticQueryOptions();
+    }
 }

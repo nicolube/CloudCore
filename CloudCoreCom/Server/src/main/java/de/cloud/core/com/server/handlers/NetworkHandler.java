@@ -2,6 +2,7 @@ package de.cloud.core.com.server.handlers;
 
 import de.cloud.core.common.packet.Packet;
 import de.cloud.core.com.server.Server;
+import de.cloud.core.common.packet.PacketInAuthentication;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -23,7 +24,9 @@ public class NetworkHandler extends SimpleChannelInboundHandler<Packet> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) throws Exception {
+        if (packet instanceof PacketInAuthentication) {
 
+        }
     }
 
     @Override

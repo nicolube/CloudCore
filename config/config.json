@@ -1,0 +1,8 @@
+{
+  "baseUrl": "http://0.0.0.0:8080/",
+  "database": {
+    "url": "jdbc:mariadb://localhost:3306/CN3T",
+    "user": "root",
+    "password": "password"
+  }
+}

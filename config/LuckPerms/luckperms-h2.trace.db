@@ -1,0 +1,108 @@
+2021-02-03 19:37:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:38:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:40:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:43:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:44:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:49:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:51:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:54:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:57:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:58:38 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 19:59:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 20:00:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 20:01:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:11:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:12:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:16:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:25:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:26:40 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:35:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:45:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:46:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:47:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:48:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:48:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:51:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:53:05 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]
+2021-02-03 21:54:26 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "LUCKPERMS_GROUPS" nicht gefunden
+Table "LUCKPERMS_GROUPS" not found; SQL statement:
+SELECT name FROM `luckperms_groups` [42102-199]

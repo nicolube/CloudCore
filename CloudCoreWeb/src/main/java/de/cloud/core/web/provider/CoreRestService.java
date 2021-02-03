@@ -1,9 +1,10 @@
-package de.cloud.core.web.rest;
+package de.cloud.core.web.provider;
 
 import de.cloud.core.web.app.WebApplication;
 import de.cloud.core.web.app.ResponseBuilder;
 import de.cloud.core.web.app.Secured;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -11,13 +12,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("test/")
-public class LighfallRestService {
+public class CoreRestService {
 
+    @Inject
     WebApplication app;
-
-    public LighfallRestService(WebApplication app) {
-        this.app = app;
-    }
 
     @GET
     @Path("default")
