@@ -9,6 +9,7 @@ import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -16,7 +17,16 @@ public abstract class UserManager implements IUserManager {
 
     @Getter
     private final IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+    private final InternalCoreAPI plugin;
 
+    public UserManager(InternalCoreAPI plugin) {
+        this.plugin = plugin;
+        this.plugin.getCommandManager().onLocaleChange((issuer, oldLocale, newLocale) -> {
+            CloudUser user = getUser(issuer.getUniqueId());
+            Locale locale = user.getLocale();
+            if (newLocale != locale) user.setLocale(locale, false);
+        });
+    }
 
     @SneakyThrows
     public UserInfoModel quarryUserInfo(UUID uuid) {

@@ -35,6 +35,7 @@ public class BukkitUserManager extends UserManager implements Listener {
     private final Map<UUID, BukkitCloudUser> userMap;
 
     public BukkitUserManager(MainBukkit plugin) {
+        super(plugin);
         this.plugin = plugin;
         this.userMap = new HashMap<>();
         onLoad();

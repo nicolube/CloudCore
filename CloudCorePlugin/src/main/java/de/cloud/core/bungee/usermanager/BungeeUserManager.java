@@ -29,6 +29,7 @@ public class BungeeUserManager extends UserManager implements Listener {
     private final Map<UUID, BungeeCloudUser> userMap;
 
     public BungeeUserManager(MainBungee plugin) {
+        super(plugin);
         this.plugin = plugin;
         this.userMap = new HashMap<>();
         onLoad();
@@ -87,10 +88,10 @@ public class BungeeUserManager extends UserManager implements Listener {
         final BungeeCloudUser bungeeCloudUser = this.userMap.get(player.getUniqueId());
         bungeeCloudUser.setPlayer(player);
         String locale = bungeeCloudUser.queryUserInfo().getLocale();
-        if (locale != null)
+        if (locale != null) {
             bungeeCloudUser.setLocale(locale, false);
-        else
-            bungeeCloudUser.setLocale(event.getPlayer().getLocale(), true);
+        } else
+            bungeeCloudUser.setLocale(player.getLocale(), true);
         bungeeCloudUser.setRealName(player.getName());
     }
 

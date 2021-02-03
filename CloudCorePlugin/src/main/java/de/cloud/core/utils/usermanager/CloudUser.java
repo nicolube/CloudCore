@@ -1,5 +1,6 @@
 package de.cloud.core.utils.usermanager;
 
+import co.aikar.commands.CommandManager;
 import co.aikar.commands.MessageType;
 import de.cloud.core.api.Util;
 import de.cloud.core.api.channelhandeler.ChannelHandler;
@@ -70,15 +71,18 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
 
     @Override
     public void move(String service) {
-        this.userManager.getPlayerManager().getOnlinePlayerAsync(this.uuid).onComplete(p -> {
-            if (p.getConnectedService().getServerName().equals(service)) return;
+        this.userManager.getPlayerManager().getOnlinePlayerAsync(this.uuid).onComplete(p -> {            if (p.getConnectedService().getServerName().equals(service)) return;
             this.userManager.getPlayerManager().getPlayerExecutor(this.uuid).connect(service);
         });
     }
 
     @Override
     public void setLocale(@NonNull Locale locale, boolean update) {
-        this.userManager.getPlugin().getCommandManager().setIssuerLocale(getPlayer(), locale);
+        try {
+            this.userManager.getPlugin().getCommandManager().setIssuerLocale(getPlayer(), locale);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         super.setLocale(locale, update);
     }
 
