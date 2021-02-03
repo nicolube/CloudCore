@@ -78,12 +78,12 @@ public abstract class CloudUser extends OfflineCloudUser implements ICloudUser {
 
     @Override
     public void setLocale(@NonNull Locale locale, boolean update) {
+        super.setLocale(locale, update);
         try {
             this.userManager.getPlugin().getCommandManager().setIssuerLocale(getPlayer(), locale);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        super.setLocale(locale, update);
     }
 
     public abstract <T> T getPlayer();

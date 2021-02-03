@@ -49,8 +49,8 @@ public class BukkitUserManager extends UserManager implements Listener {
             try {
                 final UserInfoModel playerInfo = this.plugin.getDatabaseProvider().getUserInfoDao().queryBuilder().where().eq("uuid", uuid).queryForFirst();
                 final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(p, playerInfo.getId(), this);
-                bukkitCloudUser.setLocale(playerInfo.getLocale(), false);
                 this.userMap.put(uuid, bukkitCloudUser);
+                bukkitCloudUser.setLocale(playerInfo.getLocale(), false);
                 if (this.plugin.getMode() != null)
                     this.plugin.getDatabaseProvider().getUserModeInfoDao().create(new UserModeInfoModel(playerInfo, this.plugin.getMode()));
             } catch (SQLException ex) {
