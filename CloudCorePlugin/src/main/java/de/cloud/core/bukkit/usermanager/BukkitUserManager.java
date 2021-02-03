@@ -66,10 +66,9 @@ public class BukkitUserManager extends UserManager implements Listener {
             try {
                 final UserInfoModel userInfo = quarryUserInfo(player.getUniqueId());
                 final BukkitCloudUser bukkitCloudUser = new BukkitCloudUser(player, userInfo.getId(), this);
-                bukkitCloudUser.setLocale(userInfo.getLocale(), false);
-
                 if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
                 this.userMap.put(player.getUniqueId(), bukkitCloudUser);
+                bukkitCloudUser.setLocale(userInfo.getLocale(), false);
                 final String mode = this.plugin.getMode();
                 if (mode != null) {
                     final UserModeInfoModel userModeInfoModel = quarryUserModeInfo(userInfo.getId(), mode);

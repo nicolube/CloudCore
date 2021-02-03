@@ -34,10 +34,9 @@ public class EventBasedExecutions implements Listener {
                 });
     }
 
-    public void scheduleExecution(EventExecutorTask executor) {
-        Type genericInterface = executor.getClass().getGenericInterfaces()[0];
-        System.out.println(genericInterface.getTypeName());
-        final Class<? extends Event> clazz = (Class<? extends Event>) ((ParameterizedType) genericInterface).getActualTypeArguments()[0];
+    public void scheduleExecution(EventExecutorTask<? extends Event> executor) {
+       Type[] genericInterface = executor.getClass().getGenericInterfaces();
+        final Class<? extends Event> clazz = (Class<? extends Event>) ((ParameterizedType)genericInterface[0]).getActualTypeArguments()[0];
         if (!this.registeredEvents.contains(clazz)) {
             Bukkit.getPluginManager().registerEvent(clazz, dummyListener, EventPriority.NORMAL, this.executor, this.plugin);
             this.registeredEvents.add(clazz);

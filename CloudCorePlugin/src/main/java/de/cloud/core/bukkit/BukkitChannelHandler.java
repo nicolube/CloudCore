@@ -8,6 +8,7 @@ import de.dytanic.cloudnet.driver.event.EventListener;
 import de.dytanic.cloudnet.driver.event.events.channel.ChannelMessageReceiveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.concurrent.CompletableFuture;
@@ -41,14 +42,17 @@ public class BukkitChannelHandler extends ChannelHandler {
                 player.teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                 return;
             }
-            this.plugin.getEventBasedExecutions().scheduleExecution((EventExecutorTask<PlayerJoinEvent>) event -> {
-                if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
-                if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
-                    event.getPlayer().teleport(target);
+            // Do not change to lambda! Ti will break
+            this.plugin.getEventBasedExecutions().scheduleExecution(new EventExecutorTask<PlayerJoinEvent>() {
+                public boolean execute(PlayerJoinEvent event) {
+                    if (!event.getPlayer().getUniqueId().equals(((TeleportDocument) document).getUuid())) return false;
+                    if (((TeleportDocument) document).getTeleportType().equals(TeleportType.PLAYER)) {
+                        event.getPlayer().teleport(target);
+                        return true;
+                    }
+                    event.getPlayer().teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
                     return true;
                 }
-                event.getPlayer().teleport(BukkitUtil.DocumentToLocation(((TeleportDocument) document).getTargetPosition()));
-                return true;
             });
             return;
         }
