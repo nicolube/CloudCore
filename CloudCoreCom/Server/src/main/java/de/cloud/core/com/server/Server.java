@@ -19,6 +19,7 @@ package de.cloud.core.com.server;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.j256.ormlite.dao.Dao;
+import de.cloud.core.com.server.connections.ConnectionManager;
 import de.cloud.core.com.server.handlers.NetworkHandler;
 import de.cloud.core.common.PacketDecoder;
 import de.cloud.core.common.PacketEncoder;
@@ -51,14 +52,15 @@ import java.util.logging.Logger;
 public class Server {
 
     public static boolean EPPLL = Epoll.isAvailable();
-    @Setter @Getter
+    @Setter
     private static Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     private final Config config;
     private final InputStream certInputStream;
     private final InputStream privkeyInputStream;
-    @Getter
     private final Dao<InterComTokenModel,Long> dao;
+    @Getter
+    private ConnectionManager connectionManager;
 
     public Server(File configDir, Dao<InterComTokenModel,Long> dao) throws IOException, NoSuchProviderException {
         this.dao = dao;
@@ -93,10 +95,15 @@ public class Server {
     }
 
     public void startServer() {
+        try {
+            this.connectionManager = new ConnectionManager(this);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         LOGGER.info("Starting server...");
         EventLoopGroup eventLoopGroup = EPPLL ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
-            SslContext sslContext = SslContextBuilder.forServer(this.certInputStream, this.privkeyInputStream).build();
+            //SslContext sslContext = SslContextBuilder.forServer(this.certInputStream, this.privkeyInputStream).build();
             ChannelFuture channelFuture = new ServerBootstrap()
                     .group(eventLoopGroup)
                     .channel(EPPLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
@@ -104,10 +111,11 @@ public class Server {
                         @Override
                         protected void initChannel(Channel ch) {
                             ch.pipeline()
-                                    .addLast("ssl", sslContext.newHandler(ch.alloc()))
+                                    //.addLast("ssl", sslContext.newHandler(ch.alloc()))
                                     .addLast(new PacketEncoder())
                                     .addLast(new PacketDecoder())
                                     .addLast(new NetworkHandler(Server.this));
+                            Server.this.connectionManager.registerChannel(ch);
                         }
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -115,7 +123,7 @@ public class Server {
                     .bind(config.getHost(), config.getPort());
             LOGGER.info("Server started!");
             channelFuture.sync().channel().closeFuture().syncUninterruptibly();
-        } catch (InterruptedException | SSLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             eventLoopGroup.shutdownGracefully();
@@ -123,7 +131,7 @@ public class Server {
     }
 
     public void disconnect(Channel channel) {
-
+        this.connectionManager.disconnect(channel);
     }
 
     private void saveCert(File file, String comment, byte[] encoded) throws IOException {
@@ -134,4 +142,15 @@ public class Server {
         pemWriter.close();
     }
 
+    public Dao<InterComTokenModel, Long> getDao() {
+        return dao;
+    }
+
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
+
+    public ConnectionManager getConnectionManager() {
+        return connectionManager;
+    }
 }

@@ -9,6 +9,7 @@ import de.cloud.core.utils.usermanager.UserManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -62,10 +63,16 @@ public class BungeeUserManager extends UserManager implements Listener {
     @SneakyThrows
     @EventHandler
     public void onLogin(LoginEvent event) {
-        final UUID uuid = event.getConnection().getUniqueId();
+        PendingConnection connection = event.getConnection();
+        final UUID uuid = connection.getUniqueId();
+        String name = connection.getName();
         UserInfoModel userInfoModel = quarryUserInfo(uuid);
         if (userInfoModel == null)
-            userInfoModel = this.plugin.getDatabaseProvider().getUserInfoDao().createIfNotExists(new UserInfoModel(uuid));
+            userInfoModel = this.plugin.getDatabaseProvider().getUserInfoDao().createIfNotExists(new UserInfoModel(uuid, name));
+        else if (!userInfoModel.getName().equals(name)){
+            userInfoModel.setName(name);
+            this.plugin.getDatabaseProvider().getUserInfoDao().updateBuilder().updateColumnExpression("name", name).where().idEq(userInfoModel.getId()).query();
+        }
         final BungeeCloudUser bungeeCloudUser = new BungeeCloudUser(uuid, userInfoModel.getId(), this);
         Locale locale = Locale.forLanguageTag(userInfoModel.getLocale());
         final PunishmentModel activeBan = userInfoModel.getActiveBan();

@@ -30,6 +30,9 @@ public class UserInfoModel implements IUserInfo {
     private long ontime;
 
     @DatabaseField(canBeNull = false, unique = true)
+    private String name;
+
+    @DatabaseField(canBeNull = false, unique = true)
     private UUID uuid;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
@@ -41,8 +44,9 @@ public class UserInfoModel implements IUserInfo {
     @DatabaseField(canBeNull = false, width = 7)
     private String locale;
 
-    public UserInfoModel(UUID uuid) {
+    public UserInfoModel(UUID uuid, String name) {
         this.uuid = uuid;
+        this.name = name;
         this.locale = Locale.ENGLISH.getLanguage();
     }
 }

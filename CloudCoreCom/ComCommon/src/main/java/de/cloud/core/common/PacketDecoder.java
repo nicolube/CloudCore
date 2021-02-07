@@ -13,6 +13,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
         int id = byteBuf.readInt();
         Packet packet = PacketRegistry.values()[id].getPacketClass().newInstance();
+        System.out.println("Decode packet: "+packet.getClass().getSimpleName());
         packet.read(byteBuf);
         out.add(packet);
     }

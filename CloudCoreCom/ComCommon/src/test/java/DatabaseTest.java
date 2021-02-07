@@ -28,12 +28,12 @@ public class DatabaseTest {
         Dao<UserInfoModel, Long> uid = provider.getUserInfoDao();
         Dao<UserModeInfoModel, Long> umid = provider.getUserModeInfoDao();
         Dao<PunishmentModel, Long> pd = provider.getPunishmentDao();
-        UserInfoModel uim1 = new UserInfoModel(UUID.randomUUID());
+        UserInfoModel uim1 = new UserInfoModel(UUID.randomUUID(), "Testname1");
         uim1.setDiscord_id(1);
         uim1.setTeamspeak_id(1);
         uim1.setForum_id(1);
         UserInfoModel quim1 = uid.createIfNotExists(uim1);
-        UserInfoModel uim2 = new UserInfoModel(UUID.randomUUID());
+        UserInfoModel uim2 = new UserInfoModel(UUID.randomUUID(), "Testname2");
         uim2.setDiscord_id(2);
         uim2.setTeamspeak_id(2);
         uim2.setForum_id(2);

@@ -11,6 +11,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.query.QueryOptions;
+import net.luckperms.api.util.Tristate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ws.rs.*;
@@ -41,6 +42,20 @@ public class UserService {
             User user = luckPerms.getUserManager().loadUser(Util.uuiFromString(uuid)).get();
             Map<String, Boolean> permissionMap = user.getCachedData().getPermissionData().getPermissionMap();
             return new ResponseBuilder().success(permissionMap).build();
+        } catch (Exception ex) {
+            return new ResponseBuilder().error("invalid uuid").build();
+        }
+    }
+
+    @GET
+    @Secured
+    @Produces({"application/json"})
+    @Path("hasPermission/{uuid}/{permission}")
+    public Response getHasPermissions(@PathParam("uuid") String uuid, @PathParam("uuid") String perm) {
+        try {
+            User user = luckPerms.getUserManager().loadUser(Util.uuiFromString(uuid)).get();
+            Tristate tristate = user.getCachedData().getPermissionData().checkPermission(perm);
+            return new ResponseBuilder().success(tristate.asBoolean()).build();
         } catch (Exception ex) {
             return new ResponseBuilder().error("invalid uuid").build();
         }

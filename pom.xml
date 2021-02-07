@@ -11,6 +11,7 @@
         <module>CloudCorePlugin</module>
         <module>CloudCoreWeb</module>
         <module>CloudCoreCom</module>
+        <module>CloudCoreTS3Bot</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -105,6 +106,12 @@
                 <groupId>net.luckperms</groupId>
                 <artifactId>api</artifactId>
                 <version>5.1</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-runtime</artifactId>
+                <version>1.2.71</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>

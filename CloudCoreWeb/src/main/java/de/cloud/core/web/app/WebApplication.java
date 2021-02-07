@@ -17,6 +17,7 @@ import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.query.QueryOptions;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -91,8 +92,6 @@ public class WebApplication extends AbstractModule {
     @SneakyThrows
     public void stop() {
         this.httpServer.stop(0);
-        LPExternalPlugin plugin = (LPExternalPlugin) LPExternalBootstrap.class.getField("plugin").get(this.lpExternalBootstrap);
-        plugin.disable();
         this.databaseProvider.disconnect();
     }
 
