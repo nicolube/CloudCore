@@ -35,14 +35,13 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class OfflineCloudUser implements IOfflineCloudUser {
+public class cOfflineCloudUser implements IOfflineCloudUser {
 
     @Getter
     protected final UUID uuid;
     @Getter
     protected String realName;
-    @Getter
-    protected final long databaseId;
+    public final long databaseId;
     protected final UserManager userManager;
     @Getter
     protected Locale locale;
@@ -296,5 +295,9 @@ public class OfflineCloudUser implements IOfflineCloudUser {
     @Override
     public ITask<ICloudOfflinePlayer> getCloudOfflinePlayerAsync() {
         return this.userManager.getPlayerManager().getOfflinePlayerAsync(this.uuid);
+    }
+
+    public long getDatabaseId() {
+        return databaseId;
     }
 }

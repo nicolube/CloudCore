@@ -4,11 +4,10 @@ import com.sun.istack.internal.logging.Logger
 import de.cloud.core.api.ClientType
 import de.cloud.core.com.client.handlers.NetworkHandler
 import de.cloud.core.common.ConnectionStatus
+import de.cloud.core.common.LinkStatus
 import de.cloud.core.common.PacketDecoder
 import de.cloud.core.common.PacketEncoder
-import de.cloud.core.common.packet.PacketInAuthentication
-import de.cloud.core.common.packet.PacketInLink
-import de.cloud.core.common.packet.PacketOutAuthentication
+import de.cloud.core.common.packet.*
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
@@ -70,10 +69,7 @@ class Client(private val config: Config, val type: ClientType, private val comme
                     }
                 })
                 .connect(config.host, config.port).sync().channel()
-            val packetInAuthentication = PacketInAuthentication()
-            packetInAuthentication.comment = comment
-            packetInAuthentication.key = config.key
-            packetInAuthentication.type = type
+            val packetInAuthentication = PacketInAuthentication(type, config.key, comment)
             this.channel?.writeAndFlush(packetInAuthentication)
             this.running = true
             this.channel?.closeFuture()?.syncUninterruptibly()
@@ -110,7 +106,11 @@ class Client(private val config: Config, val type: ClientType, private val comme
 
     fun isReady() = running && authenticated && channel != null
 
-    fun requestLink(ip: String, dbIp:Int, username: String, type: ClientType) {
+    fun requestLink(ip: String, dbIp: Int, username: String, type: ClientType) {
         channel?.writeAndFlush(PacketInLink(ip, dbIp, username, type))
+    }
+
+    fun confirmLink(dbId: Int, modelId: Long, status: LinkStatus) {
+        channel?.writeAndFlush(PacketInRequestLink(dbId, modelId, ClientType.MINECRAFT, status))
     }
 }

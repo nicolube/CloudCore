@@ -25,6 +25,7 @@ data class PacketOutRequestLink(
 @NoArgsConstructor
 data class PacketInRequestLink(
     val dbId: Int,
+    val modelId: Long,
     val type: ClientType,
     val stats: LinkStatus,
 ) : Packet() {

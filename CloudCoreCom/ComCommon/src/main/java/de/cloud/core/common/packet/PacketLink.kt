@@ -1,6 +1,7 @@
 package de.cloud.core.common.packet
 
 import de.cloud.core.api.ClientType
+import de.cloud.core.common.ConnectionStatus
 import de.cloud.core.common.LinkStatus
 import io.netty.buffer.ByteBuf
 import lombok.NoArgsConstructor
@@ -26,7 +27,8 @@ data class PacketInLink(
 @NoArgsConstructor
 data class PacketOutLink(
     val dbId: Int,
-    val stauts: LinkStatus,
+    val modelId: Long,
+    val status: LinkStatus,
 ): Packet() {
 
 
@@ -36,5 +38,19 @@ data class PacketOutLink(
 
     override fun write(byteBuf: ByteBuf?) {
         return autoWrite(this, byteBuf)
+    }
+}
+
+@NoArgsConstructor
+data class PacketOutAuthentication(
+    var status: ConnectionStatus
+) : Packet() {
+
+    override fun read(byteBuf: ByteBuf) {
+        autoRead(this, byteBuf)
+    }
+
+    override fun write(byteBuf: ByteBuf) {
+        autoWrite(this, byteBuf)
     }
 }

@@ -4,6 +4,11 @@
     "user": "username",
     "password": "password"
   },
+  "comConfig": {
+    "host": "localhost",
+    "port": 9874,
+    "key": "Enter your key"
+  },
   "chatColorConfig": {
     "INFO": [
       "GOLD",

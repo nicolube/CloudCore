@@ -21,7 +21,7 @@ class ConnectionManager(private val server: Server) {
     }
 
     fun registerChannel(ch: Channel) {
-        Server.getLOGGER().warning("${ch.remoteAddress()} tries to connect!")
+        Server.LOGGER.warning("${ch.remoteAddress()} tries to connect!")
         pendingConnections[ch] = ConnectionInstance(ch, ClientType.UNKNOWN)
     }
 
@@ -30,11 +30,9 @@ class ConnectionManager(private val server: Server) {
             server.dao.queryBuilder().where()
                 .eq("token", packet.key).and().eq("type", packet.type).queryForFirst()
         }.thenAccept(Consumer { q ->
-            val outPacket = PacketOutAuthentication()
             if (q == null) {
-                Server.getLOGGER().warning("${ch.remoteAddress()} failed authentication!")
-                outPacket.status = ConnectionStatus.ACCESS_DENIED
-                ch.writeAndFlush(outPacket)
+                Server.LOGGER.warning("${ch.remoteAddress()} failed authentication!")
+                ch.writeAndFlush(PacketOutAuthentication(ConnectionStatus.ACCESS_DENIED))
                 ch.disconnect()
                 ch.close()
                 return@Consumer
@@ -43,9 +41,8 @@ class ConnectionManager(private val server: Server) {
                 if (it == null) return@also
                 it.connectionStats = ConnectionStatus.CONNECTED
                 connections[q.type]!![ch] = it
-                outPacket.status = it.connectionStats
-                ch.writeAndFlush(outPacket)
-                Server.getLOGGER()
+                ch.writeAndFlush(PacketOutAuthentication(it.connectionStats))
+                Server.LOGGER
                     .info("${ch.remoteAddress()} connected as ${q.type.name} with comment: ${packet.comment}")
             }
         })
@@ -57,8 +54,13 @@ class ConnectionManager(private val server: Server) {
             connections.values.forEach { if (it.remove(ch) != null) return@disconnect }
     }
 
-    fun send(type:ClientType, packet: Packet) {
-        connections[type]?.forEach { (k, v) ->  k.writeAndFlush(packet) }
+    fun send(type: ClientType, packet: Packet): Int {
+        var amont: Int = 0
+        connections[type]?.forEach { (k, _) ->
+            k.writeAndFlush(packet)
+            amont++
+        }
+        return amont
     }
 }
 

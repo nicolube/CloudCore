@@ -6,6 +6,7 @@ import co.aikar.commands.MessageType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import de.cloud.core.InternalCoreAPI;
 import de.cloud.core.ModuleMessageProvider;
+import de.cloud.core.api.ClientType;
 import de.cloud.core.api.ICorePlugin;
 import de.cloud.core.api.Util;
 import de.cloud.core.api.channelhandeler.ChannelHandler;
@@ -15,11 +16,13 @@ import de.cloud.core.api.message.CoreMessageKeys;
 import de.cloud.core.bungee.commands.*;
 import de.cloud.core.bungee.usermanager.BungeeCloudUser;
 import de.cloud.core.bungee.usermanager.BungeeUserManager;
+import de.cloud.core.com.client.Client;
 import de.cloud.core.common.DatabaseProvider;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.GroupConfiguration;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
+import de.dytanic.cloudnet.wrapper.Wrapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
@@ -50,6 +53,8 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
     @Getter
     private DatabaseProvider databaseProvider;
     private List<ICorePlugin> plugins;
+
+    private Client comClient;
 
     @Override
     @SneakyThrows
@@ -83,6 +88,9 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
         getLogger().info("Connect to database...");
         // System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "INFO");
         this.databaseProvider = new DatabaseProvider(config.getDatabase());
+
+        getLogger().info("Starting ComClient...");
+        this.comClient = new Client(config.getComConfig(), ClientType.MINECRAFT, Wrapper.getInstance().getServiceId().getName());
 
         getLogger().info("Starting command manager...");
         this.commandManager = new BungeeCommandManager(this);
@@ -189,5 +197,9 @@ public class MainBungee extends Plugin implements InternalCoreAPI {
                 e.printStackTrace();
             }
         });
+    }
+
+    public Client getComClient() {
+        return comClient;
     }
 }

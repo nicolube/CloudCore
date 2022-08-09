@@ -53,7 +53,10 @@ class UserManager(private val bot: Bot) {
                 else -> Locale.ENGLISH
             }
             val user = if (queryForEq.isEmpty()) User(client.id, client.databaseId, null, locale)
-            else User(cId, client.databaseId, queryForEq[0], locale)
+            else {
+                val data = queryForEq[0]
+                User(cId, client.databaseId, data, Locale.forLanguageTag(data.locale))
+            }
             clients[cId] = user
             if (!user.isLinked()) {
                 sendMessage(cId, "notLinked")

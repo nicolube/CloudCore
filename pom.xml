@@ -54,6 +54,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <jvmTarget>1.8</jvmTarget>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
@@ -190,5 +193,22 @@
             <version>${kotlin.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>nexus-demonparadise</id>
+            <url>https://nexus.demonparadise.de/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>nexus-demonparadise</id>
+            <url>https://nexus.demonparadise.de/repository/maven-release/</url>
+        </repository>
+    </distributionManagement>
 </project>

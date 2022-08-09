@@ -10,12 +10,14 @@ class NetworkHandler(val server: Server) : SimpleChannelInboundHandler<Packet>()
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
         when (msg) {
-            is PacketInAuthentication -> server.connectionManager.acceptAuthPacket(ctx.channel(), msg)
-            is PacketInLink -> server.connectionManager.send(
+            is PacketInAuthentication -> server.connectionManager?.acceptAuthPacket(ctx.channel(), msg)
+            is PacketInLink -> server.connectionManager?.send(
                 ClientType.MINECRAFT,
                 PacketOutRequestLink(msg.ip, msg.dbId, msg.username, msg.type)
             )
-            is PacketInRequestLink -> server.connectionManager.send(msg.type, PacketOutLink(msg.dbId, msg.stats))
+            is PacketInRequestLink -> server.connectionManager?.send(
+                msg.type, PacketOutLink(msg.dbId, msg.modelId, msg.stats)
+            )
         }
     }
 

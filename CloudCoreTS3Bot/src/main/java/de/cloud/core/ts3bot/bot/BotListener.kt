@@ -58,7 +58,7 @@ class BotListener(private val bot: Bot) : TS3Listener, ClientBotListener {
 
     override fun onLink(packet: PacketOutLink) {
         val user = bot.userManager.clients.values.find { it.dbId == packet.dbId } ?: return
-        when (packet.stauts) {
+        when (packet.status) {
             LinkStatus.SUCCESS -> {
                 val userModels = bot.databaseProvider.userInfoDao.queryForEq("teamspeak_id", packet.dbId)
                 if (userModels.isEmpty()) {
